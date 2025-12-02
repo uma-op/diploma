@@ -27,6 +27,7 @@ library
   exposed-modules:
       Clausify
       Formula
+      IncrementalSolver
       Lib
       ParseProblem
   other-modules:
