@@ -34,20 +34,13 @@ instance Ord Formula where
   compare _ (Disjunction _) = GT
   compare (Implication xs) (Implication ys) = compare xs ys
 
-formulaLength :: Formula -> Int
-formulaLength (Implication fs) = (sum . map formulaLength) fs + length fs - 1
-formulaLength (Conjunction fs) = (sum . map formulaLength) fs + length fs - 1
-formulaLength (Disjunction fs) = (sum . map formulaLength) fs + length fs - 1
-formulaLength (Negation f) = formulaLength f + 1
-formulaLength (Variable x) = 1
-formulaLength Bottom = 1
-
 variables :: Formula -> Set String
 variables (Implication fs) = foldMap variables fs
 variables (Conjunction fs) = foldMap variables fs
 variables (Disjunction fs) = foldMap variables fs
 variables (Negation fs) = variables fs
 variables (Variable vname) = Set.singleton vname
+variables Bottom = Set.singleton "_|_"
 
 implication :: Formula -> Formula -> Formula
 implication lhs rhs@(Implication impls) = Implication (lhs:impls)
@@ -104,6 +97,7 @@ createAssertion f vs = Z3.assert =<< createZ3Formula f
 
     createZ3Formula (Negation f) = Z3.mkNot =<< createZ3Formula f
     createZ3Formula (Variable name) = return $ vs ! name
+    createZ3Formula Bottom = Z3.mkFalse
   
 
 isFlatClause :: Formula -> Bool
