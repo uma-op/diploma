@@ -25,22 +25,3 @@ instance Show Form where
   show TRUE        = "$true"
   show FALSE       = "$false"
 
-nt :: Form -> Form
-nt p = p :=>: FALSE
-
-data Input a
-  = Input Name Role a
- deriving ( Eq, Ord )
-
-instance Show a => Show (Input a) where
-  show (Input name role x) =
-    "fof(" ++ name ++ ", " ++ show role ++ ", " ++ show x ++ " )."
-
-data Role
-  = Fact
-  | Conjecture
- deriving ( Eq, Ord )
-
-instance Show Role where
-  show Fact       = "axiom"
-  show Conjecture = "conjecture"

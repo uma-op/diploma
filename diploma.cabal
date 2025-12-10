@@ -25,11 +25,8 @@ source-repository head
 
 library
   exposed-modules:
-      Clausify
       Formula
-      IncrementalSolver
-      Lib
-      ParseProblem
+      SAT
   other-modules:
       Paths_diploma
   autogen-modules:
