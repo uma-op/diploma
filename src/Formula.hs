@@ -4,9 +4,7 @@ import Data.Set (Set)
 import qualified Data.Set as Set
 
 import Data.Map (Map, (!))
-import qualified Data.Map as Map
 import qualified Data.List as List
-import qualified Data.Maybe as Maybe
 
 import qualified Z3.Monad as Z3
 
@@ -21,16 +19,20 @@ data Formula = Implication [Formula]
 instance Ord Formula where
   compare Bottom Bottom = EQ
   compare Bottom _ = LT
+  compare _ Bottom = GT
   compare (Variable x) (Variable y) = compare x y
   compare (Variable _) _ = LT
+  compare _ (Variable _) = GT
   compare (Negation x) (Negation y) = compare x y
   compare (Negation _) _ = LT
+  compare _ (Negation _) = GT
   compare (Conjunction xs) (Conjunction ys) = compare xs ys
-  compare (Conjunction xs) _ = LT
+  compare (Conjunction _) _ = LT
+  compare _ (Conjunction _) = GT
   compare (Disjunction xs) (Disjunction ys) = compare xs ys
-  compare (Disjunction xs) _ = LT
+  compare (Disjunction _) _ = LT
+  compare _ (Disjunction _) = GT
   compare (Implication xs) (Implication ys) = compare xs ys
-  compare (Implication xs) _ = LT
 
 formulaLength :: Formula -> Int
 formulaLength (Implication fs) = (sum . map formulaLength) fs + length fs - 1
