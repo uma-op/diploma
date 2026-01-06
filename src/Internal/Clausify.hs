@@ -1,5 +1,5 @@
 {-# LANGUAGE TypeOperators #-}
-module Clausify
+module Internal.Clausify
   ( (:->)(..)
   , Clause
   , ImplClause
@@ -8,7 +8,7 @@ module Clausify
   )
  where
 
-import ParseProblem
+import Internal.ParseProblem
 import qualified Control.Applicative as CA
 import qualified Data.Map as M
 import Control.Monad

@@ -13,6 +13,7 @@ import Formula
 import Z3.Monad
 import Data.Either (Either(..))
 import Data.Void (Void)
+import Control.Monad(unless)
 
 
 prove :: Set Formula -> Set Formula -> Formula -> IO (Either (Set Formula) (Set Formula))
@@ -23,8 +24,11 @@ prove impls flats = intuitProve sol impls Set.empty
 
     sol :: Z3 (Map String AST)
     sol = newSolver >> Traversable.sequence (Map.fromSet mkFreshBoolVar $ Set.unions $ Set.map variables clauses)
+-- Left means that formula is derivable
+-- Right means that formula does not derivable
 
-
+-- Left means that formula is derivable
+-- Right means that formula does not derivable
 intuitProve :: Z3 (Map String AST) -> Set Formula -> Set Formula -> Formula -> IO (Either (Set Formula) (Set Formula))
 intuitProve sol impls adds atom = do
   proved <- satProve sol adds atom
@@ -35,6 +39,9 @@ intuitProve sol impls adds atom = do
                         Nothing -> return $ Right model
                         Just newSol -> intuitProve newSol impls adds atom
 
+
+-- Returns Nothing if can't be proved for all impls
+-- otherwise returns Just of solver with new clause /\(A_1 \ {a}) -> c
 intuitCheck :: Z3 (Map String AST) -> Set Formula -> Set Formula -> IO (Maybe (Z3 (Map String AST)))
 intuitCheck sol impls model = intuitCheck' sol implsToTraverse
   where
@@ -65,12 +72,18 @@ addClause sol f = do
   createAssertion f vars
   return vars
 
+-- Left means that atom is dirivable from argument of sol and additionalClauses (TODO: return minimal subset from premises)
+-- Right means that atom does not derivable, right's set is counter-model
 satProve :: Z3 (Map String AST) -> Set Formula -> Formula -> IO (Either (Set Formula) (Set Formula))
 satProve sol additionalClauses atom = evalZ3 z3Script
   where
     z3Script = do
       vars <- sol
-      Foldable.foldr1 (>>) $ map (`createAssertion` vars) $ Set.toList additionalClauses
+
+      unless
+        (Set.null additionalClauses)
+        (Foldable.foldr1 (>>) $ map (`createAssertion` vars) $ Set.toList additionalClauses)
+        
       createAssertion (negation atom) vars
       
       (result, model) <- withModel $ \m -> Map.map Maybe.fromJust <$> mapM (evalBool m) vars

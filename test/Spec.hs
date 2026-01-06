@@ -1,2 +1,10 @@
+module Main where
+
+import Test.Hspec
+import qualified TestClausify
+import qualified TestSAT
+
 main :: IO ()
-main = putStrLn "Test suite not yet implemented"
+main = hspec $ do
+  TestClausify.test_clausify
+  TestSAT.test_sat

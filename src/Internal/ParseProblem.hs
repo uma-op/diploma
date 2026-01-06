@@ -1,4 +1,4 @@
-module ParseProblem where
+module Internal.ParseProblem where
 
 -------------------------------------------------------------------------
 -- types
