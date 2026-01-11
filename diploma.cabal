@@ -31,7 +31,6 @@ library
       Internal.FormulaRepr
       Internal.ParseProblem
       Prover
-      SAT
   other-modules:
       Paths_diploma
   autogen-modules:

@@ -14,7 +14,15 @@ data Formula = Implication [Formula]
              | Negation Formula
              | Variable String
              | Bottom
-             deriving (Show, Eq)
+             deriving (Eq)
+
+instance Show Formula where
+  show Bottom = "_|_"
+  show (Variable name) = name
+  show (Negation f) = "-" ++ show f
+  show (Disjunction ds) = "(" ++ List.intercalate " \\/ " (map show ds) ++ ")"
+  show (Conjunction cs) = "(" ++ List.intercalate " /\\ " (map show cs) ++ ")"
+  show (Implication is) = "(" ++ List.intercalate " -> " (map show is) ++ ")"
 
 instance Ord Formula where
   compare Bottom Bottom = EQ

@@ -13,10 +13,12 @@ import Data.Set (Set)
 formulaToForm :: Formula -> Form
 formulaToForm Bottom = FALSE
 formulaToForm (Variable v) = Atom v
+formulaToForm (Negation v) = formulaToForm v :=>: FALSE
 formulaToForm (Conjunction cs) = Foldable.foldr1 (:&:) (map formulaToForm cs)
 formulaToForm (Disjunction ds) = Foldable.foldr1 (:|:) (map formulaToForm ds)
 formulaToForm (Implication [x, y]) | x == y = TRUE
 formulaToForm (Implication is) = Foldable.foldr1 (:=>:) (map formulaToForm is)
+
 
 formToFormula :: Form -> Formula
 formToFormula FALSE = Bottom
