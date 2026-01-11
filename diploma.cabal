@@ -30,6 +30,7 @@ library
       Internal.Clausify
       Internal.FormulaRepr
       Internal.ParseProblem
+      Parser
       Prover
   other-modules:
       Paths_diploma
@@ -41,6 +42,7 @@ library
   build-depends:
       base >=4.7 && <5
     , containers
+    , parsec
     , z3
   default-language: Haskell2010
 
