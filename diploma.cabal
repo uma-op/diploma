@@ -67,7 +67,8 @@ test-suite diploma-test
   main-is: Spec.hs
   other-modules:
       TestClausify
-      TestSAT
+      TestParser
+      TestProver
       Paths_diploma
   autogen-modules:
       Paths_diploma

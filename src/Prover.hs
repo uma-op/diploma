@@ -2,7 +2,7 @@
 {-# LANGUAGE GADTs #-}
 {-# LANGUAGE StandaloneDeriving #-}
 
-module Prover(prove) where
+module Prover(prove, ProvingResult(..)) where
 
 import Debug.Trace
 
@@ -37,6 +37,7 @@ data ProvingResult where
   No :: (Set Formula) -> ProvingResult
 
 deriving instance Show ProvingResult
+deriving instance Eq ProvingResult
 
 prove :: Formula -> IO ProvingResult
 prove formula = trace ("prove: formula = [" ++ show formula ++ "]") $ intuitProve sol impls Set.empty atom
