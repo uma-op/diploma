@@ -7,16 +7,16 @@ import Control.Applicative (many, (<|>))
 import qualified Data.Foldable as Foldable
 import Formula (Formula (Bottom), variable, negation, conjunction, disjunction, implication)
 import Text.Parsec.Error (ParseError)
-import Text.Parsec (parse, eof, try)
+import Text.Parsec (parse, eof, try, many1)
 
 bot :: Parser Formula
 bot = do
-  spaceSurroundedSign "_|_"
+  void $ string "_|_"
   return Bottom
 
 var :: Parser Formula
 var = do
-  name <- many letter
+  name <- many1 letter
   return $ variable name
 
 spaceSurroundedSign :: String -> Parser ()
