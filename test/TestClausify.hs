@@ -1,19 +1,24 @@
 module TestClausify where
 
 import Test.Hspec
+import Debug.Trace
 
 import qualified Data.Set as Set
 import Data.Set (Set)
 import qualified Data.Foldable as Foldable
+import qualified Data.Either as Either
 
 import Formula
 import Clausify
+import Parser (parseFormula)
 
 
 formulae :: [Formula]
-formulae = [ implication (variable "a") (variable "b")
-           , implication (implication (variable "a") (variable "b")) (variable "c")
-           ]
+formulae = traceShowId $ Either.rights $
+           map parseFormula [ "a => b"
+                            , "(a => b) => c"
+                            , "a \\/ b => c /\\ d"
+                            ]
 
 clausified :: [(Set Formula, Set Formula, Formula)]
 clausified = [ (Set.empty, Set.singleton $ implication (implication (variable "a") (variable "b")) (variable "$"), variable "$")
@@ -21,11 +26,12 @@ clausified = [ (Set.empty, Set.singleton $ implication (implication (variable "a
                , Set.singleton $ implication (implication (variable "$p0") (variable "c")) (variable "$")
                , variable "$"
                )
+             , ( Set.fromList [ implication (variable "$p0") (disjunction (variable "a") (variable "b"))
+                              , implication (conjunction (variable "c") (variable "d")) (variable "$p1")]
+               , Set.singleton $ implication (implication (variable "$p0") (variable "$p1")) (variable "$")
+               , variable "$")
              ]
 
 test_clausify = describe "Clausify" $ do
-  test_clausifyIdempotence
-
-
-test_clausifyIdempotence = it "Clausify idempotence" $ do
-  Foldable.foldr1 (>>) $ zipWith shouldBe (map clausify formulae) clausified
+  it "simple" $ do
+    Foldable.foldr1 (>>) $ zipWith shouldBe (map clausify formulae) clausified

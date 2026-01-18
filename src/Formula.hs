@@ -22,7 +22,7 @@ instance Show Formula where
   show (Negation f) = "-" ++ show f
   show (Disjunction ds) = "(" ++ List.intercalate " \\/ " (map show ds) ++ ")"
   show (Conjunction cs) = "(" ++ List.intercalate " /\\ " (map show cs) ++ ")"
-  show (Implication is) = "(" ++ List.intercalate " -> " (map show is) ++ ")"
+  show (Implication is) = "(" ++ List.intercalate " => " (map show is) ++ ")"
 
 instance Ord Formula where
   compare Bottom Bottom = EQ
