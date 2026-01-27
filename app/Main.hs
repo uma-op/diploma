@@ -4,7 +4,7 @@ import Prover
 import Formula
 
 formula :: Formula
-formula = implication (variable "a") $ implication (variable "b") (variable "a")
+formula = implication (negation (variable "a")) $ implication (variable "a") (variable "b")
 
 main :: IO ()
 main = do

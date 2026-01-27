@@ -1,5 +1,7 @@
 module Clausify (clausify) where
 
+import Debug.Trace
+
 import Data.Set(Set)
 
 import qualified Data.Set as Set

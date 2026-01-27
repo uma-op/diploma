@@ -1,6 +1,8 @@
 module Internal.FormulaRepr where
 
-import Internal.ParseProblem(Form(..))
+import Debug.Trace
+
+import Internal.ParseProblem(Form(..), Name)
 import Formula (Formula(..), conjunction, implication, bottom, disjunction, variable)
 import Internal.Clausify (Clause, (:->)(..), ImplClause)
 import qualified Internal.Clausify as Clausify
@@ -23,6 +25,7 @@ formulaToForm (Implication is) = Foldable.foldr1 (:=>:) (map formulaToForm is)
 formToFormula :: Form -> Formula
 formToFormula FALSE = Bottom
 formToFormula TRUE = implication Bottom Bottom
+formToFormula (Atom "$false") = Bottom
 formToFormula (Atom v) = Variable v
 formToFormula (lhs :&: rhs) = conjunction (formToFormula lhs) (formToFormula rhs)
 formToFormula (lhs :|: rhs) = disjunction (formToFormula lhs) (formToFormula rhs)
@@ -32,15 +35,19 @@ formToFormula (lhs :<=>: rhs) = conjunction (implication lhsFormula rhsFormula) 
     lhsFormula = formToFormula lhs
     rhsFormula = formToFormula rhs
 
+nameToFormula :: Name -> Formula
+nameToFormula "$false" = bottom
+nameToFormula name = variable name
+
 flatClauseToFormula :: Clause -> Formula
-flatClauseToFormula ([] :-> ds) = Foldable.foldr1 disjunction (map variable ds)
+flatClauseToFormula ([] :-> ds) = Foldable.foldr1 disjunction (map nameToFormula ds)
 flatClauseToFormula (cs :-> ds) =
   implication
-    (Foldable.foldr1 conjunction (map variable cs))
-    (Foldable.foldr1 disjunction (map variable ds))
+    (Foldable.foldr1 conjunction (map nameToFormula cs))
+    (Foldable.foldr1 disjunction (map nameToFormula ds))
 
 implClauseToFormula :: ImplClause -> Formula
-implClauseToFormula ((a :-> b) :-> c) = implication (implication (variable a) (variable b)) (variable c)
+implClauseToFormula ((a :-> b) :-> c) = implication (implication (nameToFormula a) (nameToFormula b)) (nameToFormula c)
 
 clausify :: Formula -> (Set Formula, Set Formula)
 clausify formula =

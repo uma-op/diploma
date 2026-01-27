@@ -1,7 +1,6 @@
 module TestClausify where
 
 import Test.Hspec
-import Debug.Trace
 
 import qualified Data.Set as Set
 import Data.Set (Set)
@@ -14,7 +13,7 @@ import Parser (parseFormula)
 
 
 formulae :: [Formula]
-formulae = traceShowId $ Either.rights $
+formulae = Either.rights $
            map parseFormula [ "a => b"
                             , "(a => b) => c"
                             , "a \\/ b => c /\\ d"

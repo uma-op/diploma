@@ -1,4 +1,4 @@
-module Parser where
+module Parser(parseFormula, parseFormulaWithError) where
 
 import Text.Parsec.Char (string, letter, spaces)
 import Text.Parsec.String (Parser)
@@ -91,3 +91,10 @@ implications = do ds <- disjunctions
 
 parseFormula :: String -> Either ParseError Formula
 parseFormula = parse (implications <* eof) ""
+
+parseFormulaWithError :: String -> Formula
+parseFormulaWithError = handler . parseFormula
+  where
+    handler :: Either ParseError Formula -> Formula
+    handler (Left e) = error $ show e
+    handler (Right f) = f
