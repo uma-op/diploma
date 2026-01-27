@@ -20,8 +20,10 @@ test_satProveValid = Foldable.foldr1 (>>) (map test_satProveValidFormula validIn
     test_satProveValidFormula formula = it ("Proving " ++ show formula) $ do
       prove formula `shouldReturn` Yes Set.empty
 
-test_satProveInvalid = it "Proving a -> b" $ do
-  prove (implication (variable "a") (variable "b")) `shouldReturn` No Set.empty
+test_satProveInvalid = Foldable.foldr1 (>>) (map test_satProveInvalidFormula invalidIntuitionistic)
+  where
+    test_satProveInvalidFormula formula = it ("Invalidating " ++ show formula) $ do
+      prove formula `shouldReturn` No Set.empty
 
 validIntuitionistic :: [Formula]
 validIntuitionistic = map parseFormulaWithError
@@ -40,6 +42,7 @@ validIntuitionistic = map parseFormulaWithError
   , "(A => _|_) => -A"
   , "A /\\ -A => _|_"
   , "(A => B) => ((A => -B) => -A)"
+  , "((A \\/ B) => C) => ((A => C) \\/ (B => C))"  
   ]
   
 invalidIntuitionistic :: [Formula]
@@ -51,7 +54,6 @@ invalidIntuitionistic = map parseFormulaWithError
   , "-(A /\\ B) => (-A \\/ -B)"
   , "-(-A \\/ -B) => A /\\ B"
   , "(A => B) \\/ (B => A)"
-  , "((A \\/ B) => C) => ((A => C) \\/ (B => C))"
   , "(A => B) => (-A \\/ B)"
   , "-(A => B) => A"
   ]
