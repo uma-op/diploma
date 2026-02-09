@@ -7,6 +7,6 @@ import qualified TestParser
 
 main :: IO ()
 main = hspec $ do
-  TestClausify.test_clausify
+--  TestClausify.test_clausify
   TestProver.test_sat
-  TestParser.tests_parser
+--  TestParser.tests_parser

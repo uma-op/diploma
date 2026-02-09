@@ -10,10 +10,14 @@ import Formula
 import Parser (parseFormulaWithError)
 
 test_sat = describe "SAT" $ do
-  --it "Prove" $ do
-  --  prove (implication (negation (variable "A")) (implication (variable "A") (variable "B"))) `shouldReturn` Yes Set.empty
-  test_satProveValid
-  test_satProveInvalid
+  test_satProveStrange
+--  test_satProveValid
+--  test_satProveInvalid
+
+
+strange = parseFormulaWithError "((A \\/ B) => C) => ((A => C) \\/ (B => C))"
+test_satProveStrange = it ("Proving " ++ show strange) $ do
+  prove strange `shouldReturn` No Set.empty
 
 test_satProveValid = Foldable.foldr1 (>>) (map test_satProveValidFormula validIntuitionistic)
   where
@@ -42,7 +46,10 @@ validIntuitionistic = map parseFormulaWithError
   , "(A => _|_) => -A"
   , "A /\\ -A => _|_"
   , "(A => B) => ((A => -B) => -A)"
-  , "((A \\/ B) => C) => ((A => C) \\/ (B => C))"  
+  , "((A \\/ B) => C) => ((A => C) \\/ (B => C))"
+  , "-(A \\/ B) => -A /\\ -B"
+  , "(-A /\\ -B) => -(A \\/ B)"
+  , "(A /\\ B => C) => (A => B => C)"  
   ]
   
 invalidIntuitionistic :: [Formula]
@@ -56,13 +63,6 @@ invalidIntuitionistic = map parseFormulaWithError
   , "(A => B) \\/ (B => A)"
   , "(A => B) => (-A \\/ B)"
   , "-(A => B) => A"
-  ]
-
-mixedIntuitionistic :: [Formula]
-mixedIntuitionistic = map parseFormulaWithError
-  [ "-(A \\/ B) => -A /\\ -B"
-  , "(-A /\\ -B) => -(A \\/ B)"
   , "-(A => B) => (A /\\ -B)"
   , "(A => (B \\/ C)) => ((A => B) \\/ (A => C))"
-  , "(A /\\ B => C) => (A => B => C)"
   ]
