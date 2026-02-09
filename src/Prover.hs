@@ -27,9 +27,6 @@ import Z3.Monad
       Z3 )
 import Clausify (clausify)
 
-import Debug.Trace
-
-
 badImplicationClauseError :: a
 badImplicationClauseError = error "Bad implication clause"
 
@@ -74,10 +71,6 @@ prove formula = intuitProve impls Set.empty atom (SatContext sol clauses ()) <&>
           
 intuitProve :: Set Formula -> Set Formula -> Formula -> SatContext a -> IO (SatContext ProvingResult)
 intuitProve impls adds atom ctx =
-  --trace ( "\nintuitProve: [impls: "
-  --      ++ show impls
-  --      ++ "] [adds: " ++ show adds
-  --      ++ "] [atom: " ++ show atom ++ "]") $
   do
     newCtx <- satProve adds atom ctx
     case satStorage newCtx of
@@ -92,10 +85,6 @@ intuitProve impls adds atom ctx =
 -- otherwise returns Just of solver with new clause /\(A_1 \ {a}) -> c
 intuitCheck :: Set Formula -> Set Formula -> SatContext a -> IO (SatContext Bool)
 intuitCheck impls model ctx =
-  -- trace ( "\nintuitCheck: [impls: " ++ show impls
-  --       ++ "] [model: " ++ show model
-  --       ++ "]"
-  --       ) $
   intuitCheck' implsToTraverse ctx
   where
     implsFilter (Implication [Implication [a, b], c]) = not $ Foldable.any (`Set.member` model) [a, b, c]
@@ -110,9 +99,9 @@ intuitCheck impls model ctx =
         Yes formulae -> do
           let formulaeWithoutAtom = Set.delete a formulae
           if Set.null formulaeWithoutAtom
-            then return $ addClause c $ proved 
-            else return $ addClause (implication (Foldable.foldr1 conjunction formulaeWithoutAtom) c) $ proved
-        No model -> return $ proved
+            then return $ addClause c proved 
+            else return $ addClause (implication (Foldable.foldr1 conjunction formulaeWithoutAtom) c) proved
+        No model -> return proved
     cycle _ _ = badImplicationClauseError
 
     intuitCheck' :: Set Formula -> SatContext a -> IO (SatContext Bool)
@@ -129,7 +118,7 @@ newSolver :: Z3 ()
 newSolver = return ()
 
 addClause :: Show a => Formula -> SatContext a -> SatContext a
-addClause f ctx = -- trace ("addClause: [formula: " ++ show f ++ "] [ctx: " ++ show ctx ++ "]") $
+addClause f ctx =
   ctx { satBase = do vars <- satBase ctx
                      createAssertion f vars
                      return vars
@@ -138,16 +127,11 @@ addClause f ctx = -- trace ("addClause: [formula: " ++ show f ++ "] [ctx: " ++ s
 
 satProve :: Set Formula -> Formula -> SatContext a -> IO (SatContext ProvingResult)
 satProve additionalClauses atom ctx =
-  -- trace ( "\nsatProve: [additionalClauses: " ++ show additionalClauses
-  --       ++ "] [atom: " ++ show atom
-  --       ++ "]" ) $
   evalZ3 z3Script
   where
     z3Script = do
       vars <- satBase ctx
 
-      -- trace ("assertions: " ++ show (satAssertions ctx)) $ return ()
-      
       unless
         (Set.null additionalClauses)
         (Foldable.foldr1 (>>) $ map (`createAssertion` vars) $ Set.toList additionalClauses)
@@ -155,7 +139,6 @@ satProve additionalClauses atom ctx =
       createAssertion (negation atom) vars
       
       (result, model) <- withModel $ \m -> Map.map Maybe.fromJust <$> mapM (evalBool m) vars
-      -- trace ("satProve -> " ++ show result ++ " " ++ show model) $ return ()
       case result of
         Unsat -> return $ ctx { satStorage = Yes additionalClauses }
         Sat -> return $ ctx { satStorage = (No . Set.map variable . Map.keysSet . Map.filter id . Maybe.fromJust) model }

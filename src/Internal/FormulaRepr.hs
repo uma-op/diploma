@@ -1,7 +1,5 @@
 module Internal.FormulaRepr where
 
-import Debug.Trace
-
 import Internal.ParseProblem(Form(..), Name)
 import Formula (Formula(..), conjunction, implication, bottom, disjunction, variable)
 import Internal.Clausify (Clause, (:->)(..), ImplClause)

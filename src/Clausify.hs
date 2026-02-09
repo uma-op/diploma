@@ -1,7 +1,5 @@
 module Clausify (clausify) where
 
-import Debug.Trace
-
 import Data.Set(Set)
 
 import qualified Data.Set as Set
@@ -13,7 +11,7 @@ import qualified Internal.FormulaRepr as IFR
 import Formula (Formula, implication, variable)
 
 clausify :: Formula -> (Set Formula, Set Formula, Formula)
-clausify formula = -- traceWith (\a -> "\nClausified: " ++ show a)
+clausify formula =
   (flats, impls, q)
   where
     b = implication formula q
