@@ -13,7 +13,8 @@ import qualified Internal.FormulaRepr as IFR
 import Formula (Formula, implication, variable)
 
 clausify :: Formula -> (Set Formula, Set Formula, Formula)
-clausify formula = traceWith (\a -> "\nClausified: " ++ show a) (flats, impls, q)
+clausify formula = -- traceWith (\a -> "\nClausified: " ++ show a)
+  (flats, impls, q)
   where
     b = implication formula q
     q = variable "$"

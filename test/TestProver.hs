@@ -8,16 +8,17 @@ import qualified Data.Foldable as Foldable
 import Prover
 import Formula
 import Parser (parseFormulaWithError)
+import Formula (conjunction)
 
 test_sat = describe "SAT" $ do
-  test_satProveStrange
---  test_satProveValid
---  test_satProveInvalid
+  -- test_satProveStrange
+  test_satProveValid
+  test_satProveInvalid
 
 
-strange = parseFormulaWithError "((A \\/ B) => C) => ((A => C) \\/ (B => C))"
+strange = parseFormulaWithError "(A /\\ B) => A"
 test_satProveStrange = it ("Proving " ++ show strange) $ do
-  prove strange `shouldReturn` No Set.empty
+  prove strange `shouldReturn` Yes Set.empty
 
 test_satProveValid = Foldable.foldr1 (>>) (map test_satProveValidFormula validIntuitionistic)
   where
