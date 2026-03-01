@@ -9,15 +9,17 @@ import qualified Internal.Clausify as IC
 import qualified Internal.FormulaRepr as IFR
 
 import Formula (Formula, implication, variable)
+import Debug.Trace (traceShowId)
 
 clausify :: Formula -> (Set Formula, Set Formula, Formula)
-clausify formula =
+clausify formula = traceShowId
   (flats, impls, q)
   where
+    toClausify = traceShowId $ implication b q
     b = implication formula q
     q = variable "$"
 
     (flats, impls) = Bifunctor.bimap
                      (Set.fromList . map IFR.flatClauseToFormula)
                      (Set.fromList . map IFR.implClauseToFormula)
-                     (IC.clausify [IFR.formulaToForm b])
+                     (IC.clausify [IFR.formulaToForm toClausify])

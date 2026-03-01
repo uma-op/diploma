@@ -30,6 +30,7 @@ library
       Internal.Clausify
       Internal.FormulaRepr
       Internal.ParseProblem
+      KripkeModel
       Parser
       Prover
   other-modules:

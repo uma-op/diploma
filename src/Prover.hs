@@ -1,4 +1,3 @@
-{-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE GADTs #-}
 {-# LANGUAGE StandaloneDeriving #-}
 
@@ -27,6 +26,11 @@ import Z3.Monad
       Z3 )
 import Clausify (clausify)
 
+import KripkeModel (KripkeModel, World(..))
+import qualified KripkeModel
+import Debug.Trace (traceShowId, trace)
+import qualified Z3.Base as KripkeModel
+
 badImplicationClauseError :: a
 badImplicationClauseError = error "Bad implication clause"
 
@@ -40,14 +44,17 @@ deriving instance Eq ProvingResult
 data SatContext a where
   SatContext :: { satBase :: Z3 (Map String AST)
                 , satAssertions :: [Formula]
+                , satCounterModel :: KripkeModel
                 , satStorage :: a
                 } -> SatContext a
 
 instance Show a => Show (SatContext a) where
-  show ctx = "[assertions: " ++ show (satAssertions ctx) ++ "] [storage: " ++ show (satStorage ctx) ++ "]"
+  show ctx = "[assertions: " ++ show (satAssertions ctx)
+           ++ "] [storage: " ++ show (satStorage ctx)
+           ++ "] [counter model: " ++ show (satCounterModel ctx)
 
 prove :: Formula -> IO ProvingResult
-prove formula = intuitProve impls Set.empty atom (SatContext sol clauses ()) <&> satStorage
+prove formula = intuitProve impls Set.empty atom (SatContext sol clauses KripkeModel.empty ()) <&> (satStorage . traceShowId)
   where
     (flats, impls, atom) = clausify formula
     
@@ -81,10 +88,8 @@ intuitProve impls adds atom ctx =
                      else
                        intuitProve impls adds atom checkCtx
 
--- Returns Nothing if can't be proved for all impls
--- otherwise returns Just of solver with new clause /\(A_1 \ {a}) -> c
 intuitCheck :: Set Formula -> Set Formula -> SatContext a -> IO (SatContext Bool)
-intuitCheck impls model ctx =
+intuitCheck impls model ctx = trace (show model) $
   intuitCheck' implsToTraverse ctx
   where
     implsFilter (Implication [Implication [a, b], c]) = not $ Foldable.any (`Set.member` model) [a, b, c]
@@ -106,18 +111,25 @@ intuitCheck impls model ctx =
 
     intuitCheck' :: Set Formula -> SatContext a -> IO (SatContext Bool)
     intuitCheck' impls ctx = if Set.null impls
-                               then return $ ctx { satStorage = True }
+                               then return $ ctx { satStorage = True
+                                                 , satCounterModel = KripkeModel.setValuation
+                                                                       (satCounterModel ctx)
+                                                                       (map (\(Variable v) -> v) $ Set.toList model)
+                                                 }
                                else do let (himpls, timpls) = Set.deleteFindMin impls
                                        result <- cycle himpls ctx
                                        case satStorage result of
                                          Yes _ -> return $ result { satStorage = False }
-                                         No _ -> intuitCheck' timpls result
+                                         No _ -> intuitCheck' timpls $ result { satCounterModel = KripkeModel.addWorld
+                                                                                                    (satCounterModel ctx)
+                                                                                                    (satCounterModel result)
+                                                                              }
 
 
 newSolver :: Z3 ()
 newSolver = return ()
 
-addClause :: Show a => Formula -> SatContext a -> SatContext a
+addClause :: Formula -> SatContext a -> SatContext a
 addClause f ctx =
   ctx { satBase = do vars <- satBase ctx
                      createAssertion f vars
