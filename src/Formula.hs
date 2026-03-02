@@ -7,6 +7,9 @@ import Data.Map (Map, (!))
 import qualified Data.List as List
 
 import qualified Z3.Monad as Z3
+import Z3.Monad (AST)
+
+newtype Variables = Variables (Map String AST)
 
 data Formula = Implication [Formula]
              | Conjunction [Formula]
@@ -75,8 +78,8 @@ variable = Variable
 bottom :: Formula
 bottom = Bottom
 
-createAssertion :: (Z3.MonadZ3 z3) => Formula -> Map String Z3.AST -> z3 ()
-createAssertion f vs = Z3.assert =<< createZ3Formula f
+createAssertion :: (Z3.MonadZ3 z3) => Formula -> Variables -> z3 ()
+createAssertion f (Variables vs) = Z3.assert =<< createZ3Formula f
   where
     createZ3Formula :: (Z3.MonadZ3 z3) => Formula -> z3 Z3.AST 
     createZ3Formula (Implication fs) = List.foldr foldingFunction f' fs'

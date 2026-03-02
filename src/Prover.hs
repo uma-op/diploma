@@ -26,10 +26,8 @@ import Z3.Monad
       Z3 )
 import Clausify (clausify)
 
-import KripkeModel (KripkeModel, World(..))
 import qualified KripkeModel
 import Debug.Trace (traceShowId, trace)
-import qualified Z3.Base as KripkeModel
 
 badImplicationClauseError :: a
 badImplicationClauseError = error "Bad implication clause"

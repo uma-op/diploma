@@ -27,6 +27,7 @@ library
   exposed-modules:
       Clausify
       Formula
+      IncrementalSolver
       Internal.Clausify
       Internal.FormulaRepr
       Internal.ParseProblem

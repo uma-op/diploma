@@ -9,13 +9,12 @@ import qualified Internal.Clausify as IC
 import qualified Internal.FormulaRepr as IFR
 
 import Formula (Formula, implication, variable)
-import Debug.Trace (traceShowId)
 
 clausify :: Formula -> (Set Formula, Set Formula, Formula)
-clausify formula = traceShowId
+clausify formula =
   (flats, impls, q)
   where
-    toClausify = traceShowId $ implication b q
+    toClausify = implication b q
     b = implication formula q
     q = variable "$"
 
