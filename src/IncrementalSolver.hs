@@ -1,39 +1,46 @@
 {-# LANGUAGE GADTs #-}
 
-module IncrementalSolver ( IncrementalSolver
-                         , newSolver
-                         , addClause
-                         , ProvingResult(..)
-                         , satProve
-                         ) where
+module IncrementalSolver
+  ( IncrementalSolver,
+    newSolver,
+    addClause,
+    ProvingResult (..),
+    satProve,
+  )
+where
 
-import qualified Data.Map as Map
-import qualified Data.List as List
-import qualified Data.Foldable as Foldable
-import qualified Data.Maybe as Maybe
-
-import qualified Data.Traversable as Traversable
-
-import Z3.Monad (Z3, mkFreshBoolVar, evalZ3, withModel, evalBool, Result(..))
-import Formula (Formula, createAssertion, Variables(..), negation, variable)
 import Control.Monad (unless)
+import qualified Data.Foldable as Foldable
+import qualified Data.List as List
+import qualified Data.Map as Map
+import qualified Data.Maybe as Maybe
+import qualified Data.Traversable as Traversable
+import Formula (Formula, Variables (..), createAssertion, negation, variable)
+import Z3.Monad (Result (..), Z3, evalBool, evalZ3, mkFreshBoolVar, withModel)
 
-data IncrementalSolver = IncrementalSolver { solver :: Z3 Variables
-                                           , formulas :: [Formula] }
+data IncrementalSolver = IncrementalSolver
+  { solver :: Z3 Variables,
+    formulas :: [Formula]
+  }
 
 newSolver :: [String] -> IncrementalSolver
-newSolver names = IncrementalSolver { solver = Variables . Map.fromList . zip names <$>
-                                               Traversable.traverse mkFreshBoolVar names
-                                    , formulas = []
-                                    }
+newSolver names =
+  IncrementalSolver
+    { solver =
+        Variables . Map.fromList . zip names
+          <$> Traversable.traverse mkFreshBoolVar names,
+      formulas = []
+    }
 
-addClause :: Formula -> IncrementalSolver -> IncrementalSolver 
-addClause f s = IncrementalSolver {solver = do
-                                    vars <- solver s
-                                    createAssertion f vars
-                                    return vars
-                                  , formulas=f:formulas s}
-
+addClause :: Formula -> IncrementalSolver -> IncrementalSolver
+addClause f s =
+  IncrementalSolver
+    { solver = do
+        vars <- solver s
+        createAssertion f vars
+        return vars,
+      formulas = f : formulas s
+    }
 
 data ProvingResult where
   Yes :: [Formula] -> ProvingResult
@@ -42,8 +49,9 @@ data ProvingResult where
 satProve :: [Formula] -> Formula -> IncrementalSolver -> IO ProvingResult
 satProve adds atom s = evalZ3 $ do
   vars@(Variables varsData) <- solver s
-  unless (List.null adds)
-         (Foldable.foldr1 (>>) $ map (`createAssertion` vars) adds)
+  unless
+    (List.null adds)
+    (Foldable.foldr1 (>>) $ map (`createAssertion` vars) adds)
   createAssertion (negation atom) vars
   (result, model) <- withModel $ \m -> Map.map Maybe.fromJust <$> mapM (evalBool m) varsData
 

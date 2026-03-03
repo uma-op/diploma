@@ -34,6 +34,7 @@ library
       KripkeModel
       Parser
       Prover
+      ProverR
   other-modules:
       Paths_diploma
   autogen-modules:

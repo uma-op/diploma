@@ -10,7 +10,7 @@ import qualified Internal.FormulaRepr as IFR
 
 import Formula (Formula, implication, variable)
 
-clausify :: Formula -> (Set Formula, Set Formula, Formula)
+clausify :: Formula -> ([Formula], [Formula], Formula)
 clausify formula =
   (flats, impls, q)
   where
@@ -19,6 +19,6 @@ clausify formula =
     q = variable "$"
 
     (flats, impls) = Bifunctor.bimap
-                     (Set.fromList . map IFR.flatClauseToFormula)
-                     (Set.fromList . map IFR.implClauseToFormula)
+                     (map IFR.flatClauseToFormula)
+                     (map IFR.implClauseToFormula)
                      (IC.clausify [IFR.formulaToForm toClausify])
