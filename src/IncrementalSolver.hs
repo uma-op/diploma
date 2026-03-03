@@ -13,7 +13,6 @@ import qualified Data.Foldable as Foldable
 import qualified Data.Maybe as Maybe
 
 import qualified Data.Traversable as Traversable
-import Data.Functor ((<&>))
 
 import Z3.Monad (Z3, mkFreshBoolVar, evalZ3, withModel, evalBool, Result(..))
 import Formula (Formula, createAssertion, Variables(..), negation, variable)
@@ -23,8 +22,8 @@ data IncrementalSolver = IncrementalSolver { solver :: Z3 Variables
                                            , formulas :: [Formula] }
 
 newSolver :: [String] -> IncrementalSolver
-newSolver names = IncrementalSolver { solver = Traversable.sequence
-                                                (Map.fromList [(name, mkFreshBoolVar name) | name <- names]) <&> Variables
+newSolver names = IncrementalSolver { solver = Variables . Map.fromList . zip names <$>
+                                               Traversable.traverse mkFreshBoolVar names
                                     , formulas = []
                                     }
 
@@ -50,5 +49,5 @@ satProve adds atom s = evalZ3 $ do
 
   case result of
     Unsat -> return $ Yes adds
-    Sat -> return $ (No . map variable . Map.keys . Map.filter id . Maybe.fromJust) model
+    Sat -> return $ No $ [variable name | (name, value) <- (Map.toList . Maybe.fromJust) model, value]
     Undef -> undefined
