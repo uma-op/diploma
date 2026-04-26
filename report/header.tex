@@ -321,7 +321,8 @@
 \titleformat{name=\section,numberless}[block]{\normalfont\Large\centering}{}{0em}{#1}
 \titleformat{\section}[block]{\normalfont\Large\bfseries\raggedright}{}{0em}{\thesection\hspace{0.25em}#1}
 \titleformat{\subsection}[block]{\normalfont\Large\bfseries\raggedright}{}{0em}{\thesubsection\hspace{0.25em}#1}
-\titleformat{\subsubsection}[block]{\normalfont\large\bfseries\raggedright}{}{0em}{\thesubsubsection\hspace{0.25em}#1}
+% Заголовок без номера (иначе при secnumdepth < 3 в titlesec остаётся \thesubsubsection «…0»)
+\titleformat{\subsubsection}[block]{\normalfont\large\bfseries\raggedright}{}{0em}{#1}
 
 \let\Algorithm\algorithm
 \renewcommand\algorithm[1][]{\Algorithm[#1]\setstretch{1.5}}
@@ -467,3 +468,5 @@
 \vspace*{-16pt}
 \hspace{25pt}\rule{0.875\textwidth}{0.4pt}
 }
+
+\usepackage[dvipsnames]{xcolor}
