@@ -41,6 +41,7 @@ library:
     - z3
     - containers
     - parsec
+    - mtl
 
 executables:
   diploma-exe:

@@ -7,11 +7,9 @@ import qualified Data.Foldable as Foldable
 import qualified Data.Set as Set
 import Formula
 import IncrementalSolver
-import KripkeModel
 
 data ValidationResult where
   Valid :: ValidationResult
-  Invalid :: KripkeModel -> ValidationResult
 
 proveR :: Formula -> IO ValidationResult
 proveR f = undefined

@@ -8,6 +8,7 @@ import qualified Data.List as List
 
 import qualified Z3.Monad as Z3
 import Z3.Monad (AST)
+import Data.Function (on)
 
 newtype Variables = Variables (Map String AST)
 
@@ -16,11 +17,9 @@ data Formula = Implication [Formula]
              | Disjunction [Formula]
              | Negation Formula
              | Variable String
-             | Bottom
              deriving (Eq)
 
 instance Show Formula where
-  show Bottom = "_|_"
   show (Variable name) = name
   show (Negation f) = "-" ++ show f
   show (Disjunction ds) = "(" ++ List.intercalate " \\/ " (map show ds) ++ ")"
@@ -28,22 +27,7 @@ instance Show Formula where
   show (Implication is) = "(" ++ List.intercalate " => " (map show is) ++ ")"
 
 instance Ord Formula where
-  compare Bottom Bottom = EQ
-  compare Bottom _ = LT
-  compare _ Bottom = GT
-  compare (Variable x) (Variable y) = compare x y
-  compare (Variable _) _ = LT
-  compare _ (Variable _) = GT
-  compare (Negation x) (Negation y) = compare x y
-  compare (Negation _) _ = LT
-  compare _ (Negation _) = GT
-  compare (Conjunction xs) (Conjunction ys) = compare xs ys
-  compare (Conjunction _) _ = LT
-  compare _ (Conjunction _) = GT
-  compare (Disjunction xs) (Disjunction ys) = compare xs ys
-  compare (Disjunction _) _ = LT
-  compare _ (Disjunction _) = GT
-  compare (Implication xs) (Implication ys) = compare xs ys
+  compare = on compare show
 
 variables :: Formula -> Set String
 variables (Implication fs) = foldMap variables fs
@@ -51,10 +35,9 @@ variables (Conjunction fs) = foldMap variables fs
 variables (Disjunction fs) = foldMap variables fs
 variables (Negation fs) = variables fs
 variables (Variable vname) = Set.singleton vname
-variables Bottom = Set.singleton "_|_"
 
 implication :: Formula -> Formula -> Formula
-implication lhs rhs@(Implication impls) = Implication (lhs:impls)
+implication lhs rhs@(Implication ris) = Implication (lhs:ris)
 implication lhs rhs = Implication [lhs, rhs]
 
 conjunction :: Formula -> Formula -> Formula
@@ -76,7 +59,19 @@ variable :: String -> Formula
 variable = Variable
 
 bottom :: Formula
-bottom = Bottom
+bottom = variable "$BOT"
+
+top :: Formula
+top = variable "$TOP"
+
+asPair :: Formula -> (Formula, Formula)
+asPair (Implication [h1, h2]) = (h1, h2)
+asPair (Implication (h:t)) = (h, Implication t)
+asPair (Conjunction [h1, h2]) = (h1, h2)
+asPair (Conjunction (h:t)) = (h, Conjunction t)
+asPair (Disjunction [h1, h2]) = (h1, h2)
+asPair (Disjunction (h:t)) = (h, Disjunction t)
+asPair _ = undefined
 
 createAssertion :: (Z3.MonadZ3 z3) => Formula -> Variables -> z3 ()
 createAssertion f (Variables vs) = Z3.assert =<< createZ3Formula f
@@ -107,15 +102,23 @@ createAssertion f (Variables vs) = Z3.assert =<< createZ3Formula f
         foldingFunction c e = do { x <- c; y <- e; Z3.mkOr [x, y] }
 
     createZ3Formula (Negation f) = Z3.mkNot =<< createZ3Formula f
+    createZ3Formula (Variable "$BOT") = Z3.mkFalse
+    createZ3Formula (Variable "$TOP") = Z3.mkTrue
     createZ3Formula (Variable name) = return $ vs ! name
-    createZ3Formula Bottom = Z3.mkFalse
   
+isAtom :: Formula -> Bool
+isAtom (Variable _) = True
+isAtom _ = False
 
 isFlatClause :: Formula -> Bool
-isFlatClause (Implication [Conjunction _, Disjunction _]) = True
-isFlatClause _ = False
+isFlatClause (Implication [Conjunction cs, Disjunction ds]) = all isAtom (cs ++ ds)
+isFlatClause (Implication [Conjunction cs, g]) = all isAtom cs && isAtom g
+isFlatClause (Implication [f, Disjunction ds]) = isAtom f && all isAtom ds
+isFlatClause (Implication [f, g]) = isAtom f && isAtom g
+isFlatClause (Disjunction ds) = all isAtom ds
+isFlatClause f = isAtom f
 
 isImplClause :: Formula -> Bool
-isImplClause (Implication [Implication [Variable _, Variable _], Variable _]) = True
+isImplClause (Implication [Implication [x, y], z]) = isAtom x && isAtom y && isAtom z
 isImplClause _ = False
 
