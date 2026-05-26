@@ -1,61 +1,52 @@
-{-# LANGUAGE GADTs #-}
+module IncrementalSolver where
 
-module IncrementalSolver
-  ( IncrementalSolver,
-    newSolver,
-    addClause,
-    ProvingResult (..),
-    satProve,
-  )
-where
-
-import Control.Monad (unless)
-import qualified Data.Foldable as Foldable
+import qualified Control.Monad as Monad
 import qualified Data.List as List
-import qualified Data.Map as Map
-import qualified Data.Maybe as Maybe
-import qualified Data.Traversable as Traversable
-import Formula (Formula, Variables (..), createAssertion, negation, variable)
-import Z3.Monad (Result (..), Z3, evalBool, evalZ3, mkFreshBoolVar, withModel)
+import qualified Z3.Base as Z3
+
+import qualified Clause
+import qualified World
+import qualified Clausify
 
 data IncrementalSolver = IncrementalSolver
-  { solver :: Z3 Variables,
-    formulas :: [Formula]
+  { context :: Z3.Context,
+    solver :: Z3.Solver
   }
 
-newSolver :: [String] -> IncrementalSolver
-newSolver names =
-  IncrementalSolver
-    { solver =
-        Variables . Map.fromList . zip names
-          <$> Traversable.traverse mkFreshBoolVar names,
-      formulas = []
-    }
+newSolver :: IO IncrementalSolver
+newSolver = do
+  config <- Z3.mkConfig
+  Z3.setParamValue config "proof" "true"
 
-addClause :: Formula -> IncrementalSolver -> IncrementalSolver
-addClause f s =
-  IncrementalSolver
-    { solver = do
-        vars <- solver s
-        createAssertion f vars
-        return vars,
-      formulas = f : formulas s
-    }
+  context <- Z3.mkContext config
+  solver <- Z3.mkSolver context
 
-data ProvingResult where
-  Yes :: [Formula] -> ProvingResult
-  No :: [Formula] -> ProvingResult
+  return
+    IncrementalSolver
+      { context = context,
+        solver = solver
+      }
 
-satProve :: [Formula] -> Formula -> IncrementalSolver -> IO ProvingResult
-satProve adds atom s = evalZ3 $ do
-  vars@(Variables varsData) <- solver s
-  unless
-    (List.null adds)
-    (Foldable.foldr1 (>>) $ map (`createAssertion` vars) adds)
-  createAssertion (negation atom) vars
-  (result, model) <- withModel $ \m -> Map.map Maybe.fromJust <$> mapM (evalBool m) varsData
+initSolver :: Z3.Context -> Z3.Solver -> [Clausify.FlatClauseAST] -> IO ()
+initSolver context solver flats = Monad.unless (List.null flats) (List.foldl1 (>>) (map (Z3.solverAssertCnstr context solver . Clausify.flatClauseAST) flats))
 
-  case result of
-    Unsat -> return $ Yes adds
-    Sat -> return $ No $ [variable name | (name, value) <- (Map.toList . Maybe.fromJust) model, value]
-    Undef -> undefined
+addClause :: Z3.Context -> Z3.Solver -> Clausify.FlatClauseAST -> IO ()
+addClause context solver flat = do
+  Z3.solverAssertCnstr context solver (Clausify.flatClauseAST flat)
+
+data ProvingResult = Yes [Z3.AST] | No World.World
+
+satProve :: (Z3.FuncDecl -> Z3.AST) -> Z3.Context -> Z3.Solver -> [Z3.AST] -> Z3.AST -> IO ProvingResult
+satProve funcDeclToAST context solver adds goal = do
+  putStrLn "Sat prove solver:"
+  putStrLn . ("Constrs: " ++ ) =<< Z3.solverToString context solver 
+  putStrLn . ("Assumptions: " ++ ) . show =<< mapM (Z3.astToString context) adds
+  putStrLn . ("Goal: " ++ ) =<< Z3.astToString context goal
+
+  goalAST <- Z3.mkNot context goal
+  checkResult <- Z3.solverCheckAssumptions context solver (goalAST : adds)
+
+  case checkResult of
+    Z3.Sat -> No <$> (World.fromModel funcDeclToAST context =<< Z3.solverGetModel context solver)
+    Z3.Unsat -> Yes . List.delete goalAST <$> Z3.solverGetUnsatCore context solver
+    Z3.Undef -> undefined

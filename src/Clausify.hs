@@ -1,6 +1,6 @@
 {-# LANGUAGE GADTs #-}
 
-module Clausify (clausify) where
+module Clausify where
 
 import qualified Control.Monad as MD
 import qualified Control.Monad.State as ST
@@ -13,13 +13,15 @@ import Formula
     disjunction,
     implication,
     isAtom,
-    isFlatClause,
-    isImplClause,
     top,
     variable,
   )
 
-clausify :: Formula -> ([Formula], [Formula], Formula)
+import qualified Clause
+import qualified Z3.Base as Z3
+import qualified Data.List as List
+
+clausify :: Formula -> ([Clause.FlatClauseFormula], [Clause.ImplClauseFormula], Formula)
 clausify formula =
   (flats, impls, q)
   where
@@ -67,11 +69,81 @@ clausify formula =
     freshS :: ST.State Int Formula
     freshS = ST.state (\s -> (Variable $ show s, s + 1))
 
-    clausifyLoopS :: [Formula] -> [Formula] -> [Formula] -> ST.State Int ([Formula], [Formula])
-    clausifyLoopS f i (nph : npt)
-      | isFlatClause nph = clausifyLoopS (nph : f) i npt
-      | isImplClause nph = clausifyLoopS f (nph : i) npt
-      | otherwise = do
-          clausified <- clausifyS nph
-          clausifyLoopS f i (clausified ++ npt)
+    clausifyLoopS ::
+      [Clause.FlatClauseFormula] ->
+      [Clause.ImplClauseFormula] ->
+      [Formula] ->
+      ST.State Int ([Clause.FlatClauseFormula], [Clause.ImplClauseFormula])
+
+    clausifyLoopS f i (nph : npt) = do
+      case Clause.flatClauseFromFormula nph of
+        Just clause -> clausifyLoopS (clause:f) i npt
+        Nothing -> case Clause.implClauseFromFormula nph of
+                      Just clause -> clausifyLoopS f (clause:i) npt
+                      Nothing -> do
+                        clausified <- clausifyS nph
+                        clausifyLoopS f i (clausified ++ npt)
+
     clausifyLoopS f i [] = return (f, i)
+
+
+createAssertion :: (Formula -> Z3.AST) -> Z3.Context -> Formula -> IO Z3.AST
+createAssertion vs ctx = createZ3Formula
+  where
+    createZ3Formula :: Formula -> IO Z3.AST
+    createZ3Formula (Implication fs) = List.foldr1 foldingFunction z3Formulae
+      where
+        z3Formulae = map createZ3Formula fs
+
+        foldingFunction :: IO Z3.AST -> IO Z3.AST -> IO Z3.AST
+        foldingFunction lhs rhs = do x <- lhs; y <- rhs; Z3.mkImplies ctx x y
+    createZ3Formula (Conjunction fs) = sequence z3Formulae >>= Z3.mkAnd ctx
+      where
+        z3Formulae = map createZ3Formula fs
+    createZ3Formula (Disjunction fs) = sequence z3Formulae >>= Z3.mkOr ctx
+      where
+        z3Formulae = map createZ3Formula fs
+    createZ3Formula v@(Variable _) = return $ vs v
+
+newtype FlatClauseAST = FlatClauseAST {
+  flatClauseAST :: Z3.AST
+}
+
+data ImplClauseAST = ImplClauseAST {
+  implClauseAST :: Z3.AST,
+  aImpliesBAST :: Z3.AST,
+  aAST :: Z3.AST,
+  bAST :: Z3.AST,
+  cAST :: Z3.AST
+}
+
+flatToAST :: (Formula -> Z3.AST) -> Z3.Context -> Clause.FlatClauseFormula -> IO FlatClauseAST
+flatToAST varToAST context flat@(Clause.FlatClauseFormula cfs dfs) = do
+  let csAST = map varToAST cfs
+  let dsAST = map varToAST dfs
+
+  cAST <- Z3.mkAnd context csAST
+  dAST <- Z3.mkOr context dsAST
+
+  clauseAST <- Z3.mkImplies context cAST dAST
+  return FlatClauseAST {
+    flatClauseAST = clauseAST
+  }
+
+implToAST :: (Formula -> Z3.AST) -> Z3.Context -> Clause.ImplClauseFormula -> IO ImplClauseAST
+implToAST varToAST context impl@(Clause.ImplClauseFormula af bf cf) = do
+  let aAST = varToAST af 
+  let bAST = varToAST bf 
+  let cAST = varToAST cf 
+
+  lhsAST <- Z3.mkImplies context aAST bAST
+  clauseAST <- Z3.mkImplies context lhsAST cAST
+
+  return ImplClauseAST {
+    implClauseAST = clauseAST,
+    aImpliesBAST = lhsAST,
+    aAST = aAST,
+    bAST = bAST,
+    cAST = cAST
+  }
+
