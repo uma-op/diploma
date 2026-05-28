@@ -25,11 +25,14 @@ source-repository head
 
 library
   exposed-modules:
+      Clause
       Clausify
+      CounterModel
       Formula
       IncrementalSolver
       Parser
       ProverR
+      World
   other-modules:
       Paths_diploma
   autogen-modules:

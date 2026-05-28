@@ -1,31 +1,53 @@
 module Main(main) where
 
-import Clausify (clausify)
-import Formula (implication, disjunction, variable, negation, bottom)
-import Parser (parseFormula)
-import qualified Data.Either as Either
+import Data.Maybe
+import Data.Functor
+import Z3.Base
+
+import qualified ProverR
+import qualified Formula
+import qualified World
+
+import IncrementalSolver(IncrementalSolver(..))
+import qualified IncrementalSolver
+
+import qualified CounterModel
+import Parser (parseFormula, parseFormulaWithError)
 
 main :: IO ()
 main = do
-  -- ((a v (a -> b)) -> b) -> b
-  print $ clausify $ Either.fromRight undefined $ parseFormula "a \\/ -a"
-
-{-
   config <- mkConfig
   setParamValue config "proof" "true"
-
   context <- mkContext config
-  a <- mkFreshBoolVar context "a"
-  not_a <- mkNot context a
   solver <- mkSolver context
-  assertion <- mkAnd context [a, not_a]
-  solverAssertCnstr context solver assertion
 
+  a <- mkFreshBoolVar context "a"
+  b <- mkFreshBoolVar context "b"
+
+  lhs <- mkImplies context a b 
+  rhs <- mkImplies context b a
+  solverAssertCnstr context solver =<< mkImplies context lhs rhs
+  solverAssertCnstr context solver b
+  solverAssertCnstr context solver =<< mkNot context a
   result <- solverCheck context solver
-  putStrLn $ "Result: " ++ show result
+  print result
   proof <- solverGetProof context solver
-  proofString <- astToString context proof
-  putStrLn $ "Proof: " ++ proofString
+  putStrLn =<< astToString context proof
 
--}
-  return ()
+
+-- main :: IO ()
+-- main = do
+--   -- let formula = Formula.disjunction (Formula.variable "a") (Formula.negation $ Formula.variable "a")
+--   -- let formula = Formula.disjunction
+--   --                 (Formula.implication (Formula.variable "a") (Formula.variable "b"))
+--   --                 (Formula.implication (Formula.variable "b") (Formula.variable "a"))
+--   -- let formula = parseFormulaWithError "(((a \\/ (a => b))) => b) => b"
+--   let formula = parseFormulaWithError "b => (a => a)"
+--   -- let formula = parseFormulaWithError "((((a /\\ b) => c) => ((a => c) \\/ (b => c))) => c) => c"
+-- 
+--   IncrementalSolver context solver <- IncrementalSolver.newSolver
+--   result <- ProverR.proveR context solver formula
+--   case result of
+--     ProverR.Invalid counterModel -> putStrLn . ("Result model:\n" ++) =<< CounterModel.counterModelToString context counterModel
+--     ProverR.Valid -> putStrLn "Valid"
+

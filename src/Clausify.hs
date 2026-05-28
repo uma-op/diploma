@@ -17,18 +17,26 @@ import Formula
     variable,
   )
 
+import Debug.Trace
+
 import qualified Clause
 import qualified Z3.Base as Z3
 import qualified Data.List as List
 
 clausify :: Formula -> ([Clause.FlatClauseFormula], [Clause.ImplClauseFormula], Formula)
 clausify formula =
-  (flats, impls, q)
+  (flats ++ map Clause.implImpliesFlat impls, impls, q)
   where
-    b = implication formula q
+    (initial, toGoalify) = traceWith (("Goalified: " ++) . show) $
+      case formula of 
+        Implication impls -> (init impls, last impls)
+        _ -> ([], formula)
+
+
+    b = implication toGoalify q
     q = variable "$"
 
-    ((flats, impls), _) = ST.runState (clausifyLoopS [] [] [b]) 0
+    ((flats, impls), _) = ST.runState (clausifyLoopS [] [] (b:initial)) 0
 
     clausifyS :: Formula -> ST.State Int [Formula]
     clausifyS (Implication [Disjunction ds, v@(Variable _)]) = return $ map (`implication` v) ds
@@ -47,8 +55,8 @@ clausify formula =
       let (_, rhs1) = asPair i1
       let (_, rhs2) = asPair i2
       (aliasX, correspondanceX) <- aliasS False x
-      (aliasY, correspondanceY) <- aliasS True rhs1
-      (aliasZ, correspondanceZ) <- aliasS False rhs2
+      (aliasY, correspondanceY) <- aliasS True rhs2
+      (aliasZ, correspondanceZ) <- aliasS False rhs1
       return (implication (implication aliasX aliasY) aliasZ : MB.catMaybes [correspondanceX, correspondanceY, correspondanceZ])
     clausifyS x = return [implication top x]
 
@@ -75,7 +83,7 @@ clausify formula =
       [Formula] ->
       ST.State Int ([Clause.FlatClauseFormula], [Clause.ImplClauseFormula])
 
-    clausifyLoopS f i (nph : npt) = do
+    clausifyLoopS f i (nph : npt) = trace ("Flats: " ++ show f ++ " Impls: " ++ show i ++ " Rem: " ++ show (nph : npt)) $ do
       case Clause.flatClauseFromFormula nph of
         Just clause -> clausifyLoopS (clause:f) i npt
         Nothing -> case Clause.implClauseFromFormula nph of

@@ -33,9 +33,12 @@ proveR context solver f = do
   let (flats, impls, goal) = clausify f
 
   putStrLn "Clausified"
-  putStrLn ("R: " ++ show flats)
-  putStrLn ("X: " ++ show impls)
-  putStrLn ("g: " ++ show goal)
+  putStrLn "Flat clauses:"
+  putStrLn (unlines $ map show flats)
+  putStrLn "Impls clauses:"
+  putStrLn (unlines $ map show impls)
+  putStrLn "Goal:"
+  print goal
 
   let vars = Set.unions (Set.singleton goal : map Clause.variables flats ++ map Clause.variables impls)
 
