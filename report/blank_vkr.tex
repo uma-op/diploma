@@ -1527,6 +1527,70 @@ $R, A \setminus \{a\} \vdash_{\mathit{ipl}} a \rightarrow b$, и с учётом
 $R, (a \rightarrow b) \rightarrow c, A \setminus \{a\} \vdash_{\mathit{ipl}} c$,
 что даёт $R, (a \rightarrow b) \rightarrow c \vdash_{\mathit{ipl}} \varphi$.
 
+\subsubsection{Аннотирование правил}
+
+Как и для LJT, r-секвенции $R, X \Rightarrow g$ могут быть аннотированы
+$\lambda$-термами: каждой плоской клаузе из $R$ сопоставляется переменная,
+импликационной клаузе $(a \rightarrow b) \rightarrow c \in X$ --- переменная
+$h : (a \rightarrow b) \rightarrow c$, заключению --- терм $t : g$.
+
+\textbf{Правило $(cpl_0)$.} Если $R \vdash_{\mathit{cpl}} g$, терм $t : g$
+строится из переменных плоских клауз $R$; множество $X$ в аннотации не
+участвует:
+\begin{center}
+\AxiomC{$R \vdash_{\mathit{cpl}} g$}
+\RightLabel{\scriptsize$cpl_0$}
+\UnaryInfC{$R, X \vdash t : g$}
+\DisplayProof
+\end{center}
+
+\textbf{Сечение $(cut_{\mathit{ipl}})$.} Правило $(cpl_1)$ реализует сечение
+с синтезированным доказательством выученной клаузы. Общая схема:
+\begin{center}
+\AxiomC{$\Gamma \vdash s : \varphi$}
+\AxiomC{$\Delta,\, f : \varphi \vdash t : g$}
+\RightLabel{\scriptsize$cut_{\mathit{ipl}}$}
+\BinaryInfC{$\Gamma, \Delta \vdash t[f := s] : g$}
+\DisplayProof
+\end{center}
+
+\textbf{Правило $(cpl_1)$.} Пусть $\iota = (a \rightarrow b) \rightarrow c \in X$,
+$A \subseteq \mathcal{V}$ и $R, A \vdash_{\mathit{cpl}} b$. SAT-решатель
+возвращает минимальное подмножество $A' \subseteq A$, достаточное для вывода;
+по лемме о плоских клаузах существует терм $p : b$ в контексте $R$ и
+переменных $x_q : q$ для $q \in A'$. Выученная клауза
+$\varphi = \bigwedge(A \setminus \{a\}) \rightarrow c$ в каррированном виде
+имеет тип $u_1 \rightarrow (\ldots \rightarrow c)$ для атомов
+$u_i \in A \setminus \{a\}$. Терм для $\varphi$:
+\[
+s \;=\; \lambda \vec u.\; h(\lambda x^a.\, p'),
+\]
+где $\vec u$ --- последовательность абстракций по атомам из $A \setminus \{a\}$,
+а $p'$ --- терм $p$ с подстановкой соответствующих $\vec u$ вместо переменных
+из $A'$. Аннотированное правило:
+\begin{center}
+\AxiomC{$R, A \vdash_{\mathit{cpl}} b$}
+\AxiomC{$R,\, f : \varphi,\, X \vdash t : g$}
+\RightLabel{\scriptsize$cpl_1$}
+\BinaryInfC{$R,\, h : (a \rightarrow b) \rightarrow c,\, X \vdash t[f := s] : g$}
+\DisplayProof
+\end{center}
+
+\noindent
+Левая посылка не содержит $\lambda$-терма --- только классическое
+свидетельство $A'$. Терм $s$ синтезируется из переменной $h$ импликационной
+клаузы и существования $p : b$. Правило $(cpl_1)$ --- линейная замена связки
+$(ljt) + (cut_{\mathit{ipl}})$: вместо явного IPL-вывода $b$ слева
+используется классическая проверка, а подстановка $t[f := s]$ выполняет
+сечение с выученной клаузой $\varphi$.
+
+\medskip
+\noindent
+\textbf{Пример.} Пусть $A = \{a\}$, тогда $A \setminus \{a\} = \varnothing$ и
+$\varphi = c$. Если $R, \{a\} \vdash_{\mathit{cpl}} b$ и $p : b$ при $x : a$,
+то $s = h(\lambda x^a.\, p) : c$, и заключение имеет вид
+$t[f := h(\lambda x^a.\, p)] : g$.
+
 \subsubsection{Процедура поиска вывода}
 
 Процедура \texttt{proveR}$(R, X, g)$ реализует поиск вывода в $C^{\rightarrow}$
