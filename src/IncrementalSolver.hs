@@ -7,6 +7,7 @@ import qualified Z3.Base as Z3
 import qualified Clause
 import qualified World
 import qualified Clausify
+import Clause (FlatClauseFormula(..))
 
 data IncrementalSolver = IncrementalSolver
   { context :: Z3.Context,
@@ -27,12 +28,15 @@ newSolver = do
         solver = solver
       }
 
-initSolver :: Z3.Context -> Z3.Solver -> [Clausify.FlatClauseAST] -> IO ()
-initSolver context solver flats = Monad.unless (List.null flats) (List.foldl1 (>>) (map (Z3.solverAssertCnstr context solver . Clausify.flatClauseAST) flats))
+initSolver :: Z3.Context -> Z3.Solver -> [FlatClauseFormula Z3.AST] -> IO ()
+initSolver context solver = mapM_ (addClause context solver)
 
-addClause :: Z3.Context -> Z3.Solver -> Clausify.FlatClauseAST -> IO ()
-addClause context solver flat = do
-  Z3.solverAssertCnstr context solver (Clausify.flatClauseAST flat)
+addClause :: Z3.Context -> Z3.Solver -> FlatClauseFormula Z3.AST -> IO ()
+addClause context solver (FlatClauseFormula cs ds) = do
+  and <- Z3.mkAnd context cs
+  or <- Z3.mkOr context ds
+  implication <- Z3.mkImplies context and or
+  Z3.solverAssertCnstr context solver implication
 
 data ProvingResult = Yes [Z3.AST] | No World.World
 

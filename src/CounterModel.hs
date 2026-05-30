@@ -8,8 +8,9 @@ import qualified Data.List as List
 
 import World(World)
 import qualified World
-import qualified Clausify
 import qualified Z3.Base as Z3
+import Clause
+import Formula
 
 data CounterModel = CounterModel {
   reachableTo :: Map Int [Int],
@@ -36,7 +37,7 @@ addWorld counterModel worldId newWorld =
     newWorldId = Map.size $ worlds counterModel
     reachableToNewWorld = worldId : (reachableTo counterModel ! worldId)
 
-selectWorld :: CounterModel -> Clausify.ImplClauseAST -> Maybe (Int, World)
+selectWorld :: CounterModel -> ImplClauseFormula Z3.AST -> Maybe (Int, World)
 selectWorld counterModel impl = selectWorlds' [0..(Map.size (worlds counterModel) - 1)]
   where
     selectWorlds' [] = Nothing
@@ -44,13 +45,13 @@ selectWorld counterModel impl = selectWorlds' [0..(Map.size (worlds counterModel
       where
         world = worlds counterModel ! worldId
         reachableFromWorlds = map (worlds counterModel !) (reachableFrom counterModel ! worldId)
-        condition = Set.member (Clausify.aAST impl) (World.consts world) || 
-                    Set.member (Clausify.bAST impl) (World.consts world) || 
-                    Set.member (Clausify.cAST impl) (World.consts world) || 
+        condition = Set.member (a_ impl) (World.consts world) || 
+                    Set.member (b_ impl) (World.consts world) || 
+                    Set.member (c_ impl) (World.consts world) || 
                     any (reachableFromPred impl) reachableFromWorlds
 
-        reachableFromPred impl reachableWorld  = Set.member (Clausify.aAST impl) (World.consts reachableWorld) &&
-                                                not (Set.member (Clausify.bAST impl) (World.consts reachableWorld))
+        reachableFromPred impl reachableWorld  = Set.member (a_ impl) (World.consts reachableWorld) &&
+                                                not (Set.member (b_ impl) (World.consts reachableWorld))
 
 getRoot :: CounterModel -> (Int, World)
 getRoot counterModel = (0, worlds counterModel ! 0)

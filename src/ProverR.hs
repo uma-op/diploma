@@ -3,47 +3,45 @@
 
 module ProverR where
 
+import qualified Data.Tuple as Tuple
 import Clausify
 import qualified Data.Set as Set
 import Data.Map (Map, (!))
 import qualified Data.Map as Map
 import qualified Data.List as List
 import qualified Data.Maybe as Maybe
+import Proof
 
-import qualified Clause
+import Formula
+import Proof
+import Clause
 
-import Formula (Formula)
-import qualified Formula
 import World (World(..))
 import qualified World
 import CounterModel (CounterModel, newCounterModel)
 import qualified CounterModel
 
-import IncrementalSolver (IncrementalSolver (..))
 import qualified IncrementalSolver
 
 import qualified Z3.Base as Z3
 
 data ValidationResult where
-  Valid :: ValidationResult
+  Valid :: [(PlainSequent, PlainSequent)] -> ValidationResult
   Invalid :: CounterModel -> ValidationResult
 
-proveR :: Z3.Context -> Z3.Solver -> Formula -> IO ValidationResult
+proveR :: Z3.Context -> Z3.Solver -> PlainFormula -> IO ValidationResult
 proveR context solver f = do
-  let (flats, impls, goal) = clausify f
+  let (IntuitPlainSequent flats impls goal, history) = clausify f
 
-  putStrLn "Clausified"
-  putStrLn "Flat clauses:"
-  putStrLn (unlines $ map show flats)
-  putStrLn "Impls clauses:"
-  putStrLn (unlines $ map show impls)
-  putStrLn "Goal:"
-  print goal
+  putStrLn $ unlines $ map (\(seq, rule) -> plainSequentToString seq ++ " by " ++ show rule) history
 
-  let vars = Set.unions (Set.singleton goal : map Clause.variables flats ++ map Clause.variables impls)
+  let vars = Set.unions (Set.singleton goal : map atoms flats ++ map atoms impls)
 
   varToASTMap <- sequence $ Map.fromSet (Formula.atomToAST context) vars
   let varToAST = (!) varToASTMap
+
+  let astToVarMap = Map.fromList $ map Tuple.swap $ Map.toList varToASTMap
+  let astToVar = (!) astToVarMap
 
   funcDeclToASTMap <-
     Map.fromList <$>
@@ -52,53 +50,53 @@ proveR context solver f = do
 
   let funcDeclToAST = (!) funcDeclToASTMap
 
-  flatsAST <- mapM (Clausify.flatToAST varToAST context) flats
-  implsAST <- mapM (Clausify.implToAST varToAST context) impls
+  let flatsAST = map (fmap varToAST) flats
+  let implsAST = map (fmap varToAST) impls
   let goalAST = varToAST goal
 
   IncrementalSolver.initSolver context solver flatsAST
 
   let
-    proveR'' :: [Clausify.ImplClauseAST] -> CounterModel -> IO (Either ([Z3.AST], Clausify.ImplClauseAST) CounterModel)
+    proveR'' :: [ImplClauseFormula Z3.AST] -> CounterModel -> IO (Either ([Z3.AST], ImplClauseFormula Z3.AST) CounterModel)
     proveR'' impls counterModel = do
-      putStrLn . ("Selecting in counter model: " ++ ) =<< CounterModel.counterModelToString context counterModel
+      -- putStrLn . ("Selecting in counter model: " ++ ) =<< CounterModel.counterModelToString context counterModel
       let maybeWorldAndClause = Maybe.catMaybes [uncurry (,,impl) <$> CounterModel.selectWorld counterModel impl | impl <- impls]
       case maybeWorldAndClause of 
         ((worldId, world, c):_) -> do
-          putStrLn "proveR'':"
-          putStrLn . ("Returned world: " ++) =<< World.worldAsString context world
-          putStrLn . ("Found Clause: " ++) =<< Z3.astToString context (Clausify.implClauseAST c)
-          result <- IncrementalSolver.satProve funcDeclToAST context solver (Clausify.aAST c : Set.toList (consts world)) (Clausify.bAST c)
+          -- putStrLn "proveR'':"
+          -- putStrLn . ("Returned world: " ++) =<< World.worldAsString context world
+          -- putStrLn . ("Found Clause: " ++) =<< Z3.astToString context (implClauseAST c)
+          result <- IncrementalSolver.satProve funcDeclToAST context solver (a_ c : Set.toList (consts world)) (b_ c)
           case result of
             IncrementalSolver.Yes core -> do
-              putStrLn "S5 Core"
-              putStrLn . ("Core ASTs: " ++ ) . show =<< mapM (Z3.astToString context) core
+              -- putStrLn "S5 Core"
+              -- putStrLn . ("Core ASTs: " ++ ) . show =<< mapM (Z3.astToString context) core
               return $ Left (core, c)
             IncrementalSolver.No newWorld -> do
-              putStrLn "S5 Model"
-              putStrLn =<< World.worldAsString context newWorld
+              -- putStrLn "S5 Model"
+              -- putStrLn =<< World.worldAsString context newWorld
               proveR'' impls (CounterModel.addWorld counterModel worldId newWorld)
 
         [] -> return $ Right counterModel
 
-    proveR' :: IO ValidationResult
-    proveR' = do
+    proveR' :: PlainSequent -> [(PlainSequent, PlainSequent)] -> IO ValidationResult
+    proveR' rootSeq@(IntuitPlainSequent r x g) plainDt = do
       result <- IncrementalSolver.satProve funcDeclToAST context solver [] goalAST
       case result of
-        IncrementalSolver.Yes _ -> return Valid
+        IncrementalSolver.Yes a -> return $ Valid ((rootSeq, ClassicPlainSequent r (map astToVar a) g):plainDt)
         IncrementalSolver.No m -> do
-          putStrLn "S2 Model"
-          putStrLn =<< World.worldAsString context m
+          -- putStrLn "S2 Model"
+          -- putStrLn =<< World.worldAsString context m
 
           result <- proveR'' implsAST (CounterModel.newCounterModel m)
           case result of
             Left (assumptions, impl) -> do
-              newClauseAST <-
-                flip (Z3.mkImplies context) (cAST impl) =<<
-                Z3.mkAnd context (List.delete (aAST impl) assumptions)
-              let newClause = Clausify.FlatClauseAST { Clausify.flatClauseAST = newClauseAST }
+              let newClause = FlatClauseFormula (List.delete (a_ impl) assumptions) [c_ impl]
               IncrementalSolver.addClause context solver newClause
               proveR'
+                (IntuitPlainSequent ((astToVar <$> newClause):r) x g)
+                ((rootSeq, ClassicPlainSequent r (map astToVar assumptions) (astToVar $ b_ impl)):plainDt)
             Right counterModel -> return $ Invalid counterModel
-    in proveR'
+    proveR' _ _ = undefined
+    in proveR' (IntuitPlainSequent flats impls goal) []
 
