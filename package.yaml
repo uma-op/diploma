@@ -55,6 +55,7 @@ executables:
     - diploma
     - z3
     - containers
+    - mtl
 
 tests:
   diploma-test:

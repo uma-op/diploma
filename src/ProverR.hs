@@ -10,23 +10,23 @@ import Data.Map (Map, (!))
 import qualified Data.Map as Map
 import qualified Data.List as List
 import qualified Data.Maybe as Maybe
-import Proof
 
 import Formula
-import Proof
+import Sequent
 import Clause
 
 import World (World(..))
 import qualified World
 import CounterModel (CounterModel, newCounterModel)
 import qualified CounterModel
+import Proof
 
 import qualified IncrementalSolver
 
 import qualified Z3.Base as Z3
 
 data ValidationResult where
-  Valid :: [(PlainSequent, PlainSequent)] -> ValidationResult
+  Valid :: ([(PlainSequent, PlainSequent, CArrowRule)], [(PlainSequent, ClausificationRule)]) -> ValidationResult
   Invalid :: CounterModel -> ValidationResult
 
 proveR :: Z3.Context -> Z3.Solver -> PlainFormula -> IO ValidationResult
@@ -79,11 +79,11 @@ proveR context solver f = do
 
         [] -> return $ Right counterModel
 
-    proveR' :: PlainSequent -> [(PlainSequent, PlainSequent)] -> IO ValidationResult
+    proveR' :: PlainSequent -> [(PlainSequent, PlainSequent, CArrowRule)] -> IO ValidationResult
     proveR' rootSeq@(IntuitPlainSequent r x g) plainDt = do
       result <- IncrementalSolver.satProve funcDeclToAST context solver [] goalAST
       case result of
-        IncrementalSolver.Yes a -> return $ Valid ((rootSeq, ClassicPlainSequent r (map astToVar a) g):plainDt)
+        IncrementalSolver.Yes a -> return $ Valid ((rootSeq, ClassicPlainSequent r (map astToVar a) g, CPL0):plainDt, history)
         IncrementalSolver.No m -> do
           -- putStrLn "S2 Model"
           -- putStrLn =<< World.worldAsString context m
@@ -92,10 +92,12 @@ proveR context solver f = do
           case result of
             Left (assumptions, impl) -> do
               let newClause = FlatClauseFormula (List.delete (a_ impl) assumptions) [c_ impl]
+              let newClauseFormula = astToVar <$> newClause
+              let learnedClauseFormula = astToVar <$> impl
               IncrementalSolver.addClause context solver newClause
               proveR'
-                (IntuitPlainSequent ((astToVar <$> newClause):r) x g)
-                ((rootSeq, ClassicPlainSequent r (map astToVar assumptions) (astToVar $ b_ impl)):plainDt)
+                (IntuitPlainSequent (newClauseFormula:r) x g)
+                ((rootSeq, ClassicPlainSequent r (map astToVar assumptions) (astToVar $ b_ impl), CPL1 newClauseFormula learnedClauseFormula):plainDt)
             Right counterModel -> return $ Invalid counterModel
     proveR' _ _ = undefined
     in proveR' (IntuitPlainSequent flats impls goal) []

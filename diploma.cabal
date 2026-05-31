@@ -25,6 +25,7 @@ source-repository head
 
 library
   exposed-modules:
+      ClassicSeqProver
       Clause
       Clausify
       CounterModel
@@ -33,6 +34,8 @@ library
       Parser
       Proof
       ProverR
+      Sequent
+      Term
       World
   other-modules:
       Paths_diploma
@@ -62,6 +65,7 @@ executable diploma-exe
       base >=4.7 && <5
     , containers
     , diploma
+    , mtl
     , z3
   default-language: Haskell2010
 

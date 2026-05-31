@@ -6,30 +6,20 @@ import qualified Control.Monad as MD
 import qualified Control.Monad.State as ST
 import qualified Data.Bifunctor as BF
 import qualified Data.Maybe as MB
-import Formula
-  (
-    PlainFormula (..),
-    asPair,
-    conjunction,
-    disjunction,
-    implication,
-    isAtom,
-    top,
-    variable,
-    Atom, plain
-  )
-
-import Clause (FlatClauseFormula, ImplClauseFormula)
-import qualified Clause
 import qualified Z3.Base as Z3
 import qualified Data.List as List
+
 import Proof
+import Formula
+import Clause
+import Sequent
+
 
 type ClausificationState = (Int, [(PlainSequent, ClausificationRule)])
 
 clausify :: PlainFormula -> (PlainSequent, [(PlainSequent, ClausificationRule)])
 clausify formula =
-  (result, history)
+  (IntuitPlainSequent (fs ++ map implImpliesFlat is) is g, history)
   where
     (initial, toGoalify) = -- traceWith (("Goalified: " ++) . show) $
       case formula of 
@@ -40,29 +30,43 @@ clausify formula =
     b = implication toGoalify $ plain q
     q = atom $ variable "$"
 
-    (result, (_, history)) = ST.runState (clausifyLoopS (UnclausifiedSequent [] [] (b:initial) q)) (0, [])
+    (IntuitPlainSequent fs is g, (_, history)) = ST.runState (clausifyLoopS (UnclausifiedPlainSequent [] [] (b:initial) q)) (0, [])
 
     clausifyS :: PlainFormula -> ST.State ClausificationState ([PlainFormula], ClausificationRule)
-    clausifyS (Implication [Disjunction ds, v@(Atom _)]) = return (map (`implication` v) ds, LeftDs)
-    clausifyS (Implication [v@(Atom _), Conjunction cs]) = return (map (implication v) cs, RightCs)
-    clausifyS (Implication (x : y : z : is)) = return ([Implication (conjunction x y : z : is)], RightImpl)
-    clausifyS (Implication [x, Disjunction ds]) = do
+    clausifyS f@(Implication [Disjunction ds, v@(Atom _)]) = do
+      let newFormulas = map (`implication` v) ds
+      return (newFormulas, LeftDs f newFormulas)
+    clausifyS f@(Implication [v@(Atom _), Conjunction cs]) = do
+      let newFormulas = map (implication v) cs
+      return (newFormulas, RightCs f newFormulas)
+    clausifyS f@(Implication (x : y : z : is)) = do
+      let newFormula = Implication (conjunction x y : z : is)
+      return ([Implication (conjunction x y : z : is)], RightImpl f newFormula)
+    clausifyS f@(Implication [x, Disjunction ds]) = do
       aliases <- MD.mapM (aliasS False) ds
-      let (newDs, additional) = BF.second MB.catMaybes $ unzip aliases
-      return (implication x (foldr1 disjunction newDs) : additional, RightDs)
+      let (newDs, newAliases) = BF.second MB.catMaybes $ unzip aliases
+      let newFormula = implication x (foldr1 disjunction newDs)
+      return (newFormula : newAliases, Aliasing f newFormula newAliases)
     clausifyS i@(Implication (Conjunction cs : is)) = do
       let (_, rhs) = asPair i
       aliases <- MD.mapM (aliasS True) cs
-      let (newCs, additional) = BF.second MB.catMaybes $ unzip aliases
-      return (implication (foldr1 conjunction newCs) rhs : additional, LeftCs)
+      let (newCs, newAliases) = BF.second MB.catMaybes $ unzip aliases
+      let newFormula = implication (foldr1 conjunction newCs) rhs
+      return (newFormula : newAliases, Aliasing i newFormula newAliases)
     clausifyS i1@(Implication (i2@(Implication (x: is1)) : is2)) = do
       let (_, rhs1) = asPair i1
       let (_, rhs2) = asPair i2
       (aliasX, correspondanceX) <- aliasS False x
       (aliasY, correspondanceY) <- aliasS True rhs2
       (aliasZ, correspondanceZ) <- aliasS False rhs1
-      return (implication (implication aliasX aliasY) aliasZ : MB.catMaybes [correspondanceX, correspondanceY, correspondanceZ], LeftImpl)
-    clausifyS x = return ([implication top x], MakeImpl)
+
+      let newAliases = MB.catMaybes [correspondanceX, correspondanceY, correspondanceZ]
+      let newFormula = implication (implication aliasX aliasY) aliasZ 
+      return (newFormula : newAliases, Aliasing i1 newFormula newAliases)
+
+    clausifyS x = do
+      let newFormula = implication top x
+      return ([newFormula], MakeImpl x newFormula)
 
     aliasS :: Bool -> PlainFormula -> ST.State ClausificationState (PlainFormula, Maybe PlainFormula)
     aliasS isReversed f
@@ -81,27 +85,27 @@ clausify formula =
     freshS :: ST.State ClausificationState PlainFormula
     freshS = ST.state (\s -> (variable $ show $ fst s, BF.first (+ 1) s))
 
-    putSequent :: (PlainSequent, ClausificationRule) -> ST.State (Int, [(PlainSequent, ClausificationRule)]) ()
+    putSequent :: (PlainSequent, ClausificationRule) -> ST.State ClausificationState ()
     putSequent seq = ST.state (\st -> ((), BF.second (seq:) st))
 
     clausifyLoopS :: PlainSequent -> ST.State (Int, [(PlainSequent, ClausificationRule)]) PlainSequent
 
     -- trace ("Flats: " ++ show f ++ " Impls: " ++ show i ++ " Rem: " ++ show (nph : npt)) $ do
-    clausifyLoopS s@(UnclausifiedSequent f i (nph : npt) g) = do
+    clausifyLoopS s@(UnclausifiedPlainSequent f i (nph : npt) g) = do
       case Clause.flatClauseFromFormula nph of
         Just clause -> do
-          putSequent (s, AsFlat)
-          clausifyLoopS (UnclausifiedSequent (clause:f) i npt g)
+          putSequent (s, AsFlat clause)
+          clausifyLoopS (UnclausifiedPlainSequent (clause:f) i npt g)
         Nothing -> case Clause.implClauseFromFormula nph of
                       Just clause -> do
-                        putSequent (s, AsImpl)
-                        clausifyLoopS (UnclausifiedSequent f (clause:i) npt g)
+                        putSequent (s, AsImpl clause)
+                        clausifyLoopS (UnclausifiedPlainSequent f (clause:i) npt g)
                       Nothing -> do
                         (clausified, rule) <- clausifyS nph
                         putSequent (s, rule)
-                        clausifyLoopS (UnclausifiedSequent f i (clausified ++ npt) g)
+                        clausifyLoopS (UnclausifiedPlainSequent f i (clausified ++ npt) g)
 
-    clausifyLoopS s@(UnclausifiedSequent f i [] g) = do
+    clausifyLoopS s@(UnclausifiedPlainSequent f i [] g) = do
       putSequent (s, AsIntuit)
       return (IntuitPlainSequent f i g)
     clausifyLoopS _ = error ""
