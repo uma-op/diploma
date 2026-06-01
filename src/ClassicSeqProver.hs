@@ -98,17 +98,17 @@ annotateLJTNode node@(Axiom (ClassicPlainSequent r a g)) = do
     rootLJT = ClassicSequent {
       flats = Map.fromList (zip r rTerms),
       assumptions = Map.fromList (zip a aTerms),
-      goal = Map.singleton g gTerm
+      goal = singletonGoal g gTerm
     }
   }
 
 annotateLJTNode node@(Cs (ClassicPlainSequent r a g) dt ctx@(keyClause, newClause, a0)) = do
   annotated <- annotateLJTNode dt
   let (ClassicSequent r' a' g') = rootLJT annotated
+  let (goalFormula, _) = Map.findMin g'
   keyClauseTerm <- getTermFromEnvironment keyClause
   let newClauseTerm = r' ! newClause
   let a0Term = a' ! a0
-  let (goalFormula, goalTerm) = Map.findMin g'
   captureTerm <- getNewTermFromEnvironment
 
   let substitution = Abstraction [varName captureTerm] $ Application [keyClauseTerm, Application [
@@ -118,7 +118,7 @@ annotateLJTNode node@(Cs (ClassicPlainSequent r a g) dt ctx@(keyClause, newClaus
     rootLJT = ClassicSequent {
       flats = Map.insert keyClause keyClauseTerm $ if newClause `elem` r then r' else Map.delete newClause r',
       assumptions = a',
-      goal = Map.singleton goalFormula (substitute (varName newClauseTerm) substitution goalTerm)
+      goal = goalApplyLocalSubstitution goalFormula (varName newClauseTerm) substitution (goalTermOf g')
     },
     branchLJT = annotated,
     csRuleContext = ctx
@@ -136,8 +136,8 @@ annotateLJTNode node@(Ds (ClassicPlainSequent r a g) dts f@(FlatClauseFormula []
         if head ds `elem` a
           then assumptions (head annotatedRoots)
           else Map.delete (head ds) $ assumptions (head annotatedRoots),
-      goal = Map.singleton g $ Application [
-        Case [(aas ! d, head (Map.elems ag)) | (d, ClassicSequent _ aas ag) <- zip ds annotatedRoots],
+      goal = singletonGoal g $ Application [
+        Case [(aas ! d, goalTermOf ag) | (d, ClassicSequent _ aas ag) <- zip ds annotatedRoots],
         Application [fTerm, Id]]
     },
     branchesLJT = annotated,

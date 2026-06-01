@@ -76,7 +76,7 @@ counterModelToDot context counterModel = do
   return $
     unlines
       ( "digraph CounterModel {"
-      : "  rankdir=TB;"
+      : "  graph [rankdir=BT];"
       : "  node [shape=box];"
       : nodeLines
       ++ edgeLines

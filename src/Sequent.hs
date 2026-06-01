@@ -11,6 +11,66 @@ import Term
 
 type Annotated f = Map f Term
 
+data AnnotatedGoal = AnnotatedGoal {
+  goalTerm :: Term,
+  goalSubstitutions :: [(String, Term)]
+}
+
+type Goal = Map Atom AnnotatedGoal
+
+singletonGoal :: Atom -> Term -> Goal
+singletonGoal atom term = Map.singleton atom (AnnotatedGoal term [])
+
+goalApplyLocalSubstitution :: Atom -> String -> Term -> Term -> Goal
+goalApplyLocalSubstitution atom name arg term =
+  Map.singleton atom $ AnnotatedGoal (substitute name arg term) [(name, arg)]
+
+goalApplyLocalSubstitutions :: Atom -> [(String, Term)] -> Term -> Goal
+goalApplyLocalSubstitutions atom pairs term =
+  Map.singleton atom $ AnnotatedGoal (foldr (uncurry substitute) term pairs) pairs
+
+goalApplySubstitution :: String -> Term -> Goal -> Goal
+goalApplySubstitution name arg goal =
+  let (goalFormula, AnnotatedGoal term substitutions) = Map.findMin goal
+  in Map.singleton goalFormula $
+       AnnotatedGoal (substitute name arg term) (substitutions ++ [(name, arg)])
+
+goalApplySubstitutions :: [(String, Term)] -> Goal -> Goal
+goalApplySubstitutions pairs goal =
+  let (goalFormula, AnnotatedGoal term substitutions) = Map.findMin goal
+  in Map.singleton goalFormula $
+       AnnotatedGoal (foldr (uncurry substitute) term pairs) (substitutions ++ pairs)
+
+goalWithTerm :: Atom -> Term -> Goal -> Goal
+goalWithTerm atom term goal =
+  let substitutions = goalSubstitutions (snd (Map.findMin goal))
+  in Map.singleton atom (AnnotatedGoal term substitutions)
+
+goalTermOf :: Goal -> Term
+goalTermOf goal = goalTerm (snd (Map.findMin goal))
+
+goalPreserveTerm :: Goal -> Goal
+goalPreserveTerm goal =
+  let (atom, AnnotatedGoal term _) = Map.findMin goal
+  in singletonGoal atom term
+
+applyLocalGoalSubstitution :: String -> Term -> Goal -> Goal
+applyLocalGoalSubstitution name arg goal =
+  let (goalFormula, AnnotatedGoal term _) = Map.findMin goal
+  in goalApplyLocalSubstitution goalFormula name arg term
+
+applyLocalGoalSubstitutions :: [(String, Term)] -> Goal -> Goal
+applyLocalGoalSubstitutions pairs goal =
+  let (goalFormula, AnnotatedGoal term _) = Map.findMin goal
+  in goalApplyLocalSubstitutions goalFormula pairs term
+
+formatGoal :: Goal -> String
+formatGoal goal =
+  let (goalFormula, AnnotatedGoal term substitutions) = Map.findMin goal
+      substitutionLines = map (\(name, arg) -> name ++ " / " ++ show arg) substitutions
+  in formulaToString goalFormula ++ "\n" ++ show (reduce term)
+     ++ if null substitutionLines then "" else "\n" ++ unlines substitutionLines
+
 data Environment = Environment {
   cache :: Map PlainFormula Term,
   vcount :: Int
@@ -62,50 +122,44 @@ data Sequent =
   ClassicSequent {
     flats :: Annotated (FlatClauseFormula Atom),
     assumptions :: Annotated Atom,
-    goal :: Annotated Atom
+    goal :: Goal
   } |
   IntuitSequent {
     flats :: Annotated (FlatClauseFormula Atom),
     impls :: Annotated (ImplClauseFormula Atom),
-    goal :: Annotated Atom
+    goal :: Goal
   } |
   UnclausifiedSequent {
     flats :: Annotated (FlatClauseFormula Atom),
     impls :: Annotated (ImplClauseFormula Atom),
     unclausified :: Annotated PlainFormula,
-    goal :: Annotated Atom
+    goal :: Goal
   }
 
 sequentToString :: Sequent -> String
 sequentToString (ClassicSequent fs as g) =
-  "R:" ++ List.intercalate ", " flatStrings ++
-  " A:" ++ List.intercalate ", " assumptionStrings ++
-  " |- " ++ goalString
+  "R:\n" ++ unlines flatStrings ++
+  "A:\n" ++ unlines assumptionStrings ++
+  " |-\n" ++ formatGoal g
   where 
     flatStrings = map (\(c, t) -> formulaToString c ++ " ~ " ++ show t) $ Map.toList fs
     assumptionStrings = map (\(a, t) -> formulaToString a ++ " ~ " ++ show t) $ Map.toList as
-    (goalFormula, goalTerm) = Map.findMin g
-    goalString = formulaToString goalFormula ++ " ~ " ++ show goalTerm ++ " @ " ++ show (reduce goalTerm) 
 sequentToString (UnclausifiedSequent fs is ucs g) =
   "R:\n" ++ unlines flatStrings ++
   "X:\n" ++ unlines implStrings ++
   "U:\n" ++ unlines unclausifiedStrings ++
-  " |- " ++ goalString
+  " |-\n" ++ formatGoal g
   where
     flatStrings = map (\(c, t) -> formulaToString c ++ " ~ " ++ show t) $ Map.toList fs
     implStrings = map (\(c, t) -> formulaToString c ++ " ~ " ++ show t) $ Map.toList is
     unclausifiedStrings = map (\(c, t) -> formulaToString c ++ " ~ " ++ show t) $ Map.toList ucs
-    (goalFormula, goalTerm) = Map.findMin g
-    goalString = formulaToString goalFormula ++ " ~ " ++ show goalTerm ++ " @ " ++ show (reduce goalTerm)
 sequentToString (IntuitSequent fs is g) =
   "R:\n" ++ unlines flatStrings ++
   "X:\n" ++ unlines implStrings ++
-  " |- " ++ goalString
+  " |-\n" ++ formatGoal g
   where
     flatStrings = map (\(c, t) -> formulaToString c ++ " ~ " ++ show t) $ Map.toList fs
     implStrings = map (\(c, t) -> formulaToString c ++ " ~ " ++ show t) $ Map.toList is
-    (goalFormula, goalTerm) = Map.findMin g
-    goalString = formulaToString goalFormula ++ " ~ " ++ show goalTerm ++ " @ " ++ show (reduce goalTerm)
 
 -- sequentToString (ClassicSequent fs as g) =
 --   "R: " ++ List.intercalate ", " flatStrings ++
@@ -129,8 +183,8 @@ sequentToString (IntuitSequent fs is g) =
 
 plainSequentToString :: PlainSequent -> String
 plainSequentToString (ClassicPlainSequent fs as g) =
-  "R: " ++ List.intercalate ", " flatStrings ++
-  " A: " ++ List.intercalate ", " assumptionStrings ++
+  "R:\n" ++ unlines flatStrings ++
+  "A:\n" ++ unlines assumptionStrings ++
   " |- " ++ goalString
   where
     flatStrings = map (plainFormulaToString . plain) fs 
@@ -156,8 +210,8 @@ plainSequentToString (UnclausifiedPlainSequent fs is uc g) =
     goalString = (plainFormulaToString . plain) g
 
 reduceGoal :: Sequent -> Sequent
-reduceGoal seq = seq {
-    goal = Map.singleton goalFormula (reduce goalTerm)
+reduceGoal seq =
+  let (goalFormula, AnnotatedGoal term substitutions) = Map.findMin (goal seq)
+  in seq {
+    goal = Map.singleton goalFormula (AnnotatedGoal (reduce term) substitutions)
   }
-  where
-    (goalFormula, goalTerm) = Map.findMin $ goal seq

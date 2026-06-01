@@ -20,6 +20,7 @@ import IncrementalSolver(IncrementalSolver(..))
 import qualified IncrementalSolver
 
 import qualified CounterModel
+import qualified ProofDot
 import Parser (parseFormula, parseFormulaWithError)
 import Sequent
 import Clause
@@ -49,11 +50,14 @@ test2 = do
       putStrLn =<< CounterModel.counterModelToDot context counterModel
     ProverR.Valid (plaindt, clausificationHistory) -> do 
       putStrLn "Valid"
+      let carrowRules = map (\(_, _, rule) -> rule) plaindt
+      let clausificationRules = map snd clausificationHistory
       let carrowNodes = map (\(x, y, z) -> CArrowNode z y x) plaindt
       let (annotatedCArrowNodes, st) = runState (annotateCArrowNodes carrowNodes) newEnvironment
 
       putStrLn "CARROW:"
       putStrLn $ List.intercalate "\n-------\n" $ map (\(iseq, cseq) -> show cseq ++ "\n%\n" ++ sequentToString iseq) annotatedCArrowNodes
+      mapM_ (\(i, ljt) -> putStrLn $ ProofDot.ljtToDot i ljt) (zip [0 ..] (map snd annotatedCArrowNodes))
 
       let lastCArrowSeq = fst $ last annotatedCArrowNodes
 
@@ -62,12 +66,11 @@ test2 = do
 
       putStrLn "CLAUSIFICATION:"
       putStrLn $ List.intercalate "\n-------\n" $ map sequentToString annotatedClausificationNodes
+      putStrLn $ ProofDot.cArrowClausificationToDot carrowRules annotatedCArrowNodes clausificationRules annotatedClausificationNodes
 
       let lastSeq = last annotatedClausificationNodes
 
-      let (goalFormula, goalTerm) = Map.findMin (goal lastSeq)
-
-      putStrLn $ sequentToString lastSeq { goal = Map.singleton goalFormula (reduce goalTerm)} -- $ unlines (map (\(i,c) -> plainSequentToString i ++ " % " ++ show c) carrowNodes)
+      putStrLn $ sequentToString lastSeq
 
 -- test :: IO ()
 -- test = do

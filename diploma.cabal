@@ -33,6 +33,7 @@ library
       IncrementalSolver
       Parser
       Proof
+      ProofDot
       ProverR
       Sequent
       Term

@@ -63,10 +63,9 @@ annotateClausificationNodes seq (h:t) = do
       seq@(UnclausifiedSequent fs is ucs g)
       (ClausificationNode (MakeImpl x f) _) = do
       xTerm <- getTermFromEnvironment x
-      let (gFormula, gTerm) = Map.findMin g
       return seq {
         unclausified = Map.insert x xTerm $ Map.delete f ucs,
-        goal = Map.singleton gFormula $ substitute (varName (ucs ! f)) (Const xTerm) gTerm
+        goal = applyLocalGoalSubstitution (varName (ucs ! f)) (Const xTerm) g
       }
     annotate  
       seq@(UnclausifiedSequent fs is ucs g)
@@ -76,10 +75,9 @@ annotateClausificationNodes seq (h:t) = do
       varCaptureTerms <- zip [1..] <$> replicateM varsCount getNewTermFromEnvironment
       let varTerms = map (\(i, t) -> Abstraction [varName t] $ Application [fTerm, Application [Sum i, t]]) varCaptureTerms
       let substitution = zip (map (varName . (ucs !)) vars) varTerms
-      let (gFormula, gTerm) = Map.findMin g
       return seq {
         unclausified = Map.insert f fTerm (foldr Map.delete ucs vars),
-        goal = Map.singleton gFormula (foldr (uncurry substitute) gTerm substitution)
+        goal = applyLocalGoalSubstitutions substitution g
       }
     annotate
       seq@(UnclausifiedSequent fs is ucs g)
@@ -89,10 +87,9 @@ annotateClausificationNodes seq (h:t) = do
       projsCaptureTerms <- zip [1..] <$> replicateM projsCount getNewTermFromEnvironment
       let projTerms = map (\(i, t) -> Abstraction [varName t] $ Application [Proj i, Application [fTerm, t]]) projsCaptureTerms
       let substitution = zip (map (varName . (ucs !)) projs) projTerms
-      let (gFormula, gTerm) = Map.findMin g
       return seq {
         unclausified = Map.insert f fTerm (foldr Map.delete ucs projs),
-        goal = Map.singleton gFormula (foldr (uncurry substitute) gTerm substitution)
+        goal = applyLocalGoalSubstitutions substitution g
       }
     annotate
       seq@(UnclausifiedSequent fs is ucs g)
@@ -100,14 +97,13 @@ annotateClausificationNodes seq (h:t) = do
       captureTerm <- getNewTermFromEnvironment
       fFTerm <- getTermFromEnvironment fF
       let gFTerm = ucs ! gF
-      let (gFormula, gTerm) = Map.findMin g
 
       let substitution = Abstraction [varName captureTerm] $
             Application [fFTerm, Application [Proj 1, captureTerm], Application [Proj 2, captureTerm]]
 
       return seq {
         unclausified = Map.insert fF fFTerm $ Map.delete gF ucs,
-        goal = Map.singleton gFormula $ substitute (varName gFTerm) substitution gTerm
+        goal = applyLocalGoalSubstitution (varName gFTerm) substitution g
       }
     annotate
       seq@(UnclausifiedSequent fs is ucs g)
@@ -115,13 +111,11 @@ annotateClausificationNodes seq (h:t) = do
       fTerm <- getTermFromEnvironment f
       let f'Term = ucs ! f'
       let asTerms = map (ucs !) as
-      let (gFormula, gTerm) = Map.findMin g
-
       let substitutions = (varName f'Term, fTerm) : map ((, Id) . varName ) asTerms
 
       return seq {
         unclausified = Map.insert f fTerm (foldr Map.delete ucs (f':as)),
-        goal = Map.singleton gFormula (foldr (uncurry substitute) gTerm substitutions)
+        goal = applyLocalGoalSubstitutions substitutions g
       }
     annotate
       seq@(UnclausifiedSequent fs is ucs g)
@@ -153,13 +147,10 @@ annotateClausificationNodes seq (h:t) = do
                     return fTerm
                  _ -> error "Wrong impl clause shit"
 
-      let (gFormula, gTerm) = Map.findMin g
-
       return seq {
         flats = Map.delete c fs,
         unclausified = Map.insert f fTerm ucs,
-        goal = Map.singleton gFormula $ 
-          substitute (varName f'Term) substitution gTerm
+        goal = applyLocalGoalSubstitution (varName f'Term) substitution g
       }
     annotate
       seq@(UnclausifiedSequent fs is ucs g)
@@ -167,7 +158,8 @@ annotateClausificationNodes seq (h:t) = do
       let iTerm = is ! i
       return seq {
         impls = Map.delete i is,
-        unclausified = Map.insert (plain i) iTerm ucs
+        unclausified = Map.insert (plain i) iTerm ucs,
+        goal = goalPreserveTerm g
       }
     annotate 
       seq@(IntuitSequent fs is g)
@@ -176,7 +168,7 @@ annotateClausificationNodes seq (h:t) = do
         flats = fs,
         impls = is,
         unclausified = Map.empty,
-        goal = g
+        goal = goalPreserveTerm g
       }
     annotate 
       seq@(IntuitSequent fs is g)
@@ -184,7 +176,6 @@ annotateClausificationNodes seq (h:t) = do
       let flatTerm = fs ! flat
       let implTerm = is ! impl
 
-      let (gFormula, gTerm) = Map.findMin g
       captureTerm <- getNewTermFromEnvironment
 
       let substitution = Abstraction [varName captureTerm] $
@@ -195,8 +186,7 @@ annotateClausificationNodes seq (h:t) = do
       return IntuitSequent {
         flats = if flat `elem` pfs then fs else Map.delete flat fs,
         impls = is,
-        goal = Map.singleton gFormula $
-          substitute (varName flatTerm) substitution gTerm
+        goal = applyLocalGoalSubstitution (varName flatTerm) substitution g
       }
 
 data CArrowRule = CPL0 | CPL1 (FlatClauseFormula Atom) (ImplClauseFormula Atom) 
@@ -239,7 +229,7 @@ annotateCArrowNodes (cpl0@(CArrowNode CPL0 cseq iseq):cpl1s) = do
       let otherAssumptions = conjunctFormulas phi
       let otherAssumptionTerms = map (assumptions !) otherAssumptions
 
-      let bTerm = head $ Map.elems b
+      let bTerm = goalTermOf b
       let aTerm = assumptions ! a
 
       bCapture <- getNewTermFromEnvironment
@@ -266,11 +256,10 @@ annotateCArrowNodes (cpl0@(CArrowNode CPL0 cseq iseq):cpl1s) = do
                   Application [csTerm, Application[Insert 1, outerCapture, innerCapture]]]
             ]
   
-      let (goalFormula, goalTerm) = Map.findMin g
       let annotatedRoot = IntuitSequent {
             flats = flats,
             impls = impls,
-            goal = Map.singleton goalFormula $ substitute (varName $ flats' ! phi) phiSubstitution goalTerm
+            goal = applyLocalGoalSubstitution (varName $ flats' ! phi) phiSubstitution g
           }
   
       return (annotatedRoot, annotatedClassic)
