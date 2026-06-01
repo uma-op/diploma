@@ -32,7 +32,7 @@ initSolver :: Z3.Context -> Z3.Solver -> [FlatClauseFormula Z3.AST] -> IO ()
 initSolver context solver = mapM_ (addClause context solver)
 
 addClause :: Z3.Context -> Z3.Solver -> FlatClauseFormula Z3.AST -> IO ()
-addClause context solver (FlatClauseFormula cs ds) = do
+addClause context solver (FlatClauseFormula cs ds _) = do
   and <- Z3.mkAnd context cs
   or <- Z3.mkOr context ds
   implication <- Z3.mkImplies context and or

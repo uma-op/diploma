@@ -8,6 +8,7 @@ import Sequent
 import Clause
 import Formula
 import Term
+import Debug.Trace
 
 data LJTNode =
   Axiom PlainSequent |
@@ -19,6 +20,26 @@ instance Show LJTNode where
   show (Cs pseq dt _) = "Cs: [" ++ plainSequentToString pseq ++ "] {" ++ show dt ++ "}"
   show (Ds pseq dts _) = "Ds: [" ++ plainSequentToString pseq ++ "] {" ++ List.intercalate ", " (map show dts) ++ "}"
 
+data AnnotatedLJTNode =
+  AnnotatedAxiom {
+    rootLJT :: Sequent
+  } |
+  AnnotatedCs {
+    rootLJT :: Sequent,
+    branchLJT :: AnnotatedLJTNode,
+    csRuleContext :: (FlatClauseFormula Atom, FlatClauseFormula Atom, Atom)
+  } |
+  AnnotatedDs {
+    rootLJT :: Sequent,
+    branchesLJT :: [AnnotatedLJTNode],
+    dsRuleContext :: FlatClauseFormula Atom
+  }
+
+instance Show AnnotatedLJTNode where
+  show (AnnotatedAxiom root) = "Ax: [" ++ sequentToString root ++ "]"
+  show (AnnotatedCs root dt _) = "Cs: [" ++ sequentToString root ++ "] {" ++ show dt ++ "}"
+  show (AnnotatedDs root dts _) = "Ds: [" ++ sequentToString root ++ "] {" ++ List.intercalate ", " (map show dts) ++ "}"
+
 proveLJT :: PlainSequent -> LJTNode
 proveLJT pseq@ClassicPlainSequent{} =
   case applyAxiom pseq of
@@ -29,7 +50,7 @@ proveLJT pseq@ClassicPlainSequent{} =
         Nothing -> 
           case applyDs pseq of
             Just (newPseqs, keyF) -> Ds pseq (map proveLJT newPseqs) keyF
-            Nothing -> error "Wrong sequen"
+            Nothing -> error "Wrong sequent"
   where
     applyAxiom :: PlainSequent -> Maybe ()
     applyAxiom pseq@(ClassicPlainSequent r a g) =
@@ -40,8 +61,9 @@ proveLJT pseq@ClassicPlainSequent{} =
 
     applyCs :: PlainSequent -> Maybe (PlainSequent, FlatClauseFormula Atom, FlatClauseFormula Atom, Atom)
     applyCs pseq@(ClassicPlainSequent r a g) = do
-      (atom, flat@(FlatClauseFormula cs ds)) <- maybeFoundCs
+      (atom, flat@(FlatClauseFormula cs ds _)) <- maybeFoundCs
       let newClause = FlatClauseFormula (List.delete atom cs) ds
+            (Implication [Conjunction (Atom <$> List.delete atom cs), Disjunction $ Atom <$> ds])
       return
         (ClassicPlainSequent
           (newClause : List.delete flat r) a g,
@@ -50,56 +72,76 @@ proveLJT pseq@ClassicPlainSequent{} =
           atom)
       where
         maybeFoundCs = List.find (uncurry csPred) [(a', r') | a' <- a, r' <- r]
-        csPred atom (FlatClauseFormula cs _) = atom `elem` cs
+        csPred atom (FlatClauseFormula cs _ _) = atom `elem` cs
     applyCs _ = undefined
 
     applyDs :: PlainSequent -> Maybe ([PlainSequent], FlatClauseFormula Atom)
     applyDs pseq@(ClassicPlainSequent r a g) = do
-      found@(FlatClauseFormula _ ds) <- maybeFoundDs
+      found@(FlatClauseFormula _ ds _) <- maybeFoundDs
       let newSeqBase = ClassicPlainSequent (List.delete found r) a g
       return ([newSeqBase { plainAssumptions = d : a } | d <- ds], found)
       where
         maybeFoundDs = List.find dsPred r
-        dsPred (FlatClauseFormula [] _) = True
+        dsPred (FlatClauseFormula [] _ _) = True
         dsPred _ = False
     applyDs _ = undefined
 
 proveLJT _ = error "RSeq should be classic form"
 
-annotateLJTNode :: LJTNode -> State Environment Sequent 
+annotateLJTNode :: LJTNode -> State Environment AnnotatedLJTNode 
 annotateLJTNode node@(Axiom (ClassicPlainSequent r a g)) = do
   rTerms <- mapM getTermFromEnvironment r
   aTerms <- mapM getTermFromEnvironment a
   gTerm <- getTermFromEnvironment g
-  return ClassicSequent {
-    flats = Map.fromList (zip r rTerms),
-    assumptions = Map.fromList (zip a aTerms),
-    goal = Map.singleton g gTerm
+
+  return AnnotatedAxiom {
+    rootLJT = ClassicSequent {
+      flats = Map.fromList (zip r rTerms),
+      assumptions = Map.fromList (zip a aTerms),
+      goal = Map.singleton g gTerm
+    }
   }
-annotateLJTNode node@(Cs (ClassicPlainSequent r a g) dt (keyClause, newClause, a0)) = do
+
+annotateLJTNode node@(Cs (ClassicPlainSequent r a g) dt ctx@(keyClause, newClause, a0)) = do
   annotated <- annotateLJTNode dt
-  let (ClassicSequent r' a' g') = annotated
-  keyClauseTerm <- getNewTermFromEnvironment
+  let (ClassicSequent r' a' g') = rootLJT annotated
+  keyClauseTerm <- getTermFromEnvironment keyClause
   let newClauseTerm = r' ! newClause
   let a0Term = a' ! a0
   let (goalFormula, goalTerm) = Map.findMin g'
   captureTerm <- getNewTermFromEnvironment
 
   let substitution = Abstraction [varName captureTerm] $ Application [keyClauseTerm, Application [
-        Insert (length $ conjunctFormulas newClause) 1, captureTerm, a0Term]]
-  return ClassicSequent {
-    flats = Map.insert keyClause keyClauseTerm $ Map.delete newClause r',
-    assumptions = a',
-    goal = Map.singleton goalFormula (substitute (varName newClauseTerm) substitution goalTerm)
-  }
-annotateLJTNode node@(Ds (ClassicPlainSequent r a g) dts f@(FlatClauseFormula [] ds)) = do
-  annotated <- mapM annotateLJTNode dts
-  fTerm <- getNewTermFromEnvironment
+        Insert 1, captureTerm, a0Term]]
 
-  return ClassicSequent {
-    flats = Map.insert f fTerm $ flats (head annotated),  -- get first sequent flats then add new disjunction
-    assumptions = Map.delete (head ds) $ assumptions (head annotated), -- get first sequent assumptions then remove first of ds
-    goal = Map.singleton g $ Case fTerm [(aas ! d, head (Map.elems ag)) | (d, ClassicSequent _ aas ag) <- zip ds annotated]   -- case f [ds[0] ag0, ..., case ds[n] agn]
+  return AnnotatedCs {
+    rootLJT = ClassicSequent {
+      flats = Map.insert keyClause keyClauseTerm $ if newClause `elem` r then r' else Map.delete newClause r',
+      assumptions = a',
+      goal = Map.singleton goalFormula (substitute (varName newClauseTerm) substitution goalTerm)
+    },
+    branchLJT = annotated,
+    csRuleContext = ctx
+  }
+
+annotateLJTNode node@(Ds (ClassicPlainSequent r a g) dts f@(FlatClauseFormula [] ds _)) = do
+  annotated <- mapM annotateLJTNode dts
+  let annotatedRoots = map rootLJT annotated 
+  fTerm <- getTermFromEnvironment f
+
+  return AnnotatedDs {
+    rootLJT = ClassicSequent {
+      flats = Map.insert f fTerm $ flats (head annotatedRoots),  -- get first sequent flats then add new disjunction
+      assumptions =
+        if head ds `elem` a
+          then assumptions (head annotatedRoots)
+          else Map.delete (head ds) $ assumptions (head annotatedRoots),
+      goal = Map.singleton g $ Application [
+        Case [(aas ! d, head (Map.elems ag)) | (d, ClassicSequent _ aas ag) <- zip ds annotatedRoots],
+        Application [fTerm, Id]]
+    },
+    branchesLJT = annotated,
+    dsRuleContext = f
   }
 
 annotateLJTNode _ = error "Wrong"

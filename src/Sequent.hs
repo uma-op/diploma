@@ -78,15 +78,35 @@ data Sequent =
 
 sequentToString :: Sequent -> String
 sequentToString (ClassicSequent fs as g) =
-  "R: " ++ List.intercalate ", " flatStrings ++
-  " A: " ++ List.intercalate ", " assumptionStrings ++
+  "R:" ++ List.intercalate ", " flatStrings ++
+  " A:" ++ List.intercalate ", " assumptionStrings ++
   " |- " ++ goalString
   where 
     flatStrings = map (\(c, t) -> formulaToString c ++ " ~ " ++ show t) $ Map.toList fs
     assumptionStrings = map (\(a, t) -> formulaToString a ++ " ~ " ++ show t) $ Map.toList as
     (goalFormula, goalTerm) = Map.findMin g
-    goalString = formulaToString goalFormula ++ " ~ " ++ show goalTerm 
-sequentToString _ = error "Not implemented"
+    goalString = formulaToString goalFormula ++ " ~ " ++ show goalTerm ++ " @ " ++ show (reduce goalTerm) 
+sequentToString (UnclausifiedSequent fs is ucs g) =
+  "R:\n" ++ unlines flatStrings ++
+  "X:\n" ++ unlines implStrings ++
+  "U:\n" ++ unlines unclausifiedStrings ++
+  " |- " ++ goalString
+  where
+    flatStrings = map (\(c, t) -> formulaToString c ++ " ~ " ++ show t) $ Map.toList fs
+    implStrings = map (\(c, t) -> formulaToString c ++ " ~ " ++ show t) $ Map.toList is
+    unclausifiedStrings = map (\(c, t) -> formulaToString c ++ " ~ " ++ show t) $ Map.toList ucs
+    (goalFormula, goalTerm) = Map.findMin g
+    goalString = formulaToString goalFormula ++ " ~ " ++ show goalTerm ++ " @ " ++ show (reduce goalTerm)
+sequentToString (IntuitSequent fs is g) =
+  "R:\n" ++ unlines flatStrings ++
+  "X:\n" ++ unlines implStrings ++
+  " |- " ++ goalString
+  where
+    flatStrings = map (\(c, t) -> formulaToString c ++ " ~ " ++ show t) $ Map.toList fs
+    implStrings = map (\(c, t) -> formulaToString c ++ " ~ " ++ show t) $ Map.toList is
+    (goalFormula, goalTerm) = Map.findMin g
+    goalString = formulaToString goalFormula ++ " ~ " ++ show goalTerm ++ " @ " ++ show (reduce goalTerm)
+
 -- sequentToString (ClassicSequent fs as g) =
 --   "R: " ++ List.intercalate ", " flatStrings ++
 --   " A: " ++ List.intercalate ", " assumptionStrings ++
@@ -135,3 +155,9 @@ plainSequentToString (UnclausifiedPlainSequent fs is uc g) =
     unclausifiedStrings = map plainFormulaToString uc
     goalString = (plainFormulaToString . plain) g
 
+reduceGoal :: Sequent -> Sequent
+reduceGoal seq = seq {
+    goal = Map.singleton goalFormula (reduce goalTerm)
+  }
+  where
+    (goalFormula, goalTerm) = Map.findMin $ goal seq

@@ -8,13 +8,15 @@ import qualified Z3.Base as Z3
 
 data FlatClauseFormula a = FlatClauseFormula {
   conjunctFormulas :: [a],
-  disjunctFromulas :: [a]
+  disjunctFromulas :: [a],
+  plainFlatClauseFormula :: PlainFormula
 } deriving (Eq, Ord)
 
 instance Functor FlatClauseFormula where
-  fmap func (FlatClauseFormula cs ds) = FlatClauseFormula {
+  fmap func (FlatClauseFormula cs ds p) = FlatClauseFormula {
     conjunctFormulas = map func cs,
-    disjunctFromulas = map func ds
+    disjunctFromulas = map func ds,
+    plainFlatClauseFormula = p
   }
 
 -- declareFlat :: (Atom -> Z3.AST) -> Z3.Context -> FlatClauseFormula Atom -> IO (FlatClauseFormula Z3.AST)
@@ -57,7 +59,8 @@ flatClauseFromFormula f@(Implication [Conjunction cs, Disjunction ds]) =
     then
       Just FlatClauseFormula {
         conjunctFormulas = map atom cs,
-        disjunctFromulas = map atom ds
+        disjunctFromulas = map atom ds,
+        plainFlatClauseFormula = f
       }
     else Nothing
 
@@ -66,7 +69,8 @@ flatClauseFromFormula f@(Implication [Conjunction cs, Atom a]) =
     then
       Just FlatClauseFormula {
         conjunctFormulas = map atom cs,
-        disjunctFromulas = [a]
+        disjunctFromulas = [a],
+        plainFlatClauseFormula = f
       }
     else Nothing
 
@@ -75,14 +79,16 @@ flatClauseFromFormula f@(Implication [Atom a, Disjunction ds]) =
     then
       Just FlatClauseFormula {
         conjunctFormulas = [a],
-        disjunctFromulas = map atom ds
+        disjunctFromulas = map atom ds,
+        plainFlatClauseFormula = f
       }
     else Nothing
 
 flatClauseFromFormula f@(Implication [Atom a, Atom b]) = 
   Just FlatClauseFormula {
     conjunctFormulas = [a],
-    disjunctFromulas = [b]
+    disjunctFromulas = [b],
+    plainFlatClauseFormula = f
   }
 
 flatClauseFromFormula f@(Disjunction ds) =
@@ -90,11 +96,12 @@ flatClauseFromFormula f@(Disjunction ds) =
     then
       Just FlatClauseFormula {
         conjunctFormulas = [],
-        disjunctFromulas = map atom ds
+        disjunctFromulas = map atom ds,
+        plainFlatClauseFormula = f
       }
     else Nothing
 
-flatClauseFromFormula (Atom a) = Just FlatClauseFormula { conjunctFormulas = [], disjunctFromulas = [a] }
+flatClauseFromFormula f@(Atom a) = Just $ FlatClauseFormula [] [a] f
 
 flatClauseFromFormula _ = Nothing
 
@@ -104,12 +111,13 @@ implClauseFromFormula _ = Nothing
 
 implImpliesFlat :: ImplClauseFormula Atom -> FlatClauseFormula Atom
 implImpliesFlat impl = FlatClauseFormula {
-  conjunctFormulas = [b_ impl], disjunctFromulas = [c_ impl]
+  conjunctFormulas = [b_ impl], disjunctFromulas = [c_ impl],
+  plainFlatClauseFormula = Implication [Atom $ b_ impl, Atom $ c_ impl]
 }
 
 instance Formula a => Formula (FlatClauseFormula a) where
-  plain (FlatClauseFormula cs ds) = Implication [Conjunction $ map plain cs, Disjunction $ map plain ds]
-  atoms (FlatClauseFormula cs ds) = Set.unions $ map atoms (cs ++ ds)
+  plain = plainFlatClauseFormula
+  atoms (FlatClauseFormula cs ds _) = Set.unions $ map atoms (cs ++ ds)
 
 instance Formula a => Formula (ImplClauseFormula a) where
   plain (ImplClauseFormula a b c) = Implication [Implication [plain a, plain b], plain c]

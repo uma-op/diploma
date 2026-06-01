@@ -19,18 +19,34 @@ type ClausificationState = (Int, [(PlainSequent, ClausificationRule)])
 
 clausify :: PlainFormula -> (PlainSequent, [(PlainSequent, ClausificationRule)])
 clausify formula =
-  (IntuitPlainSequent (fs ++ map implImpliesFlat is) is g, history)
+  (ext, history)
   where
-    (initial, toGoalify) = -- traceWith (("Goalified: " ++) . show) $
-      case formula of 
-        Implication impls -> (init impls, last impls)
-        _ -> ([], formula)
+    (initial, toGoalify) = ([], formula)
 
 
     b = implication toGoalify $ plain q
     q = atom $ variable "$"
 
-    (IntuitPlainSequent fs is g, (_, history)) = ST.runState (clausifyLoopS (UnclausifiedPlainSequent [] [] (b:initial) q)) (0, [])
+    (seq, st) = ST.runState (clausifyLoopS (UnclausifiedPlainSequent [] [] (b:initial) q)) (0, [])
+    (ext, (_, history)) = ST.runState (extendFlats seq) st
+
+    extendFlats :: PlainSequent -> ST.State ClausificationState PlainSequent
+    extendFlats pseq@(IntuitPlainSequent _ is _) = extendFlats' pseq is
+      where
+        extendFlats' :: PlainSequent -> [ImplClauseFormula Atom] -> ST.State ClausificationState PlainSequent
+        extendFlats' pseq (h:t) = do
+          extended <- extendFlat pseq h
+          extendFlats' extended t
+        extendFlats' pseq [] = return pseq
+
+        extendFlat :: PlainSequent -> ImplClauseFormula Atom -> ST.State ClausificationState PlainSequent
+        extendFlat pseq@(IntuitPlainSequent fs is g) ic = do
+          let newFlatClause = implImpliesFlat ic
+          putSequent (pseq, ImplImpliesFlat ic newFlatClause)
+          let newSequent = pseq { plainFlats = newFlatClause : fs }
+          return newSequent
+        extendFlat _ _ = undefined
+    extendFlats _ = undefined
 
     clausifyS :: PlainFormula -> ST.State ClausificationState ([PlainFormula], ClausificationRule)
     clausifyS f@(Implication [Disjunction ds, v@(Atom _)]) = do
@@ -94,7 +110,7 @@ clausify formula =
     clausifyLoopS s@(UnclausifiedPlainSequent f i (nph : npt) g) = do
       case Clause.flatClauseFromFormula nph of
         Just clause -> do
-          putSequent (s, AsFlat clause)
+          putSequent (s, AsFlat nph clause)
           clausifyLoopS (UnclausifiedPlainSequent (clause:f) i npt g)
         Nothing -> case Clause.implClauseFromFormula nph of
                       Just clause -> do

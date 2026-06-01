@@ -92,6 +92,10 @@ proveR context solver f = do
           case result of
             Left (assumptions, impl) -> do
               let newClause = FlatClauseFormula (List.delete (a_ impl) assumptions) [c_ impl]
+                    (Implication [
+                      Conjunction $ Atom . astToVar <$> List.delete (a_ impl) assumptions,
+                      Atom . astToVar $ c_ impl
+                    ])
               let newClauseFormula = astToVar <$> newClause
               let learnedClauseFormula = astToVar <$> impl
               IncrementalSolver.addClause context solver newClause
