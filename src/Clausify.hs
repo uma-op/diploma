@@ -14,6 +14,7 @@ import Formula
 import Clause
 import Sequent
 
+import Debug.Trace
 
 type ClausificationState = (Int, [(PlainSequent, ClausificationRule)])
 
@@ -49,10 +50,10 @@ clausify formula =
     extendFlats _ = undefined
 
     clausifyS :: PlainFormula -> ST.State ClausificationState ([PlainFormula], ClausificationRule)
-    clausifyS f@(Implication [Disjunction ds, v@(Atom _)]) = do
+    clausifyS f@(Implication [Disjunction ds, v]) = do
       let newFormulas = map (`implication` v) ds
       return (newFormulas, LeftDs f newFormulas)
-    clausifyS f@(Implication [v@(Atom _), Conjunction cs]) = do
+    clausifyS f@(Implication [v, Conjunction cs]) = do
       let newFormulas = map (implication v) cs
       return (newFormulas, RightCs f newFormulas)
     clausifyS f@(Implication (x : y : z : is)) = do
@@ -107,7 +108,7 @@ clausify formula =
     clausifyLoopS :: PlainSequent -> ST.State (Int, [(PlainSequent, ClausificationRule)]) PlainSequent
 
     -- trace ("Flats: " ++ show f ++ " Impls: " ++ show i ++ " Rem: " ++ show (nph : npt)) $ do
-    clausifyLoopS s@(UnclausifiedPlainSequent f i (nph : npt) g) = do
+    clausifyLoopS s@(UnclausifiedPlainSequent f i (nph : npt) g) = trace ("F: " ++ (unlines $ map formulaToString f) ++ " I: " ++ (unlines $ map formulaToString i) ++ " U: " ++ (unlines $ map show (nph:npt)) ) $ do
       case Clause.flatClauseFromFormula nph of
         Just clause -> do
           putSequent (s, AsFlat nph clause)

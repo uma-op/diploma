@@ -27,3 +27,4 @@
 \contentsline {subsection}{\numberline {4.5}Невалидная формула: закон де Моргана для дизъюнкции}{15}{subsection.4.5}%
 \contentsline {subsection}{\numberline {4.6}Сложный валидный пример}{16}{subsection.4.6}%
 \contentsline {subsection}{\numberline {4.7}Сложный валидный пример: вложенная схема Пирса}{16}{subsection.4.7}%
+\contentsline {subsection}{\numberline {4.8}Сложный валидный пример: syj201}{16}{subsection.4.8}%

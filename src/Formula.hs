@@ -14,9 +14,10 @@ data PlainFormula = Implication [PlainFormula]
              | Conjunction [PlainFormula]
              | Disjunction [PlainFormula]
              | Atom { atom :: Atom }
-             deriving (Eq, Ord)
+             deriving (Eq, Ord, Show)
 
-data Atom = Variable String | Bottom | Top deriving (Eq, Ord)
+
+data Atom = Variable String | Bottom | Top deriving (Eq, Ord, Show)
 
 plainFormulaToString :: PlainFormula -> String
 plainFormulaToString (Disjunction ds) = "(" ++ List.intercalate " \\/ " (map plainFormulaToString ds) ++ ")"

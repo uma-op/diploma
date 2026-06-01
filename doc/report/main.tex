@@ -504,4 +504,30 @@ RightCs, AsImpl, Aliasing, RightImpl, \ldots) и соответствующий 
 ($58(\$28.($28(\$37.($37(\$43.($28K($43))))))))
 \end{lstlisting}
 
+\subsection{Сложный валидный пример: syj201}
+
+\textbf{Вход} (\verb|examples/formulas/syj201.txt|). Формула состоит из трёх
+посылок (взаимная импликация пары переменных $\Rightarrow$ конъюнкция $a \land b \land c$)
+и заключения $a \land b \land c$:
+\begin{lstlisting}[style=formula,breaklines=true,caption={Формула syj201 (разбита по строкам)},label={lst:ex-syj201}]
+(
+  ((a => b) /\ (b => a) => (a /\ b /\ c))
+  /\
+  ((b => c) /\ (c => b) => (a /\ b /\ c))
+  /\
+  ((c => a) /\ (a => c) => (a /\ b /\ c))
+) => (a /\ b /\ c)
+\end{lstlisting}
+
+\textbf{Полученные клозы} (после клозификации):
+\hssnippet{syj201-clauses.txt}{Итоговые клозы для syj201}
+
+\textbf{Результат:} \texttt{Valid}. Доказательство в CArrow использует множество
+шагов CPL1.
+
+\textbf{Результирующий терм:}
+\begin{lstlisting}[breaklines=true,caption={Редуцированный $\lambda$-терм для syj201},label={lst:ex-syj201-term}]
+($624(\$195.<(P(3)((P(1)$195)(\$378.(P(2)((P(3)$195)K($378)))))),(P(2)((P(3)$195)K((P(3)((P(3)$195)(\$506.(P(3)((P(2)$195)(\$553.(P(2)((P(3)$195)K($506)))))))))))),(P(1)((P(3)$195)K((P(3)((P(3)$195)(\$506.(P(3)((P(2)$195)(\$553.(P(2)((P(3)$195)K($506))))))))))))>))
+\end{lstlisting}
+
 \end{document}
