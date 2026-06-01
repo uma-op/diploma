@@ -5,8 +5,11 @@ import Control.Monad.State
 import Data.Functor
 import Z3.Base
 import Data.Bifunctor
+import Data.Char (isSpace)
 import qualified Data.Map as Map
 import qualified Data.List as List
+import System.Environment (getArgs)
+import System.Exit (die)
 
 import qualified ProverR
 import qualified World
@@ -24,25 +27,26 @@ import Formula
 import ClassicSeqProver
 
 main :: IO ()
-main = do
-  test2
+main = test2
+
+trim :: String -> String
+trim = reverse . dropWhile isSpace . reverse . dropWhile isSpace
 
 test2 :: IO ()
 test2 = do
-  -- let formula = Formula.disjunction (Formula.variable "a") (Formula.negation $ Formula.variable "a")
-  -- let formula = Formula.disjunction
-  --                 (Formula.implication (Formula.variable "a") (Formula.variable "b"))
-  --                 (Formula.implication (Formula.variable "b") (Formula.variable "a"))
-  -- let formula = parseFormulaWithError "(((a \\/ (a => b))) => b) => b"
-  -- let formula = parseFormulaWithError "(((a /\\ (b /\\ c) /\\ d) => c) => a) => a"
-  -- let formula = parseFormulaWithError "(a /\\ b) => (a \\/ b)"
-  let formula = parseFormulaWithError "((((a => b) => a) => a) => b) => b"
-  -- let formula = parseFormulaWithError "((((a /\\ b) => c) => ((a => c) \\/ (b => c))) => c) => c"
+  args <- getArgs
+  formulaFile <- case args of
+    [path] -> pure path
+    _ -> die "Usage: diploma-exe <formula-file>"
+  formulaText <- readFile formulaFile
+  let formula = parseFormulaWithError $ trim formulaText
 
   IncrementalSolver context solver <- IncrementalSolver.newSolver
   result <- ProverR.proveR context solver formula
   case result of
-    ProverR.Invalid counterModel -> putStrLn . ("Result model:\n" ++) =<< CounterModel.counterModelToString context counterModel
+    ProverR.Invalid counterModel -> do
+      putStrLn . ("Result model:\n" ++) =<< CounterModel.counterModelToString context counterModel
+      putStrLn =<< CounterModel.counterModelToDot context counterModel
     ProverR.Valid (plaindt, clausificationHistory) -> do 
       putStrLn "Valid"
       let carrowNodes = map (\(x, y, z) -> CArrowNode z y x) plaindt

@@ -65,3 +65,36 @@ counterModelToString context counterModel = do
 
   return $ worldsString ++ reachableFromsString ++ reachableTosString
 
+counterModelToDot :: Z3.Context -> CounterModel -> IO String
+counterModelToDot context counterModel = do
+  nodeLines <- mapM worldNode (Map.toAscList (worlds counterModel))
+  let edgeLines =
+        [ "  w" ++ show parent ++ " -> w" ++ show child ++ ";"
+        | (child, ancestors) <- Map.toAscList (reachableTo counterModel)
+        , (parent : _) <- [ancestors]
+        ]
+  return $
+    unlines
+      ( "digraph CounterModel {"
+      : "  rankdir=TB;"
+      : "  node [shape=box];"
+      : nodeLines
+      ++ edgeLines
+      ++ ["}"]
+      )
+  where
+    worldNode (worldId, world) = do
+      atomNames <- mapM (Z3.astToString context) (Set.toList (World.consts world))
+      let props =
+            if null atomNames
+              then ""
+              else List.intercalate ", " atomNames
+      return $
+        "  w"
+          ++ show worldId
+          ++ " [label=\"w"
+          ++ show worldId
+          ++ "\\n"
+          ++ props
+          ++ "\"];"
+
