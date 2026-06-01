@@ -74,7 +74,7 @@ annotateClausificationNodes seq (h:t) = do
       fTerm <- getTermFromEnvironment f
       let varsCount = length vars 
       varCaptureTerms <- zip [1..] <$> replicateM varsCount getNewTermFromEnvironment
-      let varTerms = map (\(i, t) -> Abstraction [varName t] $ Application [fTerm, Application [Sum 1, t]]) varCaptureTerms
+      let varTerms = map (\(i, t) -> Abstraction [varName t] $ Application [fTerm, Application [Sum i, t]]) varCaptureTerms
       let substitution = zip (map (varName . (ucs !)) vars) varTerms
       let (gFormula, gTerm) = Map.findMin g
       return seq {
@@ -88,7 +88,7 @@ annotateClausificationNodes seq (h:t) = do
       let projsCount = length projs
       projsCaptureTerms <- zip [1..] <$> replicateM projsCount getNewTermFromEnvironment
       let projTerms = map (\(i, t) -> Abstraction [varName t] $ Application [Proj i, Application [fTerm, t]]) projsCaptureTerms
-      let substitution = zip (map plainFormulaToString projs) projTerms
+      let substitution = zip (map (varName . (ucs !)) projs) projTerms
       let (gFormula, gTerm) = Map.findMin g
       return seq {
         unclausified = Map.insert f fTerm (foldr Map.delete ucs projs),
@@ -187,11 +187,16 @@ annotateClausificationNodes seq (h:t) = do
       let (gFormula, gTerm) = Map.findMin g
       captureTerm <- getNewTermFromEnvironment
 
+      let substitution = Abstraction [varName captureTerm] $
+                           Application [Sum 1,
+                             Application [implTerm,
+                               Const $ Application [Proj 1, captureTerm]]]
+
       return IntuitSequent {
         flats = if flat `elem` pfs then fs else Map.delete flat fs,
         impls = is,
         goal = Map.singleton gFormula $
-          substitute (varName flatTerm) (Abstraction [varName captureTerm] $ Application [implTerm, Const captureTerm]) gTerm
+          substitute (varName flatTerm) substitution gTerm
       }
 
 data CArrowRule = CPL0 | CPL1 (FlatClauseFormula Atom) (ImplClauseFormula Atom) 
@@ -214,16 +219,12 @@ annotateCArrowNodes (cpl0@(CArrowNode CPL0 cseq iseq):cpl1s) = do
       annotatedClassic <- annotateLJTNode provedCseq
       let (ClassicSequent flats assumptions goal) = rootLJT annotatedClassic
   
-      let capture = Map.elems assumptions
-      let (goalFormula, goalTerm) = Map.findMin goal
-      let csTerm = Abstraction (map varName capture) goalTerm
-  
       implAnnotations <- mapM getTermFromEnvironment impls
 
       return (IntuitSequent {
         flats = flats,
         impls = Map.fromList $ zip impls implAnnotations,
-        goal = Map.singleton goalFormula csTerm
+        goal = goal
       }, annotatedClassic)
 
 
@@ -235,22 +236,34 @@ annotateCArrowNodes (cpl0@(CArrowNode CPL0 cseq iseq):cpl1s) = do
       annotatedClassic <- annotateLJTNode provedCseq
       let (ClassicSequent flats assumptions b) = rootLJT annotatedClassic
 
+      let otherAssumptions = conjunctFormulas phi
+      let otherAssumptionTerms = map (assumptions !) otherAssumptions
+
+      let bTerm = head $ Map.elems b
       let aTerm = assumptions ! a
-      let outerCapture = Map.elems $ Map.delete a assumptions
-  
+
+      bCapture <- getNewTermFromEnvironment
+      let projSubstitutionTerms = aTerm : otherAssumptionTerms
+      let enumeratedProjSubstitutionTerms = zip [1..] projSubstitutionTerms
+      let projSubstitutions = map (\(i, t) -> (varName t, Application [Proj i, bCapture])) enumeratedProjSubstitutionTerms
+
       let csTerm = Abstraction
-            (map varName (aTerm:outerCapture))  -- getting term names for a0...an
-            (snd $ Map.findMin b)               -- getting b as body
+            [varName bCapture]  -- getting term names for a0...an
+            (foldr (uncurry substitute) bTerm projSubstitutions)               -- getting b as body
   
       let lambdaTerm = impls ! lambda
-      
+
+      outerCapture <- getNewTermFromEnvironment
       innerCapture <- getNewTermFromEnvironment
+
       let phiSubstitution =
-            Abstraction (map varName outerCapture) $
+            Abstraction [varName outerCapture] $
             Application [
-              lambdaTerm,
-              Abstraction [varName innerCapture] $
-              Application ([csTerm, innerCapture] ++ outerCapture)
+              Sum 1,
+              Application [
+                lambdaTerm,
+                Abstraction [varName innerCapture] $
+                  Application [csTerm, Application[Insert 1, outerCapture, innerCapture]]]
             ]
   
       let (goalFormula, goalTerm) = Map.findMin g

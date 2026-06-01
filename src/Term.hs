@@ -56,10 +56,9 @@ reduce (Application ts) =
     (Abstraction (c:cs) body: arg: t) -> reduce $ Application (Abstraction cs (substitute c arg body): t)
     (Insert 1 : Id : arg : t) -> reduce $ Application (Product [arg]: t)
     (Insert i : Product ts : arg : t) -> reduce $
-      Application (let (before, after) = List.splitAt i ts in Product (before ++ arg : after) : t)
+      Application (let (before, after) = List.splitAt (i - 1) ts in Product (before ++ arg : after) : t)
     (Proj i : Product ts : t) -> reduce $ Application (ts !! (i - 1) : t)
     (Case cs : Application [Sum i, arg] : t) -> reduce $ Application ( let (capture, body) = cs !! (i - 1) in substitute (varName capture) arg body : t)
-    (Case [(Var _,Var _)] : arg : t) -> reduce $ Application (arg: Id: t)
     (Const arg : _ : t) -> reduce $ Application (arg : t)
     x -> Application x
 

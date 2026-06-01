@@ -34,7 +34,9 @@ test2 = do
   --                 (Formula.implication (Formula.variable "a") (Formula.variable "b"))
   --                 (Formula.implication (Formula.variable "b") (Formula.variable "a"))
   -- let formula = parseFormulaWithError "(((a \\/ (a => b))) => b) => b"
-  let formula = parseFormulaWithError "b => (a => a)"
+  -- let formula = parseFormulaWithError "(((a /\\ (b /\\ c) /\\ d) => c) => a) => a"
+  -- let formula = parseFormulaWithError "(a /\\ b) => (a \\/ b)"
+  let formula = parseFormulaWithError "((((a => b) => a) => a) => b) => b"
   -- let formula = parseFormulaWithError "((((a /\\ b) => c) => ((a => c) \\/ (b => c))) => c) => c"
 
   IncrementalSolver context solver <- IncrementalSolver.newSolver
@@ -47,7 +49,7 @@ test2 = do
       let (annotatedCArrowNodes, st) = runState (annotateCArrowNodes carrowNodes) newEnvironment
 
       putStrLn "CARROW:"
-      putStrLn $ List.intercalate "\n-------\n" $ map (\(iseq, cseq) -> show cseq ++ "\n%\n" ++ sequentToString (reduceGoal iseq)) annotatedCArrowNodes
+      putStrLn $ List.intercalate "\n-------\n" $ map (\(iseq, cseq) -> show cseq ++ "\n%\n" ++ sequentToString iseq) annotatedCArrowNodes
 
       let lastCArrowSeq = fst $ last annotatedCArrowNodes
 
@@ -84,3 +86,7 @@ test2 = do
 -- 
 --   return undefined
 -- 
+
+
+--foo = \_32 -> _32 (const $ Right (\_44 -> _32 (\_57 -> Left (\_72 -> (_57 _72)))))
+
