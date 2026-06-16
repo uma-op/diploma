@@ -76,35 +76,35 @@ instance (BuildableDotAnnotation a, BuildableDotAnnotation c) => BuildableDot (C
     "}|" <> buildDot goal <> "}"
 
 buildDotClausify :: (BuildableDotAnnotation a, BuildableDotAnnotation c) => Int -> ClausificationRule_ a c -> Builder
-buildDotClausify rootNodeId (AsImpl c r) = 
+buildDotClausify rootNodeId (AsImpl c r _ _) = 
   rootNodeId |+ " [label=\"" <> buildDot c <> "\"]\n" +|
   rootNodeId |+ " -> " +| (rootNodeId + 1) |+ " [label=AsImpl]\n" <>
   (buildDotClausify (rootNodeId + 1) r)
-buildDotClausify rootNodeId (AsFlat c r) = 
+buildDotClausify rootNodeId (AsFlat c r _ _) = 
   rootNodeId |+ " [label=\"" <> buildDot c <> "\"]\n" +|
   rootNodeId |+ " -> " +| (rootNodeId + 1) |+ " [label=AsFlat]\n" <>
   (buildDotClausify (rootNodeId + 1) r)
-buildDotClausify rootNodeId (ImplImpliesFlat c r) = 
+buildDotClausify rootNodeId (ImplImpliesFlat c r _ _) = 
   rootNodeId |+ " [label=\"" <> buildDot c <> "\"]\n" +|
   rootNodeId |+ " -> " +| (rootNodeId + 1) |+ " [label=ImplImpliesFlat]\n" <>
   (buildDotClausify (rootNodeId + 1) r)
-buildDotClausify rootNodeId (MakeImpl c r) = 
+buildDotClausify rootNodeId (MakeImpl c r _ _) = 
   rootNodeId |+ " [label=\"" <> buildDot c <> "\"]\n" +|
   rootNodeId |+ " -> " +| (rootNodeId + 1) |+ " [label=MakeImpl]\n" <>
   (buildDotClausify (rootNodeId + 1) r)
-buildDotClausify rootNodeId (LeftDs c r) = 
+buildDotClausify rootNodeId (LeftDs c r _ _) = 
   rootNodeId |+ " [label=\"" <> buildDot c <> "\"]\n" +|
   rootNodeId |+ " -> " +| (rootNodeId + 1) |+ " [label=LeftDs]\n" <>
   (buildDotClausify (rootNodeId + 1) r)
-buildDotClausify rootNodeId (RightCs c r) = 
+buildDotClausify rootNodeId (RightCs c r _ _) = 
   rootNodeId |+ " [label=\"" <> buildDot c <> "\"]\n" +|
   rootNodeId |+ " -> " +| (rootNodeId + 1) |+ " [label=RightCs]\n" <>
   (buildDotClausify (rootNodeId + 1) r)
-buildDotClausify rootNodeId (Uncurry c r) = 
+buildDotClausify rootNodeId (Uncurry c r _ _) = 
   rootNodeId |+ " [label=\"" <> buildDot c <> "\"]\n" +|
   rootNodeId |+ " -> " +| (rootNodeId + 1) |+ " [label=Uncurry]\n" <>
   (buildDotClausify (rootNodeId + 1) r)
-buildDotClausify rootNodeId (Aliasing c r) = 
+buildDotClausify rootNodeId (Aliasing c r _ _ _) = 
   rootNodeId |+ " [label=\"" <> buildDot c <> "\"]\n" +|
   rootNodeId |+ " -> " +| (rootNodeId + 1) |+ " [label=Aliasing]\n" <>
   (buildDotClausify (rootNodeId + 1) r)
@@ -122,7 +122,7 @@ buildDotCArrow rootNodeId (CPL0 iseq cseq) =
   rootNodeId |+ " [label=\"" <> buildDot iseq <> "\"]\n" +|
   (rootNodeId + 1) |+ " [label=\"" <> buildDot cseq <> "\"]\n" +|
   rootNodeId |+ " -> " +| (rootNodeId + 1) |+ " [label=CPL0]\n"
-buildDotCArrow rootNodeId (CPL1 iseq cseq r) =
+buildDotCArrow rootNodeId (CPL1 iseq cseq r _ _) =
   rootNodeId |+ " [label=\"" <> buildDot iseq <> "\"]\n" +|
   (rootNodeId + 1) |+ " [label=\"" <> buildDot cseq <> "\"]\n" +|
   rootNodeId |+ " -> " +| (rootNodeId + 1) |+ " [label=CPL1]\n" +|
@@ -132,7 +132,7 @@ buildDotCArrow rootNodeId (ExCPL0 iseq ljtRule) =
   rootNodeId |+ " [label=\"" <> buildDot iseq <> "\"]\n" <>
   buildDotLJT rootNodeId [0] ljtRule +|
   rootNodeId |+ " -> \"" +| rootNodeId |+ "_0\" [label=CPL0]\n"
-buildDotCArrow rootNodeId (ExCPL1 iseq ljtRule rule) =
+buildDotCArrow rootNodeId (ExCPL1 iseq ljtRule rule _ _) =
   rootNodeId |+ " [label=\"" <> buildDot iseq <> "\"]\n" <>
   buildDotLJT rootNodeId [0] ljtRule +|
   rootNodeId |+ " -> \"" +| rootNodeId |+ "_0\" [label=CPL1]\n" +|
@@ -143,7 +143,7 @@ buildDotLJT :: (BuildableDotAnnotation a, BuildableDotAnnotation c) => Int -> [I
 buildDotLJT carrowRootId rootNodeIds (Axiom cseq) =
   "\"" +| carrowRootId |+ "_" +| joinBy "_" rootNodeIds |+ "\" [label=\"" <> buildDot cseq <> "\"]\n"
 
-buildDotLJT carrowRootId rootNodeIds (ReduceConjunction cseq rule) =
+buildDotLJT carrowRootId rootNodeIds (ReduceConjunction cseq rule _ _) =
   buildedIds |+ " [label=\"" <> buildDot cseq <> "\"]\n" <>
   buildedIds |+ " -> \"" +| carrowRootId |+ "_" +| joinBy "_" newLJTIds <> "\" [label=ReduceConjunction]\n" <>
   buildDotLJT carrowRootId newLJTIds rule
@@ -151,7 +151,7 @@ buildDotLJT carrowRootId rootNodeIds (ReduceConjunction cseq rule) =
     buildedIds = "\"" <> (carrowRootId |+ "_") <> joinBy "_" rootNodeIds <> "\""
     newLJTIds = (head rootNodeIds + 1 : tail rootNodeIds)
 
-buildDotLJT carrowRootId rootNodeIds (SplitDisjunction cseq rules) =
+buildDotLJT carrowRootId rootNodeIds (SplitDisjunction cseq rules _) =
   buildedIds |+ " [label=\"" <> buildDot cseq <> "\"]\n" <> trees <> edges
   where
     buildedIds = "\"" <> (carrowRootId |+ "_") <> joinBy "_" rootNodeIds <> "\""

@@ -20,30 +20,36 @@ import Fmt
 
 data CArrowRule_ a c =
   CPL0 (Intuit_ a c) (Classic_ a c) |
-  CPL1 (Intuit_ a c) (Classic_ a c) (CArrowRule_ a c) |
+  CPL1 (Intuit_ a c) (Classic_ a c) (CArrowRule_ a c) (Flat_ c) (Impl_ c) |
 
   ExCPL0 (Intuit_ a c) (LJTRule_ a c) |
-  ExCPL1 (Intuit_ a c) (LJTRule_ a c) (CArrowRule_ a c)
+  ExCPL1 (Intuit_ a c) (LJTRule_ a c) (CArrowRule_ a c) (Flat_ c) (Impl_ c)
+
+rootCArrow :: CArrowRule_ a c -> Intuit_ a c
+rootCArrow (CPL0 iseq _) = iseq
+rootCArrow (CPL1 iseq _ _ _ _) = iseq
+rootCArrow (ExCPL0 iseq _) = iseq
+rootCArrow (ExCPL1 iseq _ _ _ _) = iseq
 
 instance Functor (CArrowRule_ a) where
   fmap f (CPL0 iseq cseq) = CPL0 (second f iseq) (second f cseq)
-  fmap f (CPL1 iseq cseq r) = CPL1 (second f iseq) (second f cseq) (fmap f r)
+  fmap f (CPL1 iseq cseq r newFlat learnedImpl) = CPL1 (second f iseq) (second f cseq) (fmap f r) (f <$> newFlat) (f <$> learnedImpl)
   fmap f (ExCPL0 iseq r) = ExCPL0 (second f iseq) (second f r)
-  fmap f (ExCPL1 iseq ljtRule rule) = ExCPL1 (second f iseq) (second f ljtRule) (second f rule)
+  fmap f (ExCPL1 iseq ljtRule rule newFlat learnedImpl) = ExCPL1 (second f iseq) (second f ljtRule) (second f rule) (f <$> newFlat) (f <$> learnedImpl)
 
 instance Bifunctor CArrowRule_ where
   first f (CPL0 iseq cseq) = CPL0 (first f iseq) (first f cseq)
-  first f (CPL1 iseq cseq r) = CPL1 (first f iseq) (first f cseq) (first f r)
+  first f (CPL1 iseq cseq r newFlat learnedImpl) = CPL1 (first f iseq) (first f cseq) (first f r) newFlat learnedImpl
   first f (ExCPL0 iseq ljtRule) = ExCPL0 (first f iseq) (first f ljtRule)
-  first f (ExCPL1 iseq ljtRule rule) = ExCPL1 (first f iseq) (first f ljtRule) (first f rule)
+  first f (ExCPL1 iseq ljtRule rule newFlat learnedImpl) = ExCPL1 (first f iseq) (first f ljtRule) (first f rule) newFlat learnedImpl
 
   second = fmap
 
 instance (BuildableAnnotation a, BuildableAnnotation c) => Buildable (CArrowRule_ a c) where
   build (CPL0 iseq cseq) = "Intuit[" +| iseq |+ "] Classic[" +| cseq |+ "]"
-  build (CPL1 iseq cseq rule) = "Intuit[" +| iseq |+ "] Classic[" +| cseq |+ "]\n" +| rule |+ ""
+  build (CPL1 iseq cseq rule _ _) = "Intuit[" +| iseq |+ "] Classic[" +| cseq |+ "]\n" +| rule |+ ""
   build (ExCPL0 iseq ljtRule) = undefined
-  build (ExCPL1 iseq ljtRule rule) = undefined
+  build (ExCPL1 iseq ljtRule rule _ _) = undefined
 
 carrow :: Intuit_ () AST -> Solver_ -> IO (Either (CounterModel_ AST) (CArrowRule_ () AST))
 carrow iseq@(Intuit flats impls goal) solver = do
@@ -65,7 +71,7 @@ carrow iseq@(Intuit flats impls goal) solver = do
 
           case result of  
             Left counterModel -> return $ Left counterModel
-            Right proof -> return $ Right $ CPL1 iseq classicSequent proof
+            Right proof -> return $ Right $ CPL1 iseq classicSequent proof newClause learnedClause
 
 innerLoop ::
   Intuit_ () AST ->
@@ -84,5 +90,5 @@ innerLoop iseq@(Intuit flats impls goal) counterModel solver = do
 
 extendProof :: CArrowRule_ () () -> CArrowRule_ () ()
 extendProof (CPL0 iseq cseq) = ExCPL0 iseq (ljt cseq)
-extendProof (CPL1 iseq cseq rule) = ExCPL1 iseq (ljt cseq) (extendProof rule)
+extendProof (CPL1 iseq cseq rule newFlat learnedImpl) = ExCPL1 iseq (ljt cseq) (extendProof rule) newFlat learnedImpl
 extendProof _ = undefined

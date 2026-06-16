@@ -8,21 +8,37 @@ import Control.Applicative
 import Data.Maybe
 
 import Refactoring.Sequent.Annotated
+import Refactoring.Formula.Atom
 
 data LJTRule_ a c =
-  Axiom (Classic_ a c) |
-  SplitDisjunction (Classic_ a c) [LJTRule_ a c] |
-  ReduceConjunction (Classic_ a c) (LJTRule_ a c)
+  Axiom
+    (Classic_ a c) -- root
+  |
+  SplitDisjunction
+    (Classic_ a c) -- root
+    [LJTRule_ a c] -- branches
+    (Flat_ ())      -- clause that splitted
+  |
+  ReduceConjunction
+    (Classic_ a c) -- root
+    (LJTRule_ a c) -- branch
+    (Flat_ ())      -- clause to reduce
+    Atom_          -- deleted atom
+
+rootLJT :: LJTRule_ a c -> Classic_ a c
+rootLJT (Axiom cseq) = cseq
+rootLJT (SplitDisjunction cseq _ _) = cseq
+rootLJT (ReduceConjunction cseq _ _ _) = cseq
 
 instance Functor (LJTRule_ a) where
   fmap f (Axiom cseq) = Axiom (fmap f cseq)
-  fmap f (SplitDisjunction cseq rs) = SplitDisjunction (fmap f cseq) (fmap f <$> rs)
-  fmap f (ReduceConjunction cseq r) = ReduceConjunction (fmap f cseq) (fmap f r)
+  fmap f (SplitDisjunction cseq rs splitted) = SplitDisjunction (fmap f cseq) (fmap f <$> rs) splitted
+  fmap f (ReduceConjunction cseq r clause atom) = ReduceConjunction (fmap f cseq) (fmap f r) clause atom
 
 instance Bifunctor LJTRule_ where
   first f (Axiom cseq) = Axiom (first f cseq)
-  first f (SplitDisjunction cseq rs) = SplitDisjunction (first f cseq) (first f <$> rs)
-  first f (ReduceConjunction cseq r) = ReduceConjunction (first f cseq) (first f r)
+  first f (SplitDisjunction cseq rs splitted) = SplitDisjunction (first f cseq) (first f <$> rs) splitted
+  first f (ReduceConjunction cseq r clause atom) = ReduceConjunction (first f cseq) (first f r) clause atom
 
   second = fmap
 
@@ -44,7 +60,9 @@ ljt cseq@(Classic flats assumptions goal) =
       return
         (ReduceConjunction
           cseq
-          (ljt newSequent))
+          (ljt newSequent)
+          (annotated flat)
+          (annotated atom))
       where
         maybeFoundCs = List.find (uncurry csPred) [(a', r') | a' <- assumptions, r' <- flats]
         csPred atom (Annotated () (Flat cs _)) = annotated atom `elem` map annotated cs
@@ -59,6 +77,7 @@ ljt cseq@(Classic flats assumptions goal) =
             Classic (List.delete found flats) (addAnnotation () d : assumptions) goal
             | d <- ds
           ])
+          (annotated found)
       where
         maybeFoundDs = List.find dsPred flats
         dsPred (Annotated () (Flat [] _)) = True
