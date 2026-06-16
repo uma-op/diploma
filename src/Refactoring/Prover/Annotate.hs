@@ -260,7 +260,7 @@ annotateCArrow (ExCPL1 iseq ljtRule rule newClause@(Flat cs _) learnedImpl@(Impl
         Substitution
           (fst $ annotation goal)
           (varName phi)
-          (Abstraction [varName x] $ Application [lambda, Application [classicTerm, x]])
+          (Abstraction [varName x] $ Sum 1 1 $ Application [lambda, Application [classicTerm, x]])
 
   return $
     ExCPL1 
@@ -351,7 +351,7 @@ annotateLJT (SplitDisjunction cseq rules clause@(Flat _ ds)) = do
       (Classic
         newFlats
         newAssumptions
-        (Annotated ((Case (Application [f, (Product [])]) cases), ()) (annotated goal))
+        (Annotated ((Case (Application [f, Product []]) cases), ()) (annotated goal))
       )
       annotatedBranches
       clause

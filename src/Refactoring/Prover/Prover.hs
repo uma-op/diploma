@@ -76,7 +76,7 @@ prove formula = do
         "digraph {\n" <>
         "  graph [rankdir=BT]\n" <>
         "  node [shape=record;fontname=Arial]\n" <>
-        indentF 2 (buildDotClausify 0 annotatedProof) <>
+        indentF 2 (buildDotClausify 0 reducedAnnotatedProof) <>
         "}\n"
 
   return ()

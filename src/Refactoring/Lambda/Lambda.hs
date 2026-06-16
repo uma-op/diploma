@@ -68,42 +68,41 @@ reduce :: Lambda_ -> Lambda_
 reduce (Abstraction [] body) = reduce body
 reduce (Abstraction capture body) = Abstraction capture $ reduce body
 reduce (Const body) = Const $ reduce body
-reduce cs@(Case (Sum c i arg) cases) =
-  if c /= length cases
-    then error "Wrong case"  -- actually type mismatch and error
-    else let (capture, body) = cases !! (i - 1)
-             substitution = Substitution body capture arg
-         in reduce $ substitute substitution
-reduce cs@(Case e cases) = if selfReducible e then  Case (reduce e) [(capture, reduce body) | (capture, body) <- cases]
-reduce proj@(Proj n i (Product ps)) =
-  if n /= length ps
-    then error "Wrong product length"
-    else reduce (ps !! (i - 1))
-reduce proj@(Proj n i e) = Proj n i (reduce e)
-reduce ins@(Insert c i (Product terms) arg) =
-  if c /= length terms
-    then error "Wrong pair length insertion"  -- actually type mismatch and error
-    else let (before, after) = splitAt i terms
-         in Product (before ++ arg : after)
-reduce ins@(Insert c i p arg) = Insert c i (reduce p) (reduce arg)
+reduce v@(Variable _) = v
+reduce cs@(Case e cases) =
+  case reduce e of 
+    Sum c i arg -> if c /= length cases
+                     then error "Wrong case"
+                     else let (capture, body) = cases !! (i - 1)
+                              substitution = Substitution body capture arg
+                          in reduce $ substitute substitution
+    t -> Case t [(capture, reduce body) | (capture, body) <- cases]
+reduce (Sum n i e) = Sum n i (reduce e)
+reduce (Product ps) = Product (reduce <$> ps)
+reduce proj@(Proj n i e) =
+  case reduce e of
+    Product ps -> if n /= length ps
+                    then error "Wrong product length"
+                    else reduce (ps !! (i - 1))
+    t -> Proj n i t
 
+reduce ins@(Insert c i e arg) =
+  case reduce e of
+    Product ps -> if c /= length ps
+                    then error "Wrong pair length insertion"  -- actually type mismatch and error
+                    else let (before, after) = splitAt (i - 1) ps
+                         in Product (before ++ arg : after)
+    t -> Insert c i t (reduce arg)
 reduce (Application (Abstraction (capture : captures) body : arg : terms)) = reduce $
   Application (reduce (Abstraction captures (substitute $ Substitution body capture arg)) : terms)
 
-reduce (Application (Const body : _ : terms)) = reduce $ Application (body : terms)
-reduce (Application (Product [] : arg : terms)) = reduce $ Application (arg : terms)
-
-reduce (Application (Application terms : terms')) = reduce $ Application (terms ++ terms')
-
-reduce (Application (p@(Product _) : terms)) = Application (p : map reduce terms)
-reduce (Application (v@(Variable _) : terms)) = Application (v : map reduce terms)
-reduce (Application (s@(Sum c i term) : terms)) = Application (s : map reduce terms)
-reduce (Application (p@(Proj c i term) : terms)) = Application (p : map reduce terms)
-
+reduce (Application []) = undefined
 reduce (Application [term]) = reduce term
-reduce (Application (term : terms)) = reduce $ Application (reduce term : terms)
-
-reduce x = x
-
-reduce _ = undefined
+reduce (Application (term : hterm : tterms)) = 
+  case reduce term of
+    Product [] -> reduce $ Application (hterm : tterms)
+    Abstraction (capture : captures) body -> reduce $ Application (Abstraction captures (substitute $ Substitution body capture hterm) : tterms)
+    Const body -> reduce $ Application (body : tterms)
+    Application ts -> reduce $ Application (ts ++ tterms)
+    t -> Application (t : (reduce <$> (hterm : tterms)))
 
