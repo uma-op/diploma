@@ -22,6 +22,13 @@ description:         Please see the README on GitHub at <https://github.com/gith
 dependencies:
 - base >= 4.7 && < 5
 
+default-extensions:
+  - OverloadedStrings
+  - UndecidableInstances
+  - StandaloneDeriving
+  - FlexibleInstances
+  - TupleSections
+
 ghc-options:
 - -Wall
 - -Wcompat
@@ -42,6 +49,7 @@ library:
     - containers
     - parsec
     - mtl
+    - fmt
 
 executables:
   diploma-exe:
@@ -56,6 +64,7 @@ executables:
     - z3
     - containers
     - mtl
+    - fmt
 
 tests:
   diploma-test:

@@ -1,12 +1,9 @@
 module IncrementalSolver where
 
-import qualified Control.Monad as Monad
 import qualified Data.List as List
 import qualified Z3.Base as Z3
 
-import qualified Clause
 import qualified World
-import qualified Clausify
 import Clause (FlatClauseFormula(..))
 
 data IncrementalSolver = IncrementalSolver

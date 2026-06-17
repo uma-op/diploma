@@ -35,6 +35,25 @@ library
       Proof
       ProofDot
       ProverR
+      Refactoring.Clause.Flat
+      Refactoring.Clause.Impl
+      Refactoring.Formula
+      Refactoring.Formula.Atom
+      Refactoring.Formula.Formula
+      Refactoring.Lambda.Lambda
+      Refactoring.Prover.Annotate
+      Refactoring.Prover.CArrow
+      Refactoring.Prover.Clausify
+      Refactoring.Prover.CounterModel
+      Refactoring.Prover.LJT
+      Refactoring.Prover.Prover
+      Refactoring.Prover.Solver
+      Refactoring.Sequent.Annotated
+      Refactoring.Sequent.Classic
+      Refactoring.Sequent.Intuit
+      Refactoring.Sequent.Unclausified
+      Refactoring.Utils.Dot
+      Refactoring.Utils.Formatting
       Sequent
       Term
       World
@@ -44,10 +63,17 @@ library
       Paths_diploma
   hs-source-dirs:
       src
+  default-extensions:
+      OverloadedStrings
+      UndecidableInstances
+      StandaloneDeriving
+      FlexibleInstances
+      TupleSections
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -Wno-name-shadowing -Wno-unused-matches
   build-depends:
       base >=4.7 && <5
     , containers
+    , fmt
     , mtl
     , parsec
     , z3
@@ -61,11 +87,18 @@ executable diploma-exe
       Paths_diploma
   hs-source-dirs:
       app
+  default-extensions:
+      OverloadedStrings
+      UndecidableInstances
+      StandaloneDeriving
+      FlexibleInstances
+      TupleSections
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -Wno-name-shadowing -Wno-unused-matches -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
     , containers
     , diploma
+    , fmt
     , mtl
     , z3
   default-language: Haskell2010
@@ -82,6 +115,12 @@ test-suite diploma-test
       Paths_diploma
   hs-source-dirs:
       test
+  default-extensions:
+      OverloadedStrings
+      UndecidableInstances
+      StandaloneDeriving
+      FlexibleInstances
+      TupleSections
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -Wno-name-shadowing -Wno-unused-matches -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
