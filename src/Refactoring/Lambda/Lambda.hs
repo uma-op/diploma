@@ -4,8 +4,6 @@ import Data.Foldable
 
 import Fmt
 import Refactoring.Utils.Formatting
-import Refactoring.Utils.Dot
-
 
 {- 
  - There is irreducible terms
@@ -28,7 +26,6 @@ data Lambda_ =
 
   Application [Lambda_] -- unfold
 
-
 instance Buildable Lambda_ where
   build (Abstraction capture body) = "(\\\\" +| joinBy "" capture |+ "." +| body |+ ")"
   build (Const body) = "K(" +| body |+ ")"
@@ -40,25 +37,22 @@ instance Buildable Lambda_ where
   build (Insert n i p e) = "Insert(" +| n |+ ", " +| i |+ ", " +| p |+ ", " +| e |+ ")"
   build (Application as) = "(" +| joinBy "" as |+ ")"
 
-instance BuildableDot Lambda_ where
-  buildDot = build
+data Substitution_ = Substitution String Lambda_
 
-data Substitution_ = Substitution Lambda_ String Lambda_
-
-substitute :: Substitution_ -> Lambda_ 
-substitute (Substitution (Abstraction capture' body) capture from) =
-  Abstraction capture' (substitute $ Substitution body capture from)
-substitute (Substitution (Const body) capture from) = Const (substitute $ Substitution body capture from)
-substitute (Substitution (Variable vname) capture from) = if capture == vname then from else (Variable vname)
-substitute (Substitution (Case expr cases) capture from) =
-  Case (substitute $ Substitution expr capture from)
-    [ (capture', substitute $ Substitution body' capture from) | (capture', body') <- cases]
-substitute (Substitution (Sum n i e) capture from) = Sum n i (substitute $ Substitution e capture from)
-substitute (Substitution (Product ps) capture from) = Product [substitute $ Substitution p capture from | p <- ps]
-substitute (Substitution (Proj n i e) capture from) = Proj n i (substitute $ Substitution e capture from)
-substitute (Substitution (Insert n i p e) capture from) =
-  Insert n i (substitute $ Substitution p capture from) (substitute $ Substitution e capture from)
-substitute (Substitution (Application as) capture from) = Application [substitute $ Substitution a capture from | a <- as]
+substitute :: Lambda_ -> Substitution_ -> Lambda_ 
+substitute (Abstraction capture' body) (Substitution capture from) =
+  Abstraction capture' (substitute body $ Substitution capture from)
+substitute (Const body) (Substitution capture from) = Const (substitute body $ Substitution capture from)
+substitute (Variable vname) (Substitution capture from) = if capture == vname then from else (Variable vname)
+substitute (Case expr cases) (Substitution capture from) =
+  Case (substitute expr $ Substitution capture from)
+    [ (capture', substitute body' $ Substitution capture from) | (capture', body') <- cases]
+substitute (Sum n i e) (Substitution capture from) = Sum n i (substitute e $ Substitution capture from)
+substitute (Product ps) (Substitution capture from) = Product [substitute p $ Substitution capture from | p <- ps]
+substitute (Proj n i e) (Substitution capture from) = Proj n i (substitute e $ Substitution capture from)
+substitute (Insert n i p e) (Substitution capture from) =
+  Insert n i (substitute p $ Substitution capture from) (substitute e $ Substitution capture from)
+substitute (Application as) (Substitution capture from) = Application [substitute a $ Substitution capture from | a <- as]
 
 selfReducible :: Lambda_ -> Bool
 selfReducible (Abstraction [] _) = True
@@ -74,8 +68,8 @@ reduce cs@(Case e cases) =
     Sum c i arg -> if c /= length cases
                      then error "Wrong case"
                      else let (capture, body) = cases !! (i - 1)
-                              substitution = Substitution body capture arg
-                          in reduce $ substitute substitution
+                              substitution = Substitution capture arg
+                          in reduce $ substitute body substitution
     t -> Case t [(capture, reduce body) | (capture, body) <- cases]
 reduce (Sum n i e) = Sum n i (reduce e)
 reduce (Product ps) = Product (reduce <$> ps)
@@ -94,14 +88,15 @@ reduce ins@(Insert c i e arg) =
                          in Product (before ++ arg : after)
     t -> Insert c i t (reduce arg)
 reduce (Application (Abstraction (capture : captures) body : arg : terms)) = reduce $
-  Application (reduce (Abstraction captures (substitute $ Substitution body capture arg)) : terms)
+  Application (reduce (Abstraction captures (substitute body $ Substitution capture arg)) : terms)
 
 reduce (Application []) = undefined
 reduce (Application [term]) = reduce term
 reduce (Application (term : hterm : tterms)) = 
   case reduce term of
     Product [] -> reduce $ Application (hterm : tterms)
-    Abstraction (capture : captures) body -> reduce $ Application (Abstraction captures (substitute $ Substitution body capture hterm) : tterms)
+    Abstraction (capture : captures) body -> reduce $
+      Application (Abstraction captures (substitute body $ Substitution capture hterm) : tterms)
     Const body -> reduce $ Application (body : tterms)
     Application ts -> reduce $ Application (ts ++ tterms)
     t -> Application (t : (reduce <$> (hterm : tterms)))

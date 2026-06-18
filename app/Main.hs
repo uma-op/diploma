@@ -2,7 +2,7 @@ module Main(main) where
 
 import Refactoring.Formula.Formula
 import Refactoring.Prover.Prover (prove)
-
+import Refactoring.Parser (parseFormulaWithError)
 
 main :: IO ()
 main = do
@@ -26,9 +26,8 @@ main = do
                 Implication [a, d],
                 Implication [b, c]
               ]], c], c]
-  let formula = Implication [Conjunction [a, a], a]
+  -- let formula = Implication [Conjunction [a, a], a]
+  -- let formula = Disjunction [a, Implication [a, bottom]] 
+  let formula = parseFormulaWithError "(a /\\ a) => a"
 
   prove formula
-
-foo = \_43 -> (_43 $ const (Right (\_6 -> (_43(\_8 -> Left (\_7 -> (_8(_7, _6))))))))
-bar = \_22 -> (_22 $ const (Right (\_8 -> (_22(\_9 -> Left (\_7 -> (_9(_7, _8))))))))

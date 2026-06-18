@@ -41,6 +41,7 @@ library
       Refactoring.Formula.Atom
       Refactoring.Formula.Formula
       Refactoring.Lambda.Lambda
+      Refactoring.Parser
       Refactoring.Prover.Annotate
       Refactoring.Prover.CArrow
       Refactoring.Prover.Clausify

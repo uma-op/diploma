@@ -43,3 +43,15 @@ bottom = Atom Bottom
 
 variable :: String -> Formula_
 variable vname = Atom $ Variable vname
+
+conjunction :: Formula_ -> Formula_ -> Formula_
+conjunction (Conjunction cs1) (Conjunction cs2) = Conjunction (cs1 ++ cs2)
+conjunction (Conjunction cs1) rhs = Conjunction (cs1 ++ [rhs])
+conjunction lhs (Conjunction cs2) = Conjunction (lhs : cs2)
+conjunction lhs rhs = Conjunction [lhs, rhs]
+
+disjunction :: Formula_ -> Formula_ -> Formula_
+disjunction (Disjunction ds1) (Disjunction ds2) = Disjunction (ds1 ++ ds2)
+disjunction (Disjunction ds1) rhs = Disjunction (ds1 ++ [rhs])
+disjunction lhs (Disjunction ds2) = Disjunction (lhs : ds2)
+disjunction lhs rhs = Disjunction [lhs, rhs]

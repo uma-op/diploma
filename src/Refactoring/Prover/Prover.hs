@@ -26,14 +26,14 @@ import qualified Z3.Base as Z3
 import Fmt
 
 getSequent :: ClausificationRuleII -> Intuit_ () ()
-getSequent (AsImpl _ rule _ _) = getSequent rule
-getSequent (AsFlat _ rule _ _) = getSequent rule
-getSequent (MakeImpl _ rule _ _) = getSequent rule
-getSequent (LeftDs _ rule _ _) = getSequent rule
-getSequent (RightCs _ rule _ _) = getSequent rule
-getSequent (Uncurry _ rule _ _) = getSequent rule
-getSequent (Aliasing _ rule _ _ _) = getSequent rule
-getSequent (ImplImpliesFlat _ rule _ _) = getSequent rule
+getSequent (AsImpl _ rule _ _ _) = getSequent rule
+getSequent (AsFlat _ rule _ _ _) = getSequent rule
+getSequent (MakeImpl _ rule _ _ _) = getSequent rule
+getSequent (LeftDs _ rule _ _ _) = getSequent rule
+getSequent (RightCs _ rule _ _ _) = getSequent rule
+getSequent (Uncurry _ rule _ _ _) = getSequent rule
+getSequent (Aliasing _ rule _ _ _ _) = getSequent rule
+getSequent (ImplImpliesFlat _ rule _ _ _) = getSequent rule
 getSequent (FinishClausification _ seq) = seq
 getSequent _ = undefined 
 
@@ -94,14 +94,14 @@ prove formula = do
     reannotateImpl atomToAst (Impl a b c) = Impl (reannotate atomToAst a) (reannotate atomToAst b) (reannotate atomToAst c)
 
     concatTrees :: ClausificationRule_ a c -> CArrowRule_ a c -> ClausificationRule_ a c
-    concatTrees (AsImpl s rule x y) carrowRule = AsImpl s (concatTrees rule carrowRule) x y
-    concatTrees (AsFlat s rule x y) carrowRule = AsFlat s (concatTrees rule carrowRule) x y
-    concatTrees (MakeImpl s rule x y) carrowRule = MakeImpl s (concatTrees rule carrowRule) x y
-    concatTrees (LeftDs s rule x y) carrowRule = LeftDs s (concatTrees rule carrowRule) x y
-    concatTrees (RightCs s rule x y) carrowRule = RightCs s (concatTrees rule carrowRule) x y
-    concatTrees (Uncurry s rule x y) carrowRule = Uncurry s (concatTrees rule carrowRule) x y
-    concatTrees (Aliasing s rule x y z) carrowRule = Aliasing s (concatTrees rule carrowRule) x y z
-    concatTrees (ImplImpliesFlat s rule x y) carrowRule = ImplImpliesFlat s (concatTrees rule carrowRule) x y
+    concatTrees (AsImpl s rule x y subs) carrowRule = AsImpl s (concatTrees rule carrowRule) x y subs
+    concatTrees (AsFlat s rule x y subs) carrowRule = AsFlat s (concatTrees rule carrowRule) x y subs
+    concatTrees (MakeImpl s rule x y subs) carrowRule = MakeImpl s (concatTrees rule carrowRule) x y subs
+    concatTrees (LeftDs s rule x y subs) carrowRule = LeftDs s (concatTrees rule carrowRule) x y subs
+    concatTrees (RightCs s rule x y subs) carrowRule = RightCs s (concatTrees rule carrowRule) x y subs
+    concatTrees (Uncurry s rule x y subs) carrowRule = Uncurry s (concatTrees rule carrowRule) x y subs
+    concatTrees (Aliasing s rule x y z subs) carrowRule = Aliasing s (concatTrees rule carrowRule) x y z subs
+    concatTrees (ImplImpliesFlat s rule x y subs) carrowRule = ImplImpliesFlat s (concatTrees rule carrowRule) x y subs
     concatTrees (FinishClausification s seq) carrowRule = StartCArrow s carrowRule
     concatTrees _ _ = undefined 
 

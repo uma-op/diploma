@@ -20,6 +20,7 @@ import Fmt
 import Refactoring.Clause.Flat (implImpliesFlat)
 import Refactoring.Utils.Formatting (joinBy)
 import qualified Data.Bifunctor as Bifunctor
+import Refactoring.Lambda.Lambda (Substitution_)
 
 newtype ClausificationState_ = ClausificationState Int
 
@@ -41,18 +42,21 @@ data ClausificationRule_ a c =
     (ClausificationRule_ a c)  -- branch
     Formula_   -- moved formula
     (Impl_ c)  -- result clause
+    [Substitution_]
   |
   AsFlat
     (Unclausified_ a c)  -- root
     (ClausificationRule_ a c)  -- branch
     Formula_  -- moved formula
     (Flat_ c)  -- result clause
+    [Substitution_]
   |
   ImplImpliesFlat
     (Unclausified_ a c)  -- root
     (ClausificationRule_ a c)  -- branch
     (Impl_ c)  -- impl that implies
     (Flat_ c)  -- flat implied by
+    [Substitution_]
   |
 
   MakeImpl
@@ -60,24 +64,28 @@ data ClausificationRule_ a c =
     (ClausificationRule_ a c)  -- branch
     Formula_  -- non implication formula
     Formula_  -- implication formula
+    [Substitution_]
   |
   LeftDs
     (Unclausified_ a c)  -- root
     (ClausificationRule_ a c)  -- branch
     Formula_  -- implication
     [Formula_]  -- result formulas
+    [Substitution_]
   |
   RightCs
     (Unclausified_ a c)  -- root
     (ClausificationRule_ a c)  -- branch
     Formula_   -- implication
     [Formula_]  -- result formulas
+    [Substitution_]
   |
   Uncurry
     (Unclausified_ a c)  -- root
     (ClausificationRule_ a c)  -- branch
     Formula_  -- curried
     Formula_  -- uncurried
+    [Substitution_]
   |
   Aliasing
     (Unclausified_ a c)  -- root
@@ -85,46 +93,47 @@ data ClausificationRule_ a c =
     Formula_  -- complex formula
     Formula_  -- aliased
     [Formula_]  -- aliases
+    [Substitution_]
   |
 
   FinishClausification (Unclausified_ a c) (Intuit_ a c) |  -- when just finished clausification
   StartCArrow (Unclausified_ a c) (CArrowRule_ a c)         -- when sequent has empty unclausified list
 
 instance Functor (ClausificationRule_ a) where
-  fmap f (AsImpl useq rule x y) = AsImpl (fmap f useq) (fmap f rule) x (fmap f y)
-  fmap f (AsFlat useq rule x y) = AsFlat (fmap f useq) (fmap f rule) x (fmap f y)
-  fmap f (ImplImpliesFlat useq rule x y) = ImplImpliesFlat (fmap f useq) (fmap f rule) (fmap f x) (fmap f y)
-  fmap f (MakeImpl useq rule x y) = MakeImpl (fmap f useq) (fmap f rule) x y
-  fmap f (LeftDs useq rule x y) = LeftDs (fmap f useq) (fmap f rule) x y
-  fmap f (RightCs useq rule x y) = RightCs (fmap f useq) (fmap f rule) x y
-  fmap f (Uncurry useq rule x y) = Uncurry (fmap f useq) (fmap f rule) x y
-  fmap f (Aliasing useq rule x y z) = Aliasing (fmap f useq) (fmap f rule) x y z
+  fmap f (AsImpl useq rule x y subs) = AsImpl (fmap f useq) (fmap f rule) x (fmap f y) subs
+  fmap f (AsFlat useq rule x y subs) = AsFlat (fmap f useq) (fmap f rule) x (fmap f y) subs
+  fmap f (ImplImpliesFlat useq rule x y subs) = ImplImpliesFlat (fmap f useq) (fmap f rule) (fmap f x) (fmap f y) subs
+  fmap f (MakeImpl useq rule x y subs) = MakeImpl (fmap f useq) (fmap f rule) x y subs
+  fmap f (LeftDs useq rule x y subs) = LeftDs (fmap f useq) (fmap f rule) x y subs
+  fmap f (RightCs useq rule x y subs) = RightCs (fmap f useq) (fmap f rule) x y subs
+  fmap f (Uncurry useq rule x y subs) = Uncurry (fmap f useq) (fmap f rule) x y subs
+  fmap f (Aliasing useq rule x y z subs) = Aliasing (fmap f useq) (fmap f rule) x y z subs
   fmap f (FinishClausification useq rule) = FinishClausification (fmap f useq) (fmap f rule)
-  fmap f (StartCArrow useq rule) = StartCArrow (fmap f useq) (fmap f rule) 
+  fmap f (StartCArrow useq rule) = StartCArrow (fmap f useq) (fmap f rule)
 
 instance Bifunctor ClausificationRule_ where
-  first f (AsImpl useq rule x y) = AsImpl (first f useq) (first f rule) x y
-  first f (AsFlat useq rule x y) = AsFlat (first f useq) (first f rule) x y
-  first f (ImplImpliesFlat useq rule x y) = ImplImpliesFlat (first f useq) (first f rule) x y
-  first f (MakeImpl useq rule x y) = MakeImpl (first f useq) (first f rule) x y
-  first f (LeftDs useq rule x y) = LeftDs (first f useq) (first f rule) x y
-  first f (RightCs useq rule x y) = RightCs (first f useq) (first f rule) x y
-  first f (Uncurry useq rule x y) = Uncurry (first f useq) (first f rule) x y
-  first f (Aliasing useq rule x y z) = Aliasing (first f useq) (first f rule) x y z
+  first f (AsImpl useq rule x y subs) = AsImpl (first f useq) (first f rule) x y subs
+  first f (AsFlat useq rule x y subs) = AsFlat (first f useq) (first f rule) x y subs
+  first f (ImplImpliesFlat useq rule x y subs) = ImplImpliesFlat (first f useq) (first f rule) x y subs
+  first f (MakeImpl useq rule x y subs) = MakeImpl (first f useq) (first f rule) x y subs
+  first f (LeftDs useq rule x y subs) = LeftDs (first f useq) (first f rule) x y subs
+  first f (RightCs useq rule x y subs) = RightCs (first f useq) (first f rule) x y subs
+  first f (Uncurry useq rule x y subs) = Uncurry (first f useq) (first f rule) x y subs
+  first f (Aliasing useq rule x y z subs) = Aliasing (first f useq) (first f rule) x y z subs
   first f (FinishClausification useq rule) = FinishClausification (first f useq) (first f rule)
-  first f (StartCArrow useq rule) = StartCArrow (first f useq) (first f rule) 
+  first f (StartCArrow useq rule) = StartCArrow (first f useq) (first f rule)
 
   second = fmap
 
 rootClausification :: ClausificationRule_ a c -> Unclausified_ a c
-rootClausification (AsImpl useq _ _ _) = useq
-rootClausification (AsFlat useq _ _ _) = useq
-rootClausification (ImplImpliesFlat useq _ _ _) = useq
-rootClausification (MakeImpl useq _ _ _) = useq
-rootClausification (LeftDs useq _ _ _) = useq
-rootClausification (RightCs useq _ _ _) = useq
-rootClausification (Uncurry useq _ _ _) = useq
-rootClausification (Aliasing useq _ _ _ _) = useq
+rootClausification (AsImpl useq _ _ _ _) = useq
+rootClausification (AsFlat useq _ _ _ _) = useq
+rootClausification (ImplImpliesFlat useq _ _ _ _) = useq
+rootClausification (MakeImpl useq _ _ _ _) = useq
+rootClausification (LeftDs useq _ _ _ _) = useq
+rootClausification (RightCs useq _ _ _ _) = useq
+rootClausification (Uncurry useq _ _ _ _) = useq
+rootClausification (Aliasing useq _ _ _ _ _) = useq
 rootClausification (FinishClausification useq _) = useq
 rootClausification (StartCArrow useq _) = useq
 
@@ -155,7 +164,7 @@ applyAsImpl ucseq@(Unclausified flats impls (uc : ucs) goal) = do
   
   return $ do
     rule <- clausify sequent
-    return $ AsImpl ucseq rule (annotated uc) impl
+    return $ AsImpl ucseq rule (annotated uc) impl []
 
 applyAsImpl _ = Nothing
 
@@ -166,7 +175,7 @@ applyAsFlat ucseq@(Unclausified flats impls (uc : ucs) goal) = do
 
   return $ do
       rule <- clausify sequent
-      return $ AsFlat ucseq rule (annotated uc) flat
+      return $ AsFlat ucseq rule (annotated uc) flat []
 applyAsFlat _ = Nothing
 
 applyMakeImpl :: ClausificationRuleSignature
@@ -175,7 +184,7 @@ applyMakeImpl ucseq@(Unclausified flats impls (uc : ucs) goal) = do
   let sequent = Unclausified flats impls (iuc : ucs) goal
   return $ do
     rule <- clausify sequent
-    return $ MakeImpl ucseq rule (annotated uc) (annotated iuc)
+    return $ MakeImpl ucseq rule (annotated uc) (annotated iuc) []
 applyMakeImpl _ = Nothing
 
 applyLeftDs :: ClausificationRuleSignature
@@ -184,7 +193,7 @@ applyLeftDs ucseq@(Unclausified flats impls (Annotated () uc@(Implication (Disju
   let sequent = Unclausified flats impls (newIs ++ ucs) goal
   return $ do
     rule <- clausify sequent
-    return $ LeftDs ucseq rule uc (annotated <$> newIs)
+    return $ LeftDs ucseq rule uc (annotated <$> newIs) []
 applyLeftDs _ = Nothing
 
 applyRightCs :: ClausificationRuleSignature
@@ -192,7 +201,7 @@ applyRightCs ucseq@(Unclausified flats impls (Annotated () uc@(Implication [x, C
   let newIs = [Annotated () (Implication [x, c]) | c <- cs]
   let sequent = Unclausified flats impls (newIs ++ ucs) goal
   rule <- clausify sequent
-  return $ RightCs ucseq rule uc (annotated <$> newIs)
+  return $ RightCs ucseq rule uc (annotated <$> newIs) []
 
 applyRightCs _ = Nothing
 
@@ -201,7 +210,7 @@ applyUncurry ucseq@(Unclausified flats impls (Annotated () uc@(Implication is@(_
   let uncurried = Implication [Conjunction $ init is, last is]
   let sequent = Unclausified flats impls (Annotated () uncurried : ucs) goal
   rule <- clausify sequent
-  return $ Uncurry ucseq rule uc uncurried
+  return $ Uncurry ucseq rule uc uncurried []
 applyUncurry _ = Nothing
 
 applyAliasing :: ClausificationRuleSignature
@@ -226,7 +235,7 @@ applyAliasing ucseq@(
           ((Annotated () <$> (aliased : aliases)) ++ ucs) goal
 
   rule <- clausify sequent
-  return $ Aliasing ucseq rule is aliased aliases
+  return $ Aliasing ucseq rule is aliased aliases []
 
 applyAliasing ucseq@(Unclausified flats impls (Annotated () is@(Implication (Conjunction cs : _ : _)) : ucs) goal) = return $ do
   let (Conjunction as, b) = second fromJust $ split is
@@ -238,7 +247,7 @@ applyAliasing ucseq@(Unclausified flats impls (Annotated () is@(Implication (Con
           flats impls
           ((Annotated () <$> (aliased : aliases)) ++ ucs) goal
   rule <- clausify sequent
-  return $ Aliasing ucseq rule is aliased aliases
+  return $ Aliasing ucseq rule is aliased aliases []
 
 applyAliasing ucseq@(Unclausified flats impls (Annotated () is@(Implication [a, Disjunction bs]) : ucs) goal) = return $ do
   aliasedAtoms <- mapM (aliasS False) bs
@@ -251,7 +260,7 @@ applyAliasing ucseq@(Unclausified flats impls (Annotated () is@(Implication [a, 
           goal
 
   rule <- clausify sequent
-  return $ Aliasing ucseq rule is aliased aliases
+  return $ Aliasing ucseq rule is aliased aliases []
 
 applyAliasing _ = Nothing
 
@@ -264,9 +273,10 @@ applyFinishClausification ucseq@(Unclausified flats impls [] goal) = return $ do
         ImplImpliesFlat
             ucseq
             (applyImplImpliesFlat is (Unclausified (Annotated () impliedFlat : flats) impls ucs goal))
-            i impliedFlat
+            i impliedFlat []
         where
           impliedFlat = implImpliesFlat i
-      applyImplImpliesFlat [] ucseq@(Unclausified flats impls ucs goal) = FinishClausification ucseq (Intuit flats impls goal)
+      applyImplImpliesFlat [] ucseq@(Unclausified flats impls ucs goal) =
+        FinishClausification ucseq (Intuit flats impls goal)
 
 applyFinishClausification _ = Nothing

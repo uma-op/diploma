@@ -13,6 +13,7 @@ import Refactoring.Sequent.Annotated
 import Refactoring.Prover.Clausify
 import Refactoring.Prover.CArrow
 import Refactoring.Prover.LJT
+import qualified Refactoring.Lambda.Lambda as Lambda
 
 import Fmt
 
@@ -76,36 +77,36 @@ instance (BuildableDotAnnotation a, BuildableDotAnnotation c) => BuildableDot (C
     "}|" <> buildDot goal <> "}"
 
 buildDotClausify :: (BuildableDotAnnotation a, BuildableDotAnnotation c) => Int -> ClausificationRule_ a c -> Builder
-buildDotClausify rootNodeId (AsImpl c r _ _) = 
-  rootNodeId |+ " [label=\"" <> buildDot c <> "\"]\n" +|
+buildDotClausify rootNodeId (AsImpl c r _ _ subs) = 
+  rootNodeId |+ " [label=\"" <> buildDot c <> "|{" <> joinBy "\\n" (buildDot <$> subs) <> "}\"]\n" +|
   rootNodeId |+ " -> " +| (rootNodeId + 1) |+ " [label=AsImpl]\n" <>
   (buildDotClausify (rootNodeId + 1) r)
-buildDotClausify rootNodeId (AsFlat c r _ _) = 
-  rootNodeId |+ " [label=\"" <> buildDot c <> "\"]\n" +|
+buildDotClausify rootNodeId (AsFlat c r _ _ subs) = 
+  rootNodeId |+ " [label=\"" <> buildDot c <> "|{" <> joinBy "\\n" (buildDot <$> subs) <> "}\"]\n" +|
   rootNodeId |+ " -> " +| (rootNodeId + 1) |+ " [label=AsFlat]\n" <>
   (buildDotClausify (rootNodeId + 1) r)
-buildDotClausify rootNodeId (ImplImpliesFlat c r _ _) = 
-  rootNodeId |+ " [label=\"" <> buildDot c <> "\"]\n" +|
+buildDotClausify rootNodeId (ImplImpliesFlat c r _ _ subs) = 
+  rootNodeId |+ " [label=\"" <> buildDot c <> "|{" <> joinBy "\\n" (buildDot <$> subs) <> "}\"]\n" +|
   rootNodeId |+ " -> " +| (rootNodeId + 1) |+ " [label=ImplImpliesFlat]\n" <>
   (buildDotClausify (rootNodeId + 1) r)
-buildDotClausify rootNodeId (MakeImpl c r _ _) = 
-  rootNodeId |+ " [label=\"" <> buildDot c <> "\"]\n" +|
+buildDotClausify rootNodeId (MakeImpl c r _ _ subs) = 
+  rootNodeId |+ " [label=\"" <> buildDot c <> "|{" <> joinBy "\\n" (buildDot <$> subs) <> "}\"]\n" +|
   rootNodeId |+ " -> " +| (rootNodeId + 1) |+ " [label=MakeImpl]\n" <>
   (buildDotClausify (rootNodeId + 1) r)
-buildDotClausify rootNodeId (LeftDs c r _ _) = 
-  rootNodeId |+ " [label=\"" <> buildDot c <> "\"]\n" +|
+buildDotClausify rootNodeId (LeftDs c r _ _ subs) = 
+  rootNodeId |+ " [label=\"" <> buildDot c <> "|{" <> joinBy "\\n" (buildDot <$> subs) <> "}\"]\n" +|
   rootNodeId |+ " -> " +| (rootNodeId + 1) |+ " [label=LeftDs]\n" <>
   (buildDotClausify (rootNodeId + 1) r)
-buildDotClausify rootNodeId (RightCs c r _ _) = 
-  rootNodeId |+ " [label=\"" <> buildDot c <> "\"]\n" +|
+buildDotClausify rootNodeId (RightCs c r _ _ subs) = 
+  rootNodeId |+ " [label=\"" <> buildDot c <> "|{" <> joinBy "\\n" (buildDot <$> subs) <> "}\"]\n" +|
   rootNodeId |+ " -> " +| (rootNodeId + 1) |+ " [label=RightCs]\n" <>
   (buildDotClausify (rootNodeId + 1) r)
-buildDotClausify rootNodeId (Uncurry c r _ _) = 
-  rootNodeId |+ " [label=\"" <> buildDot c <> "\"]\n" +|
+buildDotClausify rootNodeId (Uncurry c r _ _ subs) = 
+  rootNodeId |+ " [label=\"" <> buildDot c <> "|{" <> joinBy "\\n" (buildDot <$> subs) <> "}\"]\n" +|
   rootNodeId |+ " -> " +| (rootNodeId + 1) |+ " [label=Uncurry]\n" <>
   (buildDotClausify (rootNodeId + 1) r)
-buildDotClausify rootNodeId (Aliasing c r _ _ _) = 
-  rootNodeId |+ " [label=\"" <> buildDot c <> "\"]\n" +|
+buildDotClausify rootNodeId (Aliasing c r _ _ _ subs) = 
+  rootNodeId |+ " [label=\"" <> buildDot c <> "|{" <> joinBy "\\n" (buildDot <$> subs) <> "}\"]\n" +|
   rootNodeId |+ " -> " +| (rootNodeId + 1) |+ " [label=Aliasing]\n" <>
   (buildDotClausify (rootNodeId + 1) r)
 buildDotClausify rootNodeId (FinishClausification c i) = 
@@ -128,12 +129,12 @@ buildDotCArrow rootNodeId (CPL1 iseq cseq r _ _) =
   rootNodeId |+ " -> " +| (rootNodeId + 1) |+ " [label=CPL1]\n" +|
   rootNodeId |+ " -> " +| (rootNodeId + 2) |+ " [label=CPL1]\n" <>
   buildDotCArrow (rootNodeId + 2) r
-buildDotCArrow rootNodeId (ExCPL0 iseq ljtRule) =
-  rootNodeId |+ " [label=\"" <> buildDot iseq <> "\"]\n" <>
+buildDotCArrow rootNodeId (ExCPL0 iseq ljtRule subs) =
+  rootNodeId |+ " [label=\"" <> buildDot iseq <> "|{" <> joinBy "\\n" (buildDot <$> subs) <> "}\"]\n" <>
   buildDotLJT rootNodeId [0] ljtRule +|
   rootNodeId |+ " -> \"" +| rootNodeId |+ "_0\" [label=CPL0]\n"
-buildDotCArrow rootNodeId (ExCPL1 iseq ljtRule rule _ _) =
-  rootNodeId |+ " [label=\"" <> buildDot iseq <> "\"]\n" <>
+buildDotCArrow rootNodeId (ExCPL1 iseq ljtRule rule _ _ subs) =
+  rootNodeId |+ " [label=\"" <> buildDot iseq <> "|{" <> joinBy "\\n" (buildDot <$> subs) <> "}\"]\n" <>
   buildDotLJT rootNodeId [0] ljtRule +|
   rootNodeId |+ " -> \"" +| rootNodeId |+ "_0\" [label=CPL1]\n" +|
   rootNodeId |+ " -> " +| (rootNodeId + 1) |+ " [label=CPL1]\n" <>
@@ -143,16 +144,16 @@ buildDotLJT :: (BuildableDotAnnotation a, BuildableDotAnnotation c) => Int -> [I
 buildDotLJT carrowRootId rootNodeIds (Axiom cseq) =
   "\"" +| carrowRootId |+ "_" +| joinBy "_" rootNodeIds |+ "\" [label=\"" <> buildDot cseq <> "\"]\n"
 
-buildDotLJT carrowRootId rootNodeIds (ReduceConjunction cseq rule _ _) =
-  buildedIds |+ " [label=\"" <> buildDot cseq <> "\"]\n" <>
+buildDotLJT carrowRootId rootNodeIds (ReduceConjunction cseq rule _ _ subs) =
+  buildedIds |+ " [label=\"" <> buildDot cseq <> "|{" <> joinBy "\\n" (buildDot <$> subs) <> "}\"]\n" <>
   buildedIds |+ " -> \"" +| carrowRootId |+ "_" +| joinBy "_" newLJTIds <> "\" [label=ReduceConjunction]\n" <>
   buildDotLJT carrowRootId newLJTIds rule
   where
     buildedIds = "\"" <> (carrowRootId |+ "_") <> joinBy "_" rootNodeIds <> "\""
     newLJTIds = (head rootNodeIds + 1 : tail rootNodeIds)
 
-buildDotLJT carrowRootId rootNodeIds (SplitDisjunction cseq rules _) =
-  buildedIds |+ " [label=\"" <> buildDot cseq <> "\"]\n" <> trees <> edges
+buildDotLJT carrowRootId rootNodeIds (SplitDisjunction cseq rules _ subs) =
+  buildedIds |+ " [label=\"" <> buildDot cseq <> "|{" <> joinBy "\\n" (buildDot <$> subs) <> "}\"]\n" <> trees <> edges
   where
     buildedIds = "\"" <> (carrowRootId |+ "_") <> joinBy "_" rootNodeIds <> "\""
     newNodeIds = [(0 : i : rootNodeIds) | (i, _) <- zip [0..] rules]
@@ -160,3 +161,10 @@ buildDotLJT carrowRootId rootNodeIds (SplitDisjunction cseq rules _) =
     edges = fold [
       buildedIds <> (" -> \"" +| carrowRootId |+ "_" +| joinBy "_" newNodeId |+ "\" [label=SplitDisjunction]\n")
       | newNodeId <- newNodeIds]
+
+instance BuildableDot Lambda.Lambda_ where
+  buildDot = build
+
+instance BuildableDot Lambda.Substitution_ where
+  buildDot (Lambda.Substitution capture arg) = capture |+ " ~ " +| arg |+ ""
+

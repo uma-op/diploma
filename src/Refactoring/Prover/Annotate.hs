@@ -39,7 +39,7 @@ getNewTerm = state getTerm'
         newTerm = Variable ("_" ++ show i)
 
 annotateClausification :: ClausificationRule_ () () -> State Environment (ClausificationRule_ Lambda_ ())
-annotateClausification (AsImpl useq rule implFormula implClause) = do
+annotateClausification (AsImpl useq rule implFormula implClause _) = do
   annotatedRule <- annotateClausification rule
   let (Unclausified flats impls uncs goal) = rootClausification annotatedRule 
   let (Just annotatedClause, impls') = extract ((== implClause) . annotated) impls
@@ -47,30 +47,30 @@ annotateClausification (AsImpl useq rule implFormula implClause) = do
   return $
     AsImpl
       (Unclausified flats impls' (Annotated (annotation annotatedClause) implFormula : uncs) goal)
-      annotatedRule implFormula implClause
+      annotatedRule implFormula implClause []
 
-annotateClausification (AsFlat useq rule f f') = do
+annotateClausification (AsFlat useq rule f f' _) = do
   annotatedRule <- annotateClausification rule
   let (Unclausified flats impls uncs goal) = rootClausification annotatedRule
   let goalTerm = fst $ annotation goal 
   f'Term <- getTerm f'
   fTerm <- getTerm f
   substitution <- case f of
-        Atom a -> return $ Substitution goalTerm (varName f'Term) (Const (Sum 1 1 fTerm))
-        Disjunction ds -> return $ Substitution goalTerm (varName f'Term) (Const fTerm)
+        Atom a -> return $ Substitution (varName f'Term) (Const (Sum 1 1 fTerm))
+        Disjunction ds -> return $ Substitution (varName f'Term) (Const fTerm)
         Implication [Atom a, Atom b] -> do
           captureTerm <- getNewTerm
-          return $ Substitution goalTerm (varName f'Term) (Abstraction [varName captureTerm] $ Sum 1 1 (Application [fTerm, Proj 1 1 captureTerm]))
+          return $ Substitution (varName f'Term) (Abstraction [varName captureTerm] $ Sum 1 1 (Application [fTerm, Proj 1 1 captureTerm]))
         Implication [Atom a, Disjunction ds] -> do
           captureTerm <- getNewTerm
-          return $ Substitution goalTerm (varName f'Term) (Abstraction [varName captureTerm] $ Application [fTerm, Proj 1 1 captureTerm])
+          return $ Substitution (varName f'Term) (Abstraction [varName captureTerm] $ Application [fTerm, Proj 1 1 captureTerm])
         Implication [Conjunction cs, Atom a] -> do
           captureTerm <- getNewTerm
-          return $ Substitution goalTerm (varName f'Term) (Abstraction [varName captureTerm] $ Sum 1 1 $ Application [fTerm, captureTerm])
-        Implication [Conjunction cs, Disjunction ds] -> return $ Substitution goalTerm (varName f'Term) fTerm
+          return $ Substitution (varName f'Term) (Abstraction [varName captureTerm] $ Sum 1 1 $ Application [fTerm, captureTerm])
+        Implication [Conjunction cs, Disjunction ds] -> return $ Substitution (varName f'Term) fTerm
         _ -> undefined
 
-  let substituted = substitute substitution
+  let substituted = substitute goalTerm substitution
 
   let flats' = snd $ extract ((== f') . annotated) flats
   let uncs' = Annotated fTerm f : uncs
@@ -78,9 +78,9 @@ annotateClausification (AsFlat useq rule f f') = do
   return $ 
     AsFlat
       (Unclausified flats' impls uncs' (Annotated (substituted, ()) (annotated goal)))
-      annotatedRule f f'
+      annotatedRule f f' [substitution]
 
-annotateClausification (ImplImpliesFlat useq rule implClause flatClause) = do
+annotateClausification (ImplImpliesFlat useq rule implClause flatClause _) = do
   annotatedRule <- annotateClausification rule
   let (Unclausified flats impls uncs goal) = rootClausification annotatedRule
   let (_, flats') = extract ((== flatClause) . annotated) flats
@@ -89,29 +89,29 @@ annotateClausification (ImplImpliesFlat useq rule implClause flatClause) = do
   captureTerm <- getNewTerm
   let substitution =
         Substitution
-          (fst $ annotation goal) (varName flatTerm)
+          (varName flatTerm)
           (Abstraction [varName captureTerm] $ Sum 1 1 $ Application [implTerm, Const (Proj 1 1 captureTerm)])
 
   return $
     ImplImpliesFlat
-      (Unclausified flats' impls uncs (Annotated ((substitute substitution),()) (annotated goal)))
-      annotatedRule implClause flatClause
+      (Unclausified flats' impls uncs (Annotated ((substitute (fst $ annotation goal) substitution),()) (annotated goal)))
+      annotatedRule implClause flatClause [substitution]
 
-annotateClausification (MakeImpl useq rule f f') = do
+annotateClausification (MakeImpl useq rule f f' _) = do
   annotatedRule <- annotateClausification rule
   let (Unclausified flats impls uncs goal) = rootClausification annotatedRule
   f'Term <- getTerm f'
   fTerm <- getTerm f
   captureTerm <- getNewTerm
-  let substitution = Substitution (fst $ annotation goal) (varName f'Term) (Abstraction [varName captureTerm] fTerm)
+  let substitution = Substitution (varName f'Term) (Abstraction [varName captureTerm] fTerm)
   let uncs' = Annotated fTerm f : snd (extract ((== f') . annotated) uncs)
 
   return $
     MakeImpl
-      (Unclausified flats impls uncs' (Annotated ((substitute substitution), ()) (annotated goal)))
-      annotatedRule f f'
+      (Unclausified flats impls uncs' (Annotated ((substitute (fst $ annotation goal) substitution), ()) (annotated goal)))
+      annotatedRule f f' [substitution]
 
-annotateClausification (LeftDs useq rule f fs) = do
+annotateClausification (LeftDs useq rule f fs _) = do
   annotatedRule <- annotateClausification rule
   let (Unclausified flats impls uncs goal) = rootClausification annotatedRule
   fTerm <- getTerm f
@@ -119,20 +119,20 @@ annotateClausification (LeftDs useq rule f fs) = do
   let n = length fsTerms
   captureTerms <- replicateM n getNewTerm
 
-  let substitutions = [\goalTerm ->
-          Substitution goalTerm (varName fsTerm) (Abstraction [varName captureTerm] $ Application [fTerm, Sum n i captureTerm]) 
+  let substitutions = [
+          Substitution (varName fsTerm) (Abstraction [varName captureTerm] $ Application [fTerm, Sum n i captureTerm]) 
           | (i, captureTerm, fsTerm) <- zip3 [1..] captureTerms fsTerms
         ]
   
-  let substituted = foldl (\g sub -> substitute (sub g)) (fst $ annotation goal) substitutions
+  let substituted = foldl substitute (fst $ annotation goal) substitutions
   let uncs' = Annotated fTerm f : foldl (\c e -> snd $ extract ((== e) . annotated) c) uncs fs
 
   return $
     LeftDs
       (Unclausified flats impls uncs' (Annotated (substituted, ()) (annotated goal)))
-      annotatedRule f fs
+      annotatedRule f fs substitutions
 
-annotateClausification (RightCs useq rule f fs) = do
+annotateClausification (RightCs useq rule f fs _) = do
   annotatedRule <- annotateClausification rule
   let (Unclausified flats impls uncs goal) = rootClausification annotatedRule
   fTerm <- getTerm f
@@ -140,18 +140,18 @@ annotateClausification (RightCs useq rule f fs) = do
   let n = length fsTerms
   captureTerms <- replicateM n getNewTerm
 
-  let substitutions = [\goalTerm ->
-          Substitution goalTerm (varName fsTerm) (Abstraction [varName captureTerm] $ Proj n i $ Application [fTerm, captureTerm]) 
+  let substitutions = [
+          Substitution (varName fsTerm) (Abstraction [varName captureTerm] $ Proj n i $ Application [fTerm, captureTerm]) 
           | (i, captureTerm, fsTerm) <- zip3 [1..] captureTerms fsTerms
         ]
   
-  let substituted = foldl (\g sub -> substitute (sub g)) (fst $ annotation goal) substitutions
+  let substituted = foldl substitute (fst $ annotation goal) substitutions
   let uncs' = Annotated fTerm f : foldl (\c e -> snd $ extract ((== e) . annotated) c) uncs fs
 
   return $
     RightCs
       (Unclausified flats impls uncs' (Annotated (substituted, ()) (annotated goal)))
-      annotatedRule f fs
+      annotatedRule f fs substitutions
 
 {- 
  - f': (a1 /\ ... /\ an) -> b |- g
@@ -160,7 +160,7 @@ annotateClausification (RightCs useq rule f fs) = do
  - f' := \p.fP(n, 1, p)P(n, 2, p)...P(n, n, p)
  - -}
 
-annotateClausification (Uncurry useq rule f@(Implication is) f') = do
+annotateClausification (Uncurry useq rule f@(Implication is) f' _) = do
   annotatedRule <- annotateClausification rule
   let (Unclausified flats impls uncs goal) = rootClausification annotatedRule
   fTerm <- getTerm f
@@ -169,32 +169,32 @@ annotateClausification (Uncurry useq rule f@(Implication is) f') = do
   let n = length is - 1
   let substitution =
         Substitution
-          (fst $ annotation goal) (varName f'Term)
+          (varName f'Term)
           (Abstraction [varName captureTerm] $ Application ([fTerm] ++ [Proj n i captureTerm | i <- [1..n]]))
   let uncs' = Annotated fTerm f : snd (extract ((== f') . annotated) uncs)
   return $
     Uncurry 
-      (Unclausified flats impls uncs' (Annotated ((substitute substitution), ()) (annotated goal)))
-      annotatedRule f f'
+      (Unclausified flats impls uncs' (Annotated ((substitute (fst $ annotation goal) substitution), ()) (annotated goal)))
+      annotatedRule f f' [substitution]
 
-annotateClausification (Aliasing useq rule f f' hs) = do
+annotateClausification (Aliasing useq rule f f' hs _) = do
   annotatedRule <- annotateClausification rule
   let (Unclausified flats impls uncs goal) = rootClausification annotatedRule
   fTerm <- getTerm f
   let uncs' = Annotated fTerm f : foldl (\c e -> snd $ extract ((== e) . annotated) c) uncs (f' : hs)
   f'Term <- getTerm f'
   hTerms <- mapM getTerm hs
-  let hSubstitutions = [\goalTerm ->
-        Substitution goalTerm (varName hTerm) (Product [])
+  let hSubstitutions = [
+        Substitution (varName hTerm) (Product [])
         | hTerm <- hTerms]
-  let hSubstituted = foldl (\g sub -> substitute (sub g)) (fst $ annotation goal) hSubstitutions
-  let fSubstitution = Substitution hSubstituted (varName f'Term) fTerm
-  let fSubstituted = substitute fSubstitution
+  let hSubstituted = foldl substitute (fst $ annotation goal) hSubstitutions
+  let fSubstitution = Substitution (varName f'Term) fTerm
+  let fSubstituted = substitute hSubstituted fSubstitution
 
   return $
     Aliasing 
       (Unclausified flats impls uncs' (Annotated (fSubstituted, ()) (annotated goal)))
-      annotatedRule f f' hs
+      annotatedRule f f' hs (fSubstitution : hSubstitutions)
 
 annotateClausification (StartCArrow useq carrowRule) = do
   annotatedCArrow <- annotateCArrow carrowRule
@@ -208,7 +208,7 @@ annotateClausification (StartCArrow useq carrowRule) = do
 annotateClausification _ = undefined
 
 annotateCArrow :: CArrowRule_ () () -> State Environment (CArrowRule_ Lambda_ ())
-annotateCArrow (ExCPL0 (Intuit _ impls _) ljtRule) = do
+annotateCArrow (ExCPL0 (Intuit _ impls _) ljtRule _) = do
   annotatedLJT <- annotateLJT ljtRule
   let (Classic flats _ goal) = rootLJT annotatedLJT
   implAnnotations <- mapM getTerm (annotated <$> impls)
@@ -219,7 +219,7 @@ annotateCArrow (ExCPL0 (Intuit _ impls _) ljtRule) = do
   return $
     ExCPL0
       (Intuit flats annotatedImpls goal)
-      annotatedLJT
+      annotatedLJT []
 
 {- 
  - R0 |- \p.(\p1...pn.\p0.q)P(n, 1, p)P(n, 2, p)...P(n, n, p) : (a1 /\ ... /\ an) -> a -> b
@@ -235,7 +235,7 @@ annotateCArrow (ExCPL0 (Intuit _ impls _) ljtRule) = do
  -
  - -}
   
-annotateCArrow (ExCPL1 iseq ljtRule rule newClause@(Flat cs _) learnedImpl@(Impl a _ _)) = do
+annotateCArrow (ExCPL1 iseq ljtRule rule newClause@(Flat cs _) learnedImpl@(Impl a _ _) _) = do
   annotatedLJT <- annotateLJT ljtRule
   let (Classic flats _ b) = rootLJT annotatedLJT
 
@@ -258,17 +258,17 @@ annotateCArrow (ExCPL1 iseq ljtRule rule newClause@(Flat cs _) learnedImpl@(Impl
   x <- getNewTerm
   let substitution =
         Substitution
-          (fst $ annotation goal)
-          (varName phi)
+          (varName phi) $ reduce
           (Abstraction [varName x] $ Sum 1 1 $ Application [lambda, Application [classicTerm, x]])
 
   return $
     ExCPL1 
-      (Intuit flats impls (Annotated ((substitute substitution), ()) (annotated goal)))
+      (Intuit flats impls (Annotated ((substitute (fst $ annotation goal) substitution), ()) (annotated goal)))
       annotatedLJT
       annotatedCArrow
       newClause
       learnedImpl
+      [substitution]
 
 annotateCArrow _ = undefined
 
@@ -299,7 +299,7 @@ annotateLJT (Axiom (Classic flats assumptions goal)) = do
 -}
 
   
-annotateLJT (ReduceConjunction cseq rule clause@(Flat cs ds) atom) = do
+annotateLJT (ReduceConjunction cseq rule clause@(Flat cs ds) atom _) = do
   let n = List.length cs
   let (Just atomIndex) = List.findIndex ((== atom) . annotated) cs
   let i = atomIndex + 1
@@ -315,16 +315,17 @@ annotateLJT (ReduceConjunction cseq rule clause@(Flat cs ds) atom) = do
 
   let substitution =
         Substitution
-          (fst $ annotation goal') (varName $ annotation f') 
+          (varName $ annotation f') 
           (Abstraction [varName p] (Application [f, Insert (n - 1) i p (fst $ annotation a)]))
 
   return $ ReduceConjunction
     (Classic
       (Annotated f clause : flats)
       assumptions'
-      (Annotated ((substitute substitution), ()) (annotated goal'))
+      (Annotated ((substitute (fst $ annotation goal') substitution), ()) (annotated goal'))
     )
     annotatedRule clause atom
+    [substitution]
 
 {- 
  - f_1: a_1, ... |- g_1: g  f_2: a_2, ... |- g_2: g ... f_n: a_n, ... |- g_n: g
@@ -333,7 +334,7 @@ annotateLJT (ReduceConjunction cseq rule clause@(Flat cs ds) atom) = do
  -
 -}
 
-annotateLJT (SplitDisjunction cseq rules clause@(Flat _ ds)) = do
+annotateLJT (SplitDisjunction cseq rules clause@(Flat _ ds) _) = do
   annotatedBranches <- mapM annotateLJT rules
   let roots = rootLJT <$> annotatedBranches
   let cases = [
@@ -354,7 +355,7 @@ annotateLJT (SplitDisjunction cseq rules clause@(Flat _ ds)) = do
         (Annotated ((Case (Application [f, Product []]) cases), ()) (annotated goal))
       )
       annotatedBranches
-      clause
+      clause []
 
 extract :: (a -> Bool) -> [a] -> (Maybe a, [a])
 extract pred list =
