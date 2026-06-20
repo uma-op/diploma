@@ -1660,7 +1660,7 @@ $\lambda$-термами.
 
 Сборка проекта выполняется с помощью Stack. В качестве внешнего решателя
 используется Z3; он применяется как инкрементальный классический SAT/SMT-оракул
-для проверки плоских клауз и извлечения минимального ядра невыполнимости
+для проверки плоских клауз и извлечения ядра невыполнимости
 (\emph{unsat core}). Основными библиотеками реализации являются:
 \begin{itemize}
 \item \texttt{z3} --- низкоуровневые привязки к API Z3;
@@ -1679,98 +1679,55 @@ $\lambda$-термами.
 переходы между фазами алгоритма выражаются как преобразования типизированных
 структур, а не как обработка строкового представления формул.
 
-\begin{itemize}
-\item \texttt{Atom\_} описывает атомарные формулы. В нём различаются обычная
-  пропозициональная переменная, константа истины $\top$ и константа ложности
-  $\bot$. Этот тип используется во всех последующих структурах, поскольку после
-  клаузификации левая и правая части клауз состоят только из атомов.
+\texttt{Atom\_} описывает атомарные формулы. В нём различаются обычная
+пропозициональная переменная, константа истины $\top$ и константа ложности
+$\bot$. Этот тип используется во всех последующих структурах, поскольку после
+клаузификации левая и правая части клауз состоят только из атомов.
 
-\item \texttt{Formula\_} задаёт синтаксическое дерево исходной формулы IPL. В
-  нём есть четыре конструктора: импликация, конъюнкция, дизъюнкция и атом.
-  Импликация, конъюнкция и дизъюнкция хранят списки подформул; такое
-  представление удобно для правил, которые раскладывают цепочки импликаций или
-  многоместные конъюнкции и дизъюнкции.
+\texttt{Formula\_} задаёт синтаксическое дерево исходной формулы IPL. В нём
+есть четыре конструктора: импликация, конъюнкция, дизъюнкция и атом.
+Импликация, конъюнкция и дизъюнкция хранят списки подформул; такое
+представление удобно для правил, которые раскладывают цепочки импликаций или
+многоместные конъюнкции и дизъюнкции.
 
-\item Класс \texttt{Formula} задаёт общий интерфейс для объектов, которые могут
-  рассматриваться как формулы. Он предоставляет операции извлечения атомов,
-  попытки распознать специализированную структуру из общей формулы и обратного
-  преобразования в \texttt{Formula\_}. За счёт этого одни и те же функции могут
-  работать с формулами, атомами, плоскими клаузами и импликационными клауза\-ми.
-
-\item \texttt{Annotated\_ a b} --- универсальная обёртка для хранения
-  аннотаций. Значение типа \texttt{b} содержит сам математический объект, а
-  значение типа \texttt{a} содержит дополнительную информацию, зависящую от
-  фазы алгоритма. На ранних этапах аннотация может быть пустой; при работе с Z3
-  в ней хранится AST-узел решателя; после аннотирования доказательства ---
-  $\lambda$-терм.
-
-\item \texttt{Flat\_} представляет плоскую клаузу вида
-  $\bigwedge A_i \rightarrow \bigvee B_j$. В реализации она хранит два списка
-  аннотированных атомов: список посылок и список заключений. Такие клаузы
-  добавляются в Z3 и образуют классическую часть задачи.
-
-\item \texttt{Impl\_} представляет импликационную клаузу вида
-  $(a \rightarrow b) \rightarrow c$. Именно такие клаузы образуют множество
-  $X$ в исчислении $C^{\rightarrow}$ и выбираются во внутреннем CEGAR-цикле,
-  когда построенная модель нарушает интуиционистскую импликацию.
-
-\item \texttt{Unclausified\_} описывает промежуточное состояние клаузификации.
-  Оно содержит зоны $R$, $X$, $U$ и цель: уже полученные плоские клаузы,
-  импликационные клаузы, ещё не обработанные формулы и целевой атом. Эта
-  структура нужна для пошагового применения правил клаузификации.
-
-\item \texttt{Intuit\_} описывает r-секвенцию исчисления
-  $C^{\rightarrow}$: множество плоских клауз $R$, множество импликационных
-  клауз $X$ и цель. Она получается после завершения клаузификации и является
-  входом для основного CEGAR-поиска.
-
-\item \texttt{Classic\_} описывает классическую подзадачу вида
-  $R, A \vdash g$, где $R$ --- плоские клаузы, $A$ --- локальные атомарные
-  допущения, а $g$ --- цель. Такие секвенции появляются в правилах
-  \texttt{CPL0} и \texttt{CPL1}, а затем доказываются LJT-процедурой.
-
-\item \texttt{ClausificationRule\_}, \texttt{CArrowRule\_} и
-  \texttt{LJTRule\_} описывают не только факт успешного применения правила, но
-  и дерево вывода. Благодаря этому история работы алгоритма сохраняется в
-  структурированном виде и может быть затем аннотирована $\lambda$-термами или
-  выведена как граф.
-
-\item \texttt{Solver\_} инкапсулирует состояние Z3: контекст, инкрементальный
-  решатель и соответствие между атомами задачи и булевыми AST-узлами. Через
-  эту структуру выполняются две операции: добавление плоских клауз и проверка
-  классической выводимости цели при заданных атомарных допущениях.
-
-\item \texttt{CounterModel\_} и \texttt{World} представляют конечную
-  контрмодель Крипке. Мир хранит множество истинных в нём атомов, а
-  \texttt{CounterModel\_} хранит сами миры и отношение достижимости между ними.
-  Эта структура строится в случае, если CEGAR-процедура не может получить
-  новую выученную клаузу и тем самым обнаруживает невалидность формулы.
-
-\item \texttt{Lambda\_} описывает термы расширенного $\lambda$-исчисления:
-  переменные, абстракции, применения, пары, проекции, вложения в сумму,
-  разбор случаев и вспомогательные конструкции для подстановок. Этот тип
-  используется на последней фазе, когда из дерева доказательства извлекается
-  программное содержание.
-\end{itemize}
-
-Ниже приведены фрагменты объявлений основных структур данных. Листинги
-сгруппированы по смыслу: базовый язык формул, аннотации, секвенции, деревья
-правил, внешние состояния алгоритма и $\lambda$-термы.
+Класс \texttt{Formula} задаёт общий интерфейс для объектов, которые могут
+рассматриваться как формулы. Он предоставляет операции извлечения атомов,
+попытки распознать специализированную структуру из общей формулы и обратного
+преобразования в \texttt{Formula\_}. За счёт этого одни и те же функции могут
+работать с формулами, атомами, плоскими клаузами и импликационными клауза\-ми.
 
 \begin{listing}[!htb]
-\caption{Базовые типы формул и атомов}
-\label{lst:refactoring-formula-types}
+\caption{Тип атомарных формул \texttt{Atom\_}}
+\label{lst:refactoring-atom}
 \begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
 data Atom_ = Top | Bottom | Variable String
   deriving (Eq, Ord, Show)
+\end{minted}
+\end{listing}
 
+Листинг~\ref{lst:refactoring-atom} фиксирует минимальный набор атомов,
+который затем используется в формулах, клауза\-х, секвенциях и моделях.
+
+\begin{listing}[!htb]
+\caption{Тип формул \texttt{Formula\_}}
+\label{lst:refactoring-formula-type}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
 data Formula_ =
   Implication [Formula_] |
   Conjunction [Formula_] |
   Disjunction [Formula_] |
   Atom Atom_
   deriving (Eq, Ord, Show)
+\end{minted}
+\end{listing}
 
+Листинг~\ref{lst:refactoring-formula-type} показывает представление
+синтаксического дерева исходной формулы до перехода к клаузальной форме.
+
+\begin{listing}[!htb]
+\caption{Класс преобразования в формулу \texttt{Formula}}
+\label{lst:refactoring-formula-class}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
 class Formula f where
   atoms :: f -> [Atom_]
   fromFormula :: Formula_ -> Maybe f
@@ -1778,65 +1735,115 @@ class Formula f where
 \end{minted}
 \end{listing}
 
-Листинг~\ref{lst:refactoring-formula-types} показывает два уровня
-представления формулы. Тип \texttt{Formula\_} используется для исходного
-синтаксиса, а класс \texttt{Formula} связывает его со специализированными
-структурами, которые появляются после клаузификации.
+Листинг~\ref{lst:refactoring-formula-class} задаёт интерфейс, через который
+специализированные структуры распознаются в общей формуле и собираются обратно.
+
+\texttt{Annotated\_ a b} --- универсальная обёртка для хранения аннотаций.
+Значение типа \texttt{b} содержит сам математический объект, а значение типа
+\texttt{a} содержит дополнительную информацию, зависящую от фазы алгоритма. На
+ранних этапах аннотация может быть пустой; при работе с Z3 в ней хранится
+AST-узел решателя; после аннотирования доказательства --- $\lambda$-терм.
 
 \begin{listing}[!htb]
-\caption{Универсальная аннотация элементов дерева}
+\caption{Универсальная аннотация \texttt{Annotated\_}}
 \label{lst:refactoring-annotated}
 \begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
 data Annotated_ a b = Annotated {
   annotation :: a,
   annotated :: b
 }
-
-instance Functor (Annotated_ a) where
-  fmap f (Annotated a b) = Annotated a (f b)
-
-instance Bifunctor Annotated_ where
-  first f (Annotated a b) = Annotated (f a) b
-  second = fmap
-
-addAnnotation :: c -> Annotated_ a b -> Annotated_ (c, a) b
-addAnnotation ann (Annotated a b) = Annotated (ann, a) b
-
-reannotate :: (b -> c) -> Annotated_ a b -> Annotated_ c b
-reannotate f (Annotated a b) = Annotated (f b) b
 \end{minted}
 \end{listing}
 
-Тип \texttt{Annotated\_} используется как единый механизм переноса служебной
-информации между фазами. За счёт экземпляров \texttt{Functor} и
-\texttt{Bifunctor} можно заменять аннотации, не меняя саму формулу, клаузу или
-секвенцию.
+В листинге~\ref{lst:refactoring-annotated} показано, что аннотация хранится
+рядом с объектом и может меняться независимо от логического содержимого.
+
+\texttt{Flat\_} представляет плоскую клаузу вида
+$\bigwedge A_i \rightarrow \bigvee B_j$. В реализации она хранит два списка
+аннотированных атомов: список посылок и список заключений. Такие клаузы
+добавляются в Z3 и образуют классическую часть задачи.
+
+\texttt{Impl\_} представляет импликационную клаузу вида
+$(a \rightarrow b) \rightarrow c$. Именно такие клаузы образуют множество $X$ в
+исчислении $C^{\rightarrow}$ и выбираются во внутреннем CEGAR-цикле, когда
+построенная модель нарушает интуиционистскую импликацию.
+
+\texttt{Unclausified\_} описывает промежуточное состояние клаузификации. Оно
+содержит зоны $R$, $X$, $U$ и цель: уже полученные плоские клаузы,
+импликационные клаузы, ещё не обработанные формулы и целевой атом. Эта
+структура нужна для пошагового применения правил клаузификации.
+
+\texttt{Intuit\_} описывает r-секвенцию исчисления $C^{\rightarrow}$:
+множество плоских клауз $R$, множество импликационных клауз $X$ и цель. Она
+получается после завершения клаузификации и является входом для основного
+CEGAR-поиска.
+
+\texttt{Classic\_} описывает классическую подзадачу вида $R, A \vdash g$, где
+$R$ --- плоские клаузы, $A$ --- локальные атомарные допущения, а $g$ --- цель.
+Такие секвенции появляются в правилах \texttt{CPL0} и \texttt{CPL1}, а затем
+доказываются LJT-процедурой.
 
 \begin{listing}[!htb]
-\caption{Клаузы и секвенции}
-\label{lst:refactoring-clauses-sequents}
+\caption{Тип плоской клаузы \texttt{Flat\_}}
+\label{lst:refactoring-flat}
 \begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
 data Flat_ a =
   Flat [Annotated_ a Atom_] [Annotated_ a Atom_]
+\end{minted}
+\end{listing}
 
+Листинг~\ref{lst:refactoring-flat} отражает форму плоской клаузы как пары
+списков атомов: посылок и возможных заключений.
+
+\begin{listing}[!htb]
+\caption{Тип импликационной клаузы \texttt{Impl\_}}
+\label{lst:refactoring-impl}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
 data Impl_ a =
   Impl (Annotated_ a Atom_)
        (Annotated_ a Atom_)
        (Annotated_ a Atom_)
+\end{minted}
+\end{listing}
 
+Листинг~\ref{lst:refactoring-impl} показывает компактное представление клаузы
+$(a \rightarrow b) \rightarrow c$ тремя атомами.
+
+\begin{listing}[!htb]
+\caption{Секвенция фазы клаузификации \texttt{Unclausified\_}}
+\label{lst:refactoring-unclausified}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
 data Unclausified_ a c =
   Unclausified
     [Annotated_ a (Flat_ c)]
     [Annotated_ a (Impl_ c)]
     [Annotated_ a Formula_]
     (Annotated_ (a, c) Atom_)
+\end{minted}
+\end{listing}
 
+В листинге~\ref{lst:refactoring-unclausified} выделена зона $U$, где хранятся
+формулы, ещё не переведённые в плоские или импликационные клаузы.
+
+\begin{listing}[!htb]
+\caption{r-секвенция \texttt{Intuit\_}}
+\label{lst:refactoring-intuit}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
 data Intuit_ a c =
   Intuit
     [Annotated_ a (Flat_ c)]
     [Annotated_ a (Impl_ c)]
     (Annotated_ (a, c) Atom_)
+\end{minted}
+\end{listing}
 
+Листинг~\ref{lst:refactoring-intuit} соответствует r-секвенции
+$R, X \Rightarrow g$, которая является входом алгоритма $C^{\rightarrow}$.
+
+\begin{listing}[!htb]
+\caption{Классическая секвенция \texttt{Classic\_}}
+\label{lst:refactoring-classic}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
 data Classic_ a c =
   Classic
     [Annotated_ a (Flat_ c)]
@@ -1845,58 +1852,108 @@ data Classic_ a c =
 \end{minted}
 \end{listing}
 
-В листинге~\ref{lst:refactoring-clauses-sequents} отражено разделение
-секвенций по фазам. \texttt{Unclausified\_} нужна для пошаговой
-клаузификации, \texttt{Intuit\_} является входом для $C^{\rightarrow}$, а
-\texttt{Classic\_} фиксирует классические подзадачи, доказываемые в LJT.
+Листинг~\ref{lst:refactoring-classic} показывает форму классической подзадачи:
+плоские клаузы, локальные атомарные допущения и атомарная цель.
+
+\texttt{ClausificationRule\_}, \texttt{CArrowRule\_} и \texttt{LJTRule\_}
+описывают не только факт успешного применения правила, но и дерево вывода.
+Благодаря этому история работы алгоритма сохраняется в структурированном виде
+и может быть затем аннотирована $\lambda$-термами или выведена как граф.
 
 \begin{listing}[!htb]
-\caption{Деревья правил клаузификации и $C^{\rightarrow}$}
-\label{lst:refactoring-rule-trees}
+\caption{Дерево правил клаузификации \texttt{ClausificationRule\_}}
+\label{lst:refactoring-clausification-rule}
 \begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
 data ClausificationRule_ a c =
-  AsImpl (Unclausified_ a c) (ClausificationRule_ a c) Formula_ (Impl_ c) |
-  AsFlat (Unclausified_ a c) (ClausificationRule_ a c) Formula_ (Flat_ c) |
-  ImplImpliesFlat (Unclausified_ a c) (ClausificationRule_ a c) (Impl_ c) (Flat_ c) |
-  MakeImpl (Unclausified_ a c) (ClausificationRule_ a c) Formula_ Formula_ |
-  LeftDs (Unclausified_ a c) (ClausificationRule_ a c) Formula_ [Formula_] |
-  RightCs (Unclausified_ a c) (ClausificationRule_ a c) Formula_ [Formula_] |
-  Uncurry (Unclausified_ a c) (ClausificationRule_ a c) Formula_ Formula_ |
-  Aliasing (Unclausified_ a c) (ClausificationRule_ a c) Formula_ Formula_ [Formula_] |
+  AsImpl (Unclausified_ a c) (ClausificationRule_ a c) Formula_ (Impl_ c) [Substitution_] |
+  AsFlat (Unclausified_ a c) (ClausificationRule_ a c) Formula_ (Flat_ c) [Substitution_] |
+  ImplImpliesFlat (Unclausified_ a c) (ClausificationRule_ a c) (Impl_ c) (Flat_ c) [Substitution_] |
+  MakeImpl (Unclausified_ a c) (ClausificationRule_ a c) Formula_ Formula_ [Substitution_] |
+  LeftDs (Unclausified_ a c) (ClausificationRule_ a c) Formula_ [Formula_] [Substitution_] |
+  RightCs (Unclausified_ a c) (ClausificationRule_ a c) Formula_ [Formula_] [Substitution_] |
+  Uncurry (Unclausified_ a c) (ClausificationRule_ a c) Formula_ Formula_ [Substitution_] |
+  Aliasing (Unclausified_ a c) (ClausificationRule_ a c) Formula_ Formula_ [Formula_] [Substitution_] |
   FinishClausification (Unclausified_ a c) (Intuit_ a c) |
   StartCArrow (Unclausified_ a c) (CArrowRule_ a c)
-
-data CArrowRule_ a c =
-  CPL0 (Intuit_ a c) (Classic_ a c) |
-  CPL1 (Intuit_ a c) (Classic_ a c) (CArrowRule_ a c) (Flat_ c) (Impl_ c) |
-  ExCPL0 (Intuit_ a c) (LJTRule_ a c) |
-  ExCPL1 (Intuit_ a c) (LJTRule_ a c) (CArrowRule_ a c) (Flat_ c) (Impl_ c)
 \end{minted}
 \end{listing}
 
-Деревья правил хранят не только результат работы алгоритма, но и причину
-каждого перехода. Конструктор \texttt{StartCArrow} соединяет дерево
-клаузификации с деревом $C^{\rightarrow}$, а расширенные конструкторы
-\texttt{ExCPL0} и \texttt{ExCPL1} добавляют LJT-доказательства классических
-подзадач.
+В листинге~\ref{lst:refactoring-clausification-rule} каждый конструктор
+соответствует одному правилу преобразования формул в клаузальную форму. Список
+\texttt{Substitution\_} хранит термовые подстановки, которые появляются при
+последующем аннотировании доказательства.
 
 \begin{listing}[!htb]
-\caption{Состояние Z3 и контрмодель Крипке}
-\label{lst:refactoring-solver-countermodel}
+\caption{Дерево правил $C^{\rightarrow}$ \texttt{CArrowRule\_}}
+\label{lst:refactoring-carrow-rule}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
+data CArrowRule_ a c =
+  CPL0 (Intuit_ a c) (Classic_ a c) |
+  CPL1 (Intuit_ a c) (Classic_ a c) (CArrowRule_ a c) (Flat_ c) (Impl_ c) |
+  ExCPL0 (Intuit_ a c) (LJTRule_ a c) [Substitution_] |
+  ExCPL1 (Intuit_ a c) (LJTRule_ a c) (CArrowRule_ a c) (Flat_ c) (Impl_ c) [Substitution_]
+\end{minted}
+\end{listing}
+
+Листинг~\ref{lst:refactoring-carrow-rule} показывает как исходные правила
+\texttt{CPL0}/\texttt{CPL1}, так и их расширенные версии с LJT-поддеревьями и
+подстановками, возникающими при аннотировании.
+
+\texttt{Solver\_} инкапсулирует состояние Z3: контекст, инкрементальный
+решатель и соответствие между атомами задачи и булевыми AST-узлами. Через эту
+структуру выполняются две операции: добавление плоских клауз и проверка
+классической выводимости цели при заданных атомарных допущениях.
+
+\texttt{CounterModel\_} и \texttt{World} представляют конечную контрмодель
+Крипке. Мир хранит множество истинных в нём атомов, а \texttt{CounterModel\_}
+хранит сами миры и отношение достижимости между ними. Эта структура строится в
+случае, если CEGAR-процедура не может получить новую выученную клаузу и тем
+самым обнаруживает невалидность формулы.
+
+\begin{listing}[!htb]
+\caption{Состояние решателя \texttt{Solver\_}}
+\label{lst:refactoring-solver}
 \begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
 data Solver_ =
   Solver
     Z3.Context
     Z3.Solver
     [Annotated_ Z3.AST Atom_]
+\end{minted}
+\end{listing}
 
+Листинг~\ref{lst:refactoring-solver} показывает состояние, необходимое для
+инкрементального взаимодействия с Z3.
+
+\begin{listing}[!htb]
+\caption{Результат SAT-проверки \texttt{SatProveResult\_}}
+\label{lst:refactoring-sat-prove-result}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
 data SatProveResult_ =
   Yes [Annotated_ Z3.AST Atom_] |
   No [Annotated_ Z3.AST Atom_]
+\end{minted}
+\end{listing}
 
+В листинге~\ref{lst:refactoring-sat-prove-result} результат SAT-запроса
+разделён на успешное классическое доказательство и контрпример-модель.
+
+\begin{listing}[!htb]
+\caption{Мир контрмодели \texttt{World}}
+\label{lst:refactoring-world}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
 data World a =
   World Int (Set (Annotated_ a Atom_))
+\end{minted}
+\end{listing}
 
+Листинг~\ref{lst:refactoring-world} задаёт один мир контрмодели как номер и
+множество атомов, истинных в этом мире.
+
+\begin{listing}[!htb]
+\caption{Контрмодель Крипке \texttt{CounterModel\_}}
+\label{lst:refactoring-countermodel}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
 data CounterModel_ a = CounterModel {
   reachableTo :: Map Int [Int],
   reachableFrom :: Map Int [Int],
@@ -1905,10 +1962,14 @@ data CounterModel_ a = CounterModel {
 \end{minted}
 \end{listing}
 
-Структура \texttt{Solver\_} отделяет работу с внешним решателем от логики
-доказателя. Тип \texttt{SatProveResult\_} фиксирует два возможных ответа
-классической проверки: ядро невыполнимости или модель. Модель затем
-используется для построения миров \texttt{CounterModel\_}.
+Листинг~\ref{lst:refactoring-countermodel} показывает, что контрмодель хранит
+и сами миры, и отношение достижимости между ними.
+
+\texttt{Lambda\_} описывает термы расширенного $\lambda$-исчисления:
+переменные, абстракции, применения, пары, проекции, вложения в сумму, разбор
+случаев и вспомогательные конструкции для подстановок. Этот тип используется
+на последней фазе, когда из дерева доказательства извлекается программное
+содержание.
 
 \begin{listing}[!htb]
 \caption{Термы расширенного $\lambda$-исчисления}
@@ -1924,16 +1985,23 @@ data Lambda_ =
   Proj Int Int Lambda_ |
   Insert Int Int Lambda_ Lambda_ |
   Application [Lambda_]
-
-data Substitution_ =
-  Substitution Lambda_ String Lambda_
 \end{minted}
 \end{listing}
 
-Тип \texttt{Lambda\_} содержит конструкции, необходимые для вычислительной
-интерпретации всех связок рассматриваемого фрагмента IPL: абстракции и
-применения для импликации, произведения и проекции для конъюнкции, суммы и
-разбор случаев для дизъюнкции.
+Листинг~\ref{lst:refactoring-lambda} перечисляет термовые конструкции,
+соответствующие импликации, конъюнкции и дизъюнкции по Карри--Говарду.
+
+\begin{listing}[!htb]
+\caption{Подстановка \texttt{Substitution\_}}
+\label{lst:refactoring-substitution}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
+data Substitution_ =
+  Substitution String Lambda_
+\end{minted}
+\end{listing}
+
+Листинг~\ref{lst:refactoring-substitution} задаёт одну операцию замены: имя
+переменной и терм, который должен быть подставлен вместо неё.
 
 Для большинства перечисленных структур определены экземпляры стандартных
 классов \texttt{Functor} и \texttt{Bifunctor}. Они позволяют менять только
@@ -1945,63 +2013,66 @@ $\lambda$-термы. Экземпляры \texttt{Buildable} использую
 
 \subsection{Конвейер доказательства}
 
-Работа доказателя разбита на несколько последовательных фаз. Центральная
-функция \texttt{prove} связывает эти фазы в единый конвейер: строит начальную
-секвенцию, запускает клаузификацию, подготавливает Z3, вызывает поиск вывода в
-$C^{\rightarrow}$ и в случае успеха запускает построение LJT-поддеревьев,
-аннотирование, редукцию и визуализацию.
+Доказательство состоит из двух крупных этапов. Сначала исходная формула IPL
+преобразуется процедурой клаузификации в r-секвенцию $R, X \Rightarrow g$, где
+$R$ --- множество плоских клауз, $X$ --- множество импликационных клауз вида
+$(a \rightarrow b) \rightarrow c$, а $g$ --- атомарная цель. Затем к этой
+r-секвенции применяется SAT-ориентированный алгоритм \texttt{proveR}, описанный
+Фиорентини~\cite{Fiorentini2021}. Именно этот алгоритм лежит в основе
+реализованной функции \texttt{carrow}: он либо строит вывод в
+$C^{\rightarrow}$, либо завершает работу конечной контрмоделью Крипке.
 
-\begin{listing}[!htb]
-\caption{Общая схема функции \texttt{prove}}
-\label{lst:refactoring-prove-pipeline}
-\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
-prove :: Formula_ -> IO ()
-prove formula = do
-  let goalAtom = Variable "$"
-  let goal = Atom goalAtom
-  let sequent = Unclausified [] [] [Annotated () (implication formula goal)] (Annotated ((), ()) goalAtom)
-  let (clausified, st) = runState (clausify sequent) (ClausificationState 0)
+Схема алгоритма \texttt{proveR} из статьи приведена на
+рисунке~\ref{fig:prover}. В ней используется один инкрементальный
+SAT-решатель $s$, множество интерпретаций $W$ для построения контрмодели и
+выученная плоская клауза $\varphi$.
 
-  let (Intuit flats impls goal) = getSequent clausified
-  s@(Solver context solver _) <- newSolver
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=0.9\textwidth]{proveR.png}
+\caption{Схема алгоритма \texttt{proveR} с перезапуском}
+\label{fig:prover}
+\end{figure}
 
-  let universe = Set.toList $ Set.fromList $ annotated goal :
-        (atoms =<< (map (toFormula . annotated) flats ++ map (toFormula . annotated) impls))
+Фазы алгоритма на рисунке~\ref{fig:prover} имеют следующий смысл:
+\begin{itemize}
+\item \textbf{S0} --- создаётся инкрементальный SAT-решатель
+  $s \gets \mathrm{newSolver}(R)$, содержащий все плоские клаузы из $R$;
+\item \textbf{S1} --- начинается новая итерация главного цикла, множество
+  интерпретаций контрмодели очищается: $W \gets \varnothing$;
+\item \textbf{S2} --- проверяется классическая выводимость цели:
+  $\mathrm{satProve}(s, \varnothing, g)$. Ответ $\mathrm{Yes}(\varnothing)$
+  завершает алгоритм результатом \texttt{Valid}, а ответ $\mathrm{No}(M)$
+  запускает построение контрмодели;
+\item \textbf{S3} --- найденная интерпретация добавляется в множество миров:
+  $W \gets W \cup \{M\}$;
+\item \textbf{S4} --- выбирается пара $\langle w, \lambda\rangle$, где
+  $w \in W$, $\lambda = (a \rightarrow b) \rightarrow c \in X$, и мир $w$ не
+  реализует $\lambda$ относительно $W$. Если такой пары нет, алгоритм
+  возвращает \texttt{CountSat};
+\item \textbf{S5} --- проверяется классическая выводимость
+  $R(s), w, a \vdash_{\mathit{cpl}} b$. При ответе $\mathrm{No}(M)$ внутренний
+  цикл продолжается с новым миром, при ответе $\mathrm{Yes}(A)$ найдено
+  множество допущений для обучения;
+\item \textbf{S6} --- строится выученная клауза
+  $\varphi = \bigwedge(A \setminus \{a\}) \rightarrow c$, она добавляется в
+  решатель командой $\mathrm{addClause}(s, \varphi)$, после чего главный цикл
+  перезапускается.
+\end{itemize}
 
-  universeAsts <- mapM (mkFreshAtom context) universe
-  let atomToAst = Map.fromList $ zip universe universeAsts
+Псевдокод процедуры \texttt{proveR}, соответствующий этой схеме, приведён в
+приложении~\ref{app:prover}.
 
-  let s = Solver context solver [Annotated (atomToAst ! a) a | a <- universe]
-  let reannotatedFlats = Annotated () <$> reannotateFlat (atomToAst !) <$> annotated <$> flats
-  mapM_ (addClause s) (annotated <$> reannotatedFlats)
+Центральная функция \texttt{prove} связывает эти фазы в единый конвейер:
+строит начальную секвенцию, запускает клаузификацию, подготавливает Z3,
+вызывает поиск вывода в $C^{\rightarrow}$ и в случае успеха запускает
+построение LJT-поддеревьев, аннотирование, редукцию и визуализацию. Основной
+листинг этой функции приведён в приложении~\ref{app:prove}.
 
-  let reannotatedImpls = Annotated () <$> reannotateImpl (atomToAst !) <$> annotated <$> impls
-  let reannotatedGoal = reannotate (((), ) . (atomToAst !)) goal
-  let reannotatedIntuit = Intuit reannotatedFlats reannotatedImpls reannotatedGoal
+\subsubsection{Клаузификация}
 
-  result <- carrow reannotatedIntuit s
-  case result of
-    Left counterModel -> fmtLn $ counterModel |+ ""
-    Right proof -> do
-      let extended = extendProof (second (const ()) proof)
-      let concated = concatTrees clausified (second (const ()) extended)
-      let (annotatedProof, _) = runState (annotateClausification concated) (Environment 0 Map.empty)
-      let reducedAnnotatedProof = first Lambda.reduce annotatedProof
-      fmtLn $ "digraph {\n" <>
-        "  graph [rankdir=BT]\n" <>
-        "  node [shape=record;fontname=Arial]\n" <>
-        indentF 2 (buildDotClausify 0 reducedAnnotatedProof) <>
-        "}\n"
-\end{minted}
-\end{listing}
-
-Листинг~\ref{lst:refactoring-prove-pipeline} показывает конвейер на уровне
-управления. В нём видны все основные переходы: от исходной формулы к дереву
-клаузификации, затем к Z3-аннотированной секвенции, доказательству
-$C^{\rightarrow}$ и итоговому DOT-графу.
-
-Первая фаза --- клаузификация. Исходная формула $F$ преобразуется в начальную
-секвенцию с целью $\$$:
+На первой фазе исходная формула $F$ преобразуется в начальную секвенцию с
+целью $\$$:
 \[
 F \rightarrow \$ \;\Rightarrow\; \$.
 \]
@@ -2012,8 +2083,8 @@ F \rightarrow \$ \;\Rightarrow\; \$.
 \texttt{ClausificationRule\_}, фиксирующее все преобразования.
 
 \begin{listing}[!htb]
-\caption{Диспетчер правил клаузификации}
-\label{lst:refactoring-clausify-dispatch}
+\caption{Список правил клаузификации \texttt{clausificationRules}}
+\label{lst:refactoring-clausification-rules}
 \begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
 clausificationRules :: [ClausificationRuleSignature]
 clausificationRules = [ applyFinishClausification,
@@ -2025,65 +2096,84 @@ clausificationRules = [ applyFinishClausification,
                         applyAliasing,
                         applyMakeImpl
                       ]
+\end{minted}
+\end{listing}
 
+Листинг~\ref{lst:refactoring-clausification-rules} задаёт порядок, в котором
+процедура клаузификации пытается применить правила к текущей секвенции.
+
+\begin{listing}[!htb]
+\caption{Функция клаузификации \texttt{clausify}}
+\label{lst:refactoring-clausify}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
 clausify :: UnclausifiedII -> State ClausificationState_ ClausificationRuleII
 clausify ucseq = do
   let appliedRules = map ($ ucseq) clausificationRules
   fromJust $ asum appliedRules
+\end{minted}
+\end{listing}
 
+Листинг~\ref{lst:refactoring-clausify} показывает диспетчер: функция строит
+список возможных применений правил и выбирает первое успешное. Несмотря на
+использование \texttt{map}, все правила не применяются заранее: благодаря
+ленивым вычислениям Haskell элементы списка \texttt{appliedRules} вычисляются
+только по мере требования со стороны \texttt{asum}, поэтому фактически
+проверяются правила до первого успешного применения.
+
+\begin{listing}[!htb]
+\caption{Правило клаузификации \texttt{applyAsImpl}}
+\label{lst:refactoring-apply-as-impl}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
 applyAsImpl :: ClausificationRuleSignature
 applyAsImpl ucseq@(Unclausified flats impls (uc : ucs) goal) = do
   impl <- fromFormula $ annotated uc
   let sequent = Unclausified flats (Annotated () impl : impls) ucs goal
   return $ do
     rule <- clausify sequent
-    return $ AsImpl ucseq rule (annotated uc) impl
+    return $ AsImpl ucseq rule (annotated uc) impl []
 applyAsImpl _ = Nothing
 \end{minted}
 \end{listing}
 
-Диспетчер последовательно пробует правила клаузификации и выбирает первое
-применимое. Каждое правило не просто изменяет секвенцию, а рекурсивно строит
-ветвь дерева \texttt{ClausificationRule\_}. В листинге
-~\ref{lst:refactoring-clausify-dispatch} показан пример правила
+Листинг~\ref{lst:refactoring-apply-as-impl} показывает пример правила
 \texttt{AsImpl}: если очередная формула уже распознаётся как импликационная
-клауза, она переносится из зоны $U$ в зону $X$.
+клауза, она переносится из зоны $U$ в зону $X$, а в дереве сохраняется
+соответствующий узел правила.
 
 После клаузификации необходимо подготовить Z3. Для этого все атомы, встреченные
 в плоских и импликационных клауза\-х, отображаются в булевы переменные Z3, а
 плоские клаузы добавляются в инкрементальный решатель.
 
 \begin{listing}[!htb]
-\caption{Подготовка атомов и добавление плоских клауз в Z3}
-\label{lst:refactoring-z3-prepare}
+\caption{Добавление плоской клаузы в Z3: \texttt{addClause}}
+\label{lst:refactoring-add-clause}
 \begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
-s@(Solver context solver _) <- newSolver
+addClause :: Solver_ -> Flat_ Z3.AST -> IO ()
+addClause (Solver context solver universe) (Flat cs ds) = do
+  csAST <- Z3.mkAnd context $ annotation <$> cs
+  dsAST <- Z3.mkOr context $ annotation <$> ds
+  clauseAST <- Z3.mkImplies context csAST dsAST
 
-let universe = Set.toList $ Set.fromList $ annotated goal :
-      (atoms =<< (map (toFormula . annotated) flats ++
-                  map (toFormula . annotated) impls))
-
-universeAsts <- mapM (mkFreshAtom context) universe
-let atomToAst = Map.fromList $ zip universe universeAsts
-
-let s = Solver context solver [Annotated (atomToAst ! a) a | a <- universe]
-
-let reannotatedFlats =
-      Annotated () <$> reannotateFlat (atomToAst !) <$> annotated <$> flats
-mapM_ (addClause s) (annotated <$> reannotatedFlats)
+  Z3.solverAssertCnstr context solver clauseAST
 \end{minted}
 \end{listing}
 
+Листинг~\ref{lst:refactoring-add-clause} показывает, как плоская клауза
+кодируется в Z3 как классическая импликация между конъюнкцией посылок и
+дизъюнкцией заключений.
+
 На этой фазе дерево ещё не содержит $\lambda$-термов. Аннотация используется
 технически: каждому атому сопоставляется AST-узел Z3, чтобы далее можно было
-формулировать классические запросы к решателю.
+формулировать классические запросы к решателю. Полный фрагмент подготовки
+решателя находится в основном листинге функции \texttt{prove} в
+приложении~\ref{app:prove}.
 
-Вторая фаза --- поиск вывода в исчислении $C^{\rightarrow}$. Перед запуском
-строится инкрементальный решатель Z3, а все атомы исходной задачи отображаются
-в булевы AST-узлы Z3. Плоские клаузы добавляются в решатель как классические
-импликации. Функция \texttt{carrow} сначала проверяет, следует ли цель из
-текущего множества плоских клауз. Если да, строится узел \texttt{CPL0}. Если
-нет, полученная модель используется как первый мир кандидатной контрмодели, и
+\subsubsection{Поиск в исчислении \texorpdfstring{$C^{\rightarrow}$}{C->}}
+
+На второй фазе выполняется поиск вывода в исчислении $C^{\rightarrow}$.
+Функция \texttt{carrow} сначала проверяет, следует ли цель из текущего
+множества плоских клауз. Если да, строится узел \texttt{CPL0}. Если нет,
+полученная модель используется как первый мир кандидатной контрмодели, и
 запускается внутренний цикл.
 
 Внутренний цикл выбирает импликационную клаузу, нарушенную в одном из миров
@@ -2126,6 +2216,10 @@ carrow iseq@(Intuit flats impls goal) solver = do
 \end{minted}
 \end{listing}
 
+Листинг~\ref{lst:refactoring-carrow} соответствует внешнему циклу
+\texttt{proveR}: он либо завершает доказательство правилом \texttt{CPL0}, либо
+добавляет выученную клаузу и рекурсивно перезапускает поиск.
+
 \begin{listing}[!htb]
 \caption{Внутренний цикл построения контрмодели}
 \label{lst:refactoring-inner-loop}
@@ -2149,14 +2243,24 @@ innerLoop iseq@(Intuit flats impls goal) counterModel solver = do
 \end{minted}
 \end{listing}
 
-Листинги~\ref{lst:refactoring-carrow} и~\ref{lst:refactoring-inner-loop}
-соответствуют двум циклам процедуры с перезапуском. Внешний цикл либо
-завершается правилом \texttt{CPL0}, либо добавляет новую выученную плоскую
-клаузу и перезапускает поиск. Внутренний цикл уточняет контрмодель до тех пор,
-пока не будет найдена нарушенная импликационная клауза, из которой можно
-получить новое ограничение.
+Листинг~\ref{lst:refactoring-inner-loop} соответствует внутреннему циклу:
+он уточняет множество миров контрмодели до тех пор, пока не будет найдена
+нарушенная импликационная клауза, из которой можно получить новое ограничение.
 
-Третья фаза --- расширение доказательства LJT-поддеревьями. Узлы
+\subsubsection{Построение LJT-поддеревьев}
+
+Классические подзадачи, возникающие в узлах \texttt{CPL0} и \texttt{CPL1},
+передаются в Z3 как SAT-запросы. Теоретически из решателя можно получать
+доказательства невыполнимости или ядра невыполнимости, однако их дальнейшая
+интерпретация усложняет реализацию: такие объекты зависят от внутреннего
+представления решателя и плохо соотносятся с правилами исходного исчисления. В
+данной работе выбран более простой и прозрачный путь: после того как решатель
+подтвердил классическую выводимость подзадачи, для неё строится явное
+доказательство в упрощённой системе LJT. Благодаря специальной форме классических
+секвенций этот алгоритм поиска доказательства получается небольшим, а полученное
+дерево сразу пригодно для последующего аннотирования $\lambda$-термами.
+
+На третьей фазе доказательство расширяется LJT-поддеревьями. Узлы
 \texttt{CPL0} и \texttt{CPL1} содержат классические секвенции, которые затем
 доказываются функцией \texttt{ljt}. В новой реализации эта фаза отделена от
 самого CEGAR-поиска: \texttt{carrow} отвечает за построение линейной структуры
@@ -2169,20 +2273,29 @@ $C^{\rightarrow}$, а \texttt{extendProof} добавляет к ней узлы
 \begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
 extendProof :: CArrowRule_ () () -> CArrowRule_ () ()
 extendProof (CPL0 iseq cseq) =
-  ExCPL0 iseq (ljt cseq)
+  ExCPL0 iseq (ljt cseq) []
 extendProof (CPL1 iseq cseq rule newFlat learnedImpl) =
-  ExCPL1 iseq (ljt cseq) (extendProof rule) newFlat learnedImpl
+  ExCPL1 iseq (ljt cseq) (extendProof rule) newFlat learnedImpl []
 extendProof _ = undefined
+\end{minted}
+\end{listing}
 
+Листинг~\ref{lst:refactoring-extend-proof} показывает, как к каждому узлу
+\texttt{CPL0} или \texttt{CPL1} добавляется LJT-доказательство соответствующей
+классической секвенции.
+
+\begin{listing}[!htb]
+\caption{Функция построения LJT-доказательства \texttt{ljt}}
+\label{lst:refactoring-ljt}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
 ljt :: Classic_ () () -> LJTRule_ () ()
 ljt cseq@(Classic flats assumptions goal) =
   fromJust $ asum (map ($ cseq) [applyAxiom, applyCs, applyDs])
 \end{minted}
 \end{listing}
 
-Функция \texttt{extendProof} превращает компактное дерево
-$C^{\rightarrow}$ в дерево, пригодное для извлечения термов: каждая
-классическая посылка получает явное LJT-доказательство.
+Листинг~\ref{lst:refactoring-ljt} задаёт порядок применения трёх правил
+LJT-поддерева: аксиомы, сокращения левой конъюнкции и разбиения дизъюнкции.
 
 Поскольку в фазу LJT попадают не произвольные интуиционистские секвенции, а
 классические подзадачи специального вида $R, A \vdash g$, полная система LJT
@@ -2235,15 +2348,23 @@ data LJTRule_ a c =
     (Classic_ a c)
     [LJTRule_ a c]
     (Flat_ ())
+    [Substitution_]
   |
   ReduceConjunction
     (Classic_ a c)
     (LJTRule_ a c)
     (Flat_ ())
     Atom_
+    [Substitution_]
 \end{minted}
 \end{listing}
 
+Листинг~\ref{lst:refactoring-ljt-rules} показывает тип дерева LJT, который
+используется только для классических подзадач, возникающих внутри
+$C^{\rightarrow}$. В конструкторах правил сохраняются подстановки, которые затем
+выводятся в DOT-представлении рядом с соответствующими узлами доказательства.
+
+Далее приведены локальные функции из блока \texttt{where} функции \texttt{ljt}.
 Аксиома завершает ветвь доказательства. В терминах секвенций она соответствует
 правилу
 \begin{center}
@@ -2255,7 +2376,7 @@ data LJTRule_ a c =
 и в коде проверяется простым условием \texttt{goal `elem` assumptions}.
 
 \begin{listing}[!htb]
-\caption{Проверка аксиомы в LJT-поддереве}
+\caption{Локальная проверка аксиомы в LJT-поддереве}
 \label{lst:refactoring-ljt-axiom}
 \begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
 applyAxiom :: Classic_ () () -> Maybe (LJTRule_ () ())
@@ -2265,6 +2386,9 @@ applyAxiom cseq@(Classic flats assumptions goal) =
     else Nothing
 \end{minted}
 \end{listing}
+
+Листинг~\ref{lst:refactoring-ljt-axiom} показывает локальную реализацию
+аксиомы: ветвь закрывается, когда цель уже присутствует среди допущений.
 
 Правило \texttt{SplitDisjunction} применяется к плоской клаузе с пустой левой
 частью. Такая клауза имеет вид $\top \rightarrow d_1 \lor \ldots \lor d_m$,
@@ -2280,7 +2404,7 @@ applyAxiom cseq@(Classic flats assumptions goal) =
 \end{center}
 
 \begin{listing}[!htb]
-\caption{Разбиение по правой части плоской клаузы}
+\caption{Локальное разбиение по правой части плоской клаузы}
 \label{lst:refactoring-ljt-split}
 \begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
 applyDs :: Classic_ () () -> Maybe (LJTRule_ () ())
@@ -2293,13 +2417,16 @@ applyDs cseq@(Classic flats assumptions goal) = do
         Classic (List.delete found flats) (addAnnotation () d : assumptions) goal
         | d <- ds
       ])
-      (annotated found)
+      (annotated found) []
   where
     maybeFoundDs = List.find dsPred flats
     dsPred (Annotated () (Flat [] _)) = True
     dsPred _ = False
 \end{minted}
 \end{listing}
+
+Листинг~\ref{lst:refactoring-ljt-split} показывает ветвление доказательства по
+каждому атому из правой части плоской клаузы.
 
 Правило \texttt{ReduceConjunction} применяется, когда в левой части плоской
 клаузы есть атом, уже находящийся в списке допущений. Пусть в $R$ есть клауза
@@ -2317,7 +2444,7 @@ $(a_i \land C) \rightarrow D$ и одному применению modus ponens 
 $a_i$.
 
 \begin{listing}[!htb]
-\caption{Объединение каррирования и modus ponens}
+\caption{Локальное объединение каррирования и modus ponens}
 \label{lst:refactoring-ljt-reduce}
 \begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
 applyCs :: Classic_ () () -> Maybe (LJTRule_ () ())
@@ -2331,7 +2458,7 @@ applyCs cseq@(Classic flats assumptions goal) = do
       cseq
       (ljt newSequent)
       (annotated flat)
-      (annotated atom))
+      (annotated atom) [])
   where
     maybeFoundCs = List.find (uncurry csPred)
       [(a', r') | a' <- assumptions, r' <- flats]
@@ -2339,6 +2466,9 @@ applyCs cseq@(Classic flats assumptions goal) = do
       annotated atom `elem` map annotated cs
 \end{minted}
 \end{listing}
+
+Листинг~\ref{lst:refactoring-ljt-reduce} показывает реализованное сокращение:
+найденный в допущениях атом удаляется из левой части плоской клаузы.
 
 Порядок применения правил в функции \texttt{ljt} выбран так, чтобы сначала
 закрывать уже доказанные цели, затем сокращать левые части плоских клауз по
@@ -2350,7 +2480,9 @@ applyCs cseq@(Classic flats assumptions goal) = do
 Такой порядок уменьшает размер классической подзадачи до ветвления и тем самым
 делает получаемое LJT-поддерево компактнее.
 
-Четвёртая фаза --- аннотирование $\lambda$-термами. Функция
+\subsubsection{Аннотирование \texorpdfstring{$\lambda$}{lambda}-термами}
+
+На четвёртой фазе выполняется аннотирование $\lambda$-термами. Функция
 \texttt{annotateClausification} проходит по объединённому дереву
 клаузификации и $C^{\rightarrow}$ в обратном направлении, восстанавливая
 термовые преобразования. Для LJT-поддеревьев используется функция
@@ -2370,78 +2502,224 @@ annotateClausification (StartCArrow useq carrowRule) = do
     StartCArrow
       (Unclausified flats impls [] goal)
       annotatedCArrow
+\end{minted}
+\end{listing}
 
+Листинг~\ref{lst:refactoring-annotate-start-carrow} показывает граничный случай
+аннотирования: после окончания клаузификации управление передаётся дереву
+$C^{\rightarrow}$.
+
+\begin{listing}[!htb]
+\caption{Аннотирование правила \texttt{ExCPL0}: \texttt{annotateCArrow}}
+\label{lst:refactoring-annotate-carrow-excpl0}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
 annotateCArrow :: CArrowRule_ () () -> State Environment (CArrowRule_ Lambda_ ())
-annotateCArrow (ExCPL0 (Intuit _ impls _) ljtRule) = do
+annotateCArrow (ExCPL0 (Intuit _ impls _) ljtRule _) = do
   annotatedLJT <- annotateLJT ljtRule
   let (Classic flats _ goal) = rootLJT annotatedLJT
   implAnnotations <- mapM getTerm (annotated <$> impls)
   let annotatedImpls =
         [Annotated ann (annotated impl) | (impl, ann) <- zip impls implAnnotations]
 
-  return $ ExCPL0 (Intuit flats annotatedImpls goal) annotatedLJT
+  return $
+    ExCPL0
+      (Intuit flats annotatedImpls goal)
+      annotatedLJT []
 \end{minted}
 \end{listing}
 
-В листинге~\ref{lst:refactoring-annotate-start-carrow} показана граница между
-двумя частями объединённого дерева. Сначала аннотируется дерево
-$C^{\rightarrow}$, после чего его корневая секвенция становится основанием для
-обратного прохода по правилам клаузификации.
+Листинг~\ref{lst:refactoring-annotate-carrow-excpl0} показывает, как результат
+LJT-доказательства переносится в аннотированный узел \texttt{ExCPL0}.
 
-Пятая фаза --- редукция и визуализация. Итоговый терм нормализуется функцией
-\texttt{Lambda.reduce}. Затем полное дерево доказательства выводится в формате
-Graphviz DOT. В случае невыводимости вместо доказательства печатается DOT-граф
-контрмодели Крипке.
+\subsubsection{Редукция и визуализация}
+
+На пятой фазе итоговый терм нормализуется функцией \texttt{Lambda.reduce}.
+В текущей реализации также печатается промежуточный DOT-граф дерева
+клаузификации до запуска решателя. После успешного поиска вывода полное
+аннотированное дерево доказательства выводится в формате Graphviz DOT, а в
+случае невыводимости вместо доказательства печатается DOT-граф контрмодели
+Крипке.
 
 \begin{listing}[!htb]
-\caption{Редукция термов и построение DOT-графа}
-\label{lst:refactoring-reduce-dot}
+\caption{Фрагмент функции редукции \texttt{reduce}}
+\label{lst:refactoring-reduce}
 \begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
-let extended = extendProof (second (const ()) proof)
-let concated = concatTrees clausified (second (const ()) extended)
-let (annotatedProof, _) =
-      runState (annotateClausification concated) (Environment 0 Map.empty)
-let reducedAnnotatedProof = first Lambda.reduce annotatedProof
-
-fmtLn $
-  "digraph {\n" <>
-  "  graph [rankdir=BT]\n" <>
-  "  node [shape=record;fontname=Arial]\n" <>
-  indentF 2 (buildDotClausify 0 reducedAnnotatedProof) <>
-  "}\n"
+reduce :: Lambda_ -> Lambda_
+reduce (Abstraction [] body) = reduce body
+reduce (Abstraction capture body) = Abstraction capture $ reduce body
+reduce (Const body) = Const $ reduce body
+reduce v@(Variable _) = v
+reduce cs@(Case e cases) =
+  case reduce e of 
+    Sum c i arg -> if c /= length cases
+                     then error "Wrong case"
+                     else let (capture, body) = cases !! (i - 1)
+                              substitution = Substitution capture arg
+                          in reduce $ substitute body substitution
+    t -> Case t [(capture, reduce body) | (capture, body) <- cases]
 \end{minted}
 \end{listing}
+
+Листинг~\ref{lst:refactoring-reduce} показывает фрагмент нормализации
+$\lambda$-термов, включая редукцию разбора случаев для суммы.
+
+\begin{listing}[!htb]
+\caption{Фрагмент функции визуализации \texttt{buildDotClausify}}
+\label{lst:refactoring-build-dot-clausify}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
+buildDotClausify ::
+  (BuildableDotAnnotation a, BuildableDotAnnotation c) =>
+  Int -> ClausificationRule_ a c -> Builder
+buildDotClausify rootNodeId (AsImpl c r _ _ subs) = 
+  rootNodeId |+ " [label=\"" <> buildDot c <> "|{" <>
+  joinBy "\\n" (buildDot <$> subs) <> "}\"]\n" +|
+  rootNodeId |+ " -> " +| (rootNodeId + 1) |+ " [label=AsImpl]\n" <>
+  buildDotClausify (rootNodeId + 1) r
+buildDotClausify rootNodeId (StartCArrow c r) = 
+  rootNodeId |+ " [label=\"" <> buildDot c <> "\"]\n" +|
+  rootNodeId |+ " -> " +| (rootNodeId + 1) |+ " [label=StartCArrow]\n" <>
+  buildDotCArrow (rootNodeId + 1) r
+\end{minted}
+\end{listing}
+
+Листинг~\ref{lst:refactoring-build-dot-clausify} показывает, как узлы дерева
+клаузификации превращаются в вершины и рёбра графа Graphviz.
 
 Здесь дерево клаузификации и расширенное дерево $C^{\rightarrow}$
 склеиваются в одно дерево, аннотируются, затем все термы редуцируются функцией
 \texttt{Lambda.reduce}. После этого дерево передаётся в \texttt{buildDotClausify},
-которая строит текстовое представление графа Graphviz.
-
-Общий конвейер можно представить следующим образом:
-\begin{center}
-\begin{tabular}{ll}
-исходная формула & $\rightarrow$ \texttt{Unclausified\_} \\
-клаузификация & $\rightarrow$ \texttt{ClausificationRule\_} и \texttt{Intuit\_} \\
-Z3 + $C^{\rightarrow}$ & $\rightarrow$ \texttt{CArrowRule\_} или контрмодель \\
-LJT-поддеревья & $\rightarrow$ \texttt{ExCPL0}/\texttt{ExCPL1} \\
-аннотирование & $\rightarrow$ дерево с $\lambda$-термами \\
-редукция и DOT & $\rightarrow$ визуализация результата
-\end{tabular}
-\end{center}
+которая строит текстовое представление графа Graphviz. Последовательность
+основных вызовов приведена в листинге функции \texttt{prove} в
+приложении~\ref{app:prove}.
 
 \subsection{Построение контрмодели}
 
 Если формула не является теоремой IPL, процедура строит конечную контрмодель
-Крипке. Контрмодель представлена типом \texttt{CounterModel\_}. Каждый мир
-содержит идентификатор и множество истинных атомов, а отношения достижимости
-хранятся в двух отображениях: от мира к его предкам и от мира к его потомкам.
+Крипке. В реализации она представлена типами \texttt{World} и
+\texttt{CounterModel\_}, приведёнными в листингах~\ref{lst:refactoring-world}
+и~\ref{lst:refactoring-countermodel}. Мир \texttt{World} хранит числовой
+идентификатор и множество атомов, истинных в этом мире. Значение
+\texttt{CounterModel\_} хранит все построенные миры в отображении
+\texttt{worlds}, а отношение достижимости поддерживает в двух направлениях:
+\texttt{reachableTo} задаёт список предков мира, а \texttt{reachableFrom} ---
+список его непосредственных потомков.
 
-Начальный мир создаётся из первой модели Z3. Затем функция \texttt{selectWorld}
-ищет мир и импликационную клаузу, для которых условие истинности импликации в
-модели Крипке нарушается. Если проверка $R, w, a \vdash b$ возвращает новую
-модель, она добавляется как наследник выбранного мира. Благодаря этому
-контрмодель строится одновременно с CEGAR-поиском и не требует отдельной
-постобработки.
+Такое представление удобно для двух операций, которые выполняются во внутреннем
+цикле алгоритма. Во-первых, по выбранному миру нужно быстро получить всех его
+потомков и проверить условие истинности импликационной клаузы. Во-вторых, при
+добавлении нового мира необходимо сохранить атомы, полученные из новой модели
+Z3, и зафиксировать, что этот мир становится потомком выбранного мира.
+
+\begin{listing}[!htb]
+\caption{Создание начальной контрмодели \texttt{newCounterModel}}
+\label{lst:refactoring-new-countermodel}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
+newCounterModel :: Ord a => [Annotated_ a Atom_] -> CounterModel_ a
+newCounterModel world = CounterModel {
+  reachableTo = Map.singleton 0 [],
+  reachableFrom = Map.singleton 0 [],
+  worlds = Map.singleton 0 (World 0 (Set.fromList world))
+}
+\end{minted}
+\end{listing}
+
+Листинг~\ref{lst:refactoring-new-countermodel} показывает создание корневого
+мира с номером $0$. Он строится из первой модели Z3: список истинных атомов
+переводится во множество, а списки предков и потомков инициализируются пустыми.
+
+\begin{listing}[!htb]
+\caption{Добавление нового мира в контрмодель \texttt{addWorld}}
+\label{lst:refactoring-add-world}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
+addWorld :: Ord a => CounterModel_ a -> Int -> [Annotated_ a Atom_] -> CounterModel_ a
+addWorld counterModel worldId as = 
+  counterModel {
+    reachableTo =
+      Map.insert newWorldId reachableToNewWorld (reachableTo counterModel),
+    reachableFrom =
+      Map.insert newWorldId [] $
+        List.foldr (Map.update (Just . (:) newWorldId))
+          (reachableFrom counterModel) reachableToNewWorld,
+    worlds = Map.insert newWorldId newWorld (worlds counterModel)
+  }
+  where
+    newWorldId = Map.size $ worlds counterModel
+    newWorld = World newWorldId (Set.fromList as)
+    reachableToNewWorld = worldId : (reachableTo counterModel ! worldId)
+\end{minted}
+\end{listing}
+
+Листинг~\ref{lst:refactoring-add-world} задаёт единственную операцию расширения
+контрмодели. Новый мир получает следующий свободный номер, сохраняет атомы из
+новой модели Z3 и становится потомком мира \texttt{worldId}. Список
+\texttt{reachableToNewWorld} содержит выбранный мир и всех его предков; поэтому
+для каждого из них обновляется отображение \texttt{reachableFrom}.
+
+\begin{listing}[!htb]
+\caption{Поиск мира, нарушающего импликационную клаузу \texttt{selectWorld}}
+\label{lst:refactoring-select-world}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
+selectWorld :: Ord a => CounterModel_ a -> Impl_ a -> Maybe (World a)
+selectWorld counterModel impl@(Impl a b c) =
+  selectWorlds' [0..(Map.size (worlds counterModel) - 1)]
+  where
+    selectWorlds' [] = Nothing
+    selectWorlds' (worldId:t) =
+      if condition
+        then selectWorlds' t
+        else Just world
+      where
+        world@(World _ as) = worlds counterModel ! worldId
+        reachableFromWorlds =
+          map (worlds counterModel !) (reachableFrom counterModel ! worldId)
+        condition =
+          Set.member a as ||
+          Set.member b as ||
+          Set.member c as ||
+          any (reachableFromPred impl) reachableFromWorlds
+\end{minted}
+\end{listing}
+
+Листинг~\ref{lst:refactoring-select-world} показывает основной способ чтения
+контрмодели. Функция перебирает уже построенные миры и ищет первый мир, в
+котором импликационная клауза $(a \rightarrow b) \rightarrow c$ ещё не
+реализована. Если такого мира нет, текущая структура миров уже является
+контрмоделью для исходной формулы.
+
+\begin{listing}[!htb]
+\caption{Предикат для потомков выбранного мира}
+\label{lst:refactoring-reachable-from-pred}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
+reachableFromPred (Impl a b _) (World _ as) =
+  Set.member a as && not (Set.member b as)
+\end{minted}
+\end{listing}
+
+Листинг~\ref{lst:refactoring-reachable-from-pred} уточняет последнюю часть
+проверки из \texttt{selectWorld}. Если среди потомков уже есть мир, где истинно
+$a$ и ложно $b$, то требуемый свидетель для импликации $a \rightarrow b$ уже
+найден, и выбранный мир не нарушает рассматриваемую импликационную клаузу.
+
+\begin{listing}[!htb]
+\caption{Вывод контрмодели в формате DOT}
+\label{lst:refactoring-countermodel-build}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
+instance Buildable (CounterModel_ a) where
+  build (CounterModel reachableTo reachableFrom worlds) = 
+    "digraph {\n" <>
+    "  graph [rankdir=BT]\n" <>
+    "  node [shape=record]\n" <>
+    indentF 2 (unlinesF $ Map.elems worlds) <>
+    indentF 2 (Foldable.fold [
+      ancestor |+ " -> " +| i |+ "\n"
+      | (i, (ancestor: _)) <- Map.toAscList reachableTo]) <>
+    "}"
+\end{minted}
+\end{listing}
+
+Листинг~\ref{lst:refactoring-countermodel-build} показывает интерфейс
+визуализации: контрмодель преобразуется в граф Graphviz. В вершинах выводятся
+миры с наборами истинных атомов, а рёбра строятся по отношению достижимости.
 
 \subsection{Примеры использования}
 
@@ -2506,8 +2784,9 @@ SAT/SMT-оракула, построение LJT-поддеревьев для �
 \anonsection{ПРИЛОЖЕНИЕ А}
 \label{app:ljt}
 
-\begin{algorithm}[H]
-\caption{Обратный поиск вывода в LJT}\label{alg:ljt-prove}
+\begin{listing}[!htb]
+\caption{Обратный поиск вывода в LJT}
+\label{alg:ljt-prove}
 \begin{algorithmic}[1]
 \Function{LJTProve}{$\Gamma, G$}
   \If{$G$ --- атом и $G \in \Gamma$}
@@ -2560,7 +2839,7 @@ SAT/SMT-оракула, построение LJT-поддеревьев для �
   \State \Return \textbf{false}
 \EndFunction
 \end{algorithmic}
-\end{algorithm}
+\end{listing}
 
 \anonsection{ПРИЛОЖЕНИЕ Б}
 \label{app:ljt-example}
@@ -2638,8 +2917,9 @@ $((\alpha \rightarrow \beta) \rightarrow c) \rightarrow c$.
   \subseteq A$ или $\mathrm{No}(M)$ с классической контрмоделью $M$.
 \end{itemize}
 
-\begin{algorithm}[H]
-\caption{Главная процедура $LJT_{SAT}$}\label{alg:ljtsat-main}
+\begin{listing}[!htb]
+\caption{Главная процедура $LJT_{SAT}$}
+\label{alg:ljtsat-main}
 \begin{algorithmic}[1]
 \Function{LJTSatMain}{$R_0, X_0, q_0$}
   \State $s \gets \mathrm{newSolver}()$
@@ -2657,10 +2937,11 @@ $((\alpha \rightarrow \beta) \rightarrow c) \rightarrow c$.
   \EndIf
 \EndFunction
 \end{algorithmic}
-\end{algorithm}
+\end{listing}
 
-\begin{algorithm}[H]
-\caption{Рекурсивная процедура поиска вывода}\label{alg:ljtsat}
+\begin{listing}[!htb]
+\caption{Рекурсивная процедура поиска вывода}
+\label{alg:ljtsat}
 \begin{algorithmic}[1]
 \Function{LJTSat}{$R, X, A, q$}
   \State $\tau_0 \gets \mathrm{satProve}(s, A, q)$
@@ -2693,10 +2974,122 @@ $((\alpha \rightarrow \beta) \rightarrow c) \rightarrow c$.
   \State \Return $\mathrm{No}(\mathrm{Mod}(r, \Theta, M))$
 \EndFunction
 \end{algorithmic}
-\end{algorithm}
+\end{listing}
 
 Параметр $r$ (мир контрмодели) опущен для краткости; при построении контрмодели
 миры индексируются последовательностями импликационных клауз, образующими дерево
 вызовов.
+
+\anonsection{ПРИЛОЖЕНИЕ Г}
+\label{app:prove}
+
+Ниже приведён основной листинг функции \texttt{prove}, которая связывает
+клаузификацию, запуск SAT-based алгоритма, расширение доказательства
+LJT-поддеревьями, аннотирование $\lambda$-термами, редукцию и вывод
+результата в формате DOT.
+
+\begin{listing}[!htb]
+\caption{Функция \texttt{prove}: общий конвейер доказательства}
+\label{lst:refactoring-prove-pipeline}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
+prove :: Formula_ -> IO ()
+prove formula = do
+  let goalAtom = Variable "$"
+  let goal = Atom goalAtom
+  let sequent = Unclausified [] [] [Annotated () (implication formula goal)] (Annotated ((), ()) goalAtom)
+  let (clausified, st) = runState (clausify sequent) (ClausificationState 0)
+  fmtLn $ buildDotClausify 0 clausified
+
+  let (Intuit flats impls goal) = getSequent clausified
+  s@(Solver context solver _) <- newSolver
+
+  let universe = Set.toList $ Set.fromList $ annotated goal :
+        (atoms =<< (map (toFormula . annotated) flats ++ map (toFormula . annotated) impls))
+
+  universeAsts <- mapM (mkFreshAtom context) universe
+  let atomToAst = Map.fromList $ zip universe universeAsts
+
+  let s = Solver context solver [Annotated (atomToAst ! a) a | a <- universe]
+  let reannotatedFlats = Annotated () <$> reannotateFlat (atomToAst !) <$> annotated <$> flats
+  mapM_ (addClause s) (annotated <$> reannotatedFlats)
+
+  let reannotatedImpls = Annotated () <$> reannotateImpl (atomToAst !) <$> annotated <$> impls
+  let reannotatedGoal = reannotate (((), ) . (atomToAst !)) goal
+  let reannotatedIntuit = Intuit reannotatedFlats reannotatedImpls reannotatedGoal
+
+  result <- carrow reannotatedIntuit s
+  case result of
+    Left counterModel -> fmtLn $ counterModel |+ ""
+    Right proof -> do
+      let extended = extendProof (second (const ()) proof)
+      let concated = concatTrees clausified (second (const ()) extended)
+      let (annotatedProof, _) = runState (annotateClausification concated) (Environment 0 Map.empty)
+      let reducedAnnotatedProof = first Lambda.reduce annotatedProof
+      fmtLn $ "digraph {\n" <>
+        "  graph [rankdir=BT]\n" <>
+        "  node [shape=record;fontname=Arial]\n" <>
+        indentF 2 (buildDotClausify 0 reducedAnnotatedProof) <>
+        "}\n"
+
+  return ()
+\end{minted}
+\end{listing}
+
+Листинг~\ref{lst:refactoring-prove-pipeline} показывает, как функция
+\texttt{prove} последовательно строит все промежуточные представления, печатает
+промежуточное дерево клаузификации и в конце выводит DOT-граф доказательства или
+контрмодель.
+
+\anonsection{ПРИЛОЖЕНИЕ Д}
+\label{app:prover}
+
+Ниже приведён псевдокод процедуры \texttt{proveR}, соответствующий схеме из
+работы Фиорентини~\cite{Fiorentini2021}. Процедура принимает r-секвенцию
+$R, X \Rightarrow g$ и возвращает один из двух результатов: \texttt{Valid}, если
+секвенция выводима, или \texttt{CountSat}, если построена контрмодель Крипке.
+
+\begin{listing}[!htb]
+\caption{Процедура \texttt{proveR} с перезапуском}
+\label{alg:prover}
+\begin{algorithmic}[1]
+\Function{proveR}{$R, X, g$}
+  \State $s \gets \mathrm{newSolver}(R)$
+  \Loop
+    \State $W \gets \varnothing$
+    \State $\tau \gets \mathrm{satProve}(s, \varnothing, g)$
+    \If{$\tau = \mathrm{Yes}(\varnothing)$}
+      \State \Return \texttt{Valid}
+    \EndIf
+    \State Пусть $\tau = \mathrm{No}(M)$
+    \Loop
+      \State $W \gets W \cup \{M\}$
+      \State Найти пару $\langle w, \lambda\rangle$ такую, что
+        $w \in W$, $\lambda \in X$ и $w \not\Vdash_W \lambda$
+      \If{такой пары нет}
+        \State \Return \texttt{CountSat}
+      \EndIf
+      \State Пусть $\lambda = (a \to b) \to c$
+      \State $\tau \gets \mathrm{satProve}(s, w \cup \{a\}, b)$
+      \If{$\tau = \mathrm{No}(M')$}
+        \State $M \gets M'$
+      \Else
+        \State Пусть $\tau = \mathrm{Yes}(A)$
+        \State $\varphi \gets \bigwedge(A \setminus \{a\}) \to c$
+        \State $\mathrm{addClause}(s, \varphi)$
+        \State \textbf{break}
+      \EndIf
+    \EndLoop
+  \EndLoop
+\EndFunction
+\end{algorithmic}
+\end{listing}
+
+Внешний цикл процедуры соответствует последовательному расширению множества
+плоских клауз $R(s)$ выученными клауза\-ми. Внутренний цикл строит множество
+интерпретаций $W$, которое при невозможности выбрать нарушенную импликационную
+клаузу становится контрмоделью. Если же такая клауза найдена и проверка
+$R(s), w, a \vdash_{\mathit{cpl}} b$ завершается успехом, процедура извлекает
+множество допущений $A$, строит выученную клаузу $\varphi$ и перезапускает
+главный цикл.
 
 \end{document}
