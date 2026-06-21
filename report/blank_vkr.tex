@@ -167,8 +167,9 @@ $\leftrightarrow$ типы>> создает высокий порог входа
 системы финитными средствами. Готлоб Фреге и Бертран Рассел развивали
 логицистскую программу, стремясь свести математику к логике. Третий путь
 избрал нидерландский математик Луитзен Эгбертус Ян Брауэр: его
-\emph{интуиционизм}, оформившийся в 1907--1912 годах, предполагал радикальный
-пересмотр не только оснований, но и самих методов математического рассуждения.
+\emph{интуиционизм}~\cite{Brouwer1975}, оформившийся в 1907--1912 годах,
+предполагал радикальный пересмотр не только оснований, но и самих методов
+математического рассуждения.
 
 Брауэр исходил из того, что математические объекты не существуют независимо от
 познающего субъекта, а являются мысленными конструкциями. Математическое
@@ -194,12 +195,13 @@ A$), закона Пирса ($((A \rightarrow B) \rightarrow A) \rightarrow A$)
 теми, которые несут конструктивное содержание.
 
 Формальная аксиоматизация интуиционистской логики была осуществлена учеником
-Брауэра --- Арендом Гейтингом --- в 1930 году. Гейтинг предложил исчисление
+Брауэра --- Арендом Гейтингом~\cite{Heyting1956}. Гейтинг предложил исчисление
 высказываний, в котором каждая аксиома и правило вывода допускают конструктивную
 интерпретацию, а закон исключённого третьего не выводим.
 
 \subsubsection{BHK-интерпретация}
-В 1930--1945 годах Андрей Николаевич Колмогоров и независимо Гейтинг
+В 1930--1945 годах Андрей Николаевич Колмогоров и независимо
+Гейтинг~\cite{Heyting1956}
 сформулировали интерпретацию логических связок через задачи и решения,
 известную как BHK-интерпретация (Брауэр -- Гейтинг -- Колмогоров). Семантика
 связок в интуиционистской логике определяется через понятие доказательства:
@@ -220,7 +222,7 @@ BHK-интерпретация придала интуиционистской �
 устанавливающего соответствие между доказательствами и программами.
 
 \subsubsection{Семантика Крипке}
-\emph{Семантика Крипке} задаёт класс моделей, в которых истинность формулы
+\emph{Семантика Крипке}~\cite{Kripke1965} задаёт класс моделей, в которых истинность формулы
 определяется относительно \emph{миров}, связанных отношением частичного порядка.
 Формула называется \emph{общезначимой}, если она истинна в корне любой модели.
 \emph{Контрмодель} --- модель, в корне которой некоторая формула не вынуждена;
@@ -255,7 +257,8 @@ BHK-интерпретация придала интуиционистской �
 \textbf{Пример 1.} Рассмотрим цепочку из двух миров $w_0 \prec w_1$ и одну
 переменную $p$, положив $V(p) = \{w_1\}$ (наследуемость соблюдена).
 
-\begin{center}
+\begin{figure}[!htb]
+\centering
 \begin{tikzpicture}[
     world/.style={circle, draw, minimum size=8mm, inner sep=0pt},
     >=stealth
@@ -266,7 +269,9 @@ BHK-интерпретация придала интуиционистской �
   \node[right=4mm] at (w0.east) {$V(w_0) = \varnothing$};
   \node[right=4mm] at (w1.east) {$V(w_1) = \{p\}$};
 \end{tikzpicture}
-\end{center}
+\caption{Двухмировая модель Крипке для переменной $p$}
+\label{fig:kripke-chain-p}
+\end{figure}
 
 Тогда $w_1 \Vdash p$, а $w_0 \not\Vdash p$.
 
@@ -288,7 +293,8 @@ $w_0 \not\Vdash \neg\neg p \rightarrow p$.
 Возьмём ту же цепочку $w_0 \prec w_1$, но с двумя переменными: $V(p) = \{w_1\}$,
 $V(q) = \varnothing$.
 
-\begin{center}
+\begin{figure}[!htb]
+\centering
 \begin{tikzpicture}[
     world/.style={circle, draw, minimum size=8mm, inner sep=0pt},
     >=stealth
@@ -299,7 +305,9 @@ $V(q) = \varnothing$.
   \node[right=4mm] at (w0.east) {$V(w_0) = \varnothing$};
   \node[right=4mm] at (w1.east) {$V(w_1) = \{p\}$};
 \end{tikzpicture}
-\end{center}
+\caption{Двухмировая модель Крипке для схемы Пирса}
+\label{fig:kripke-chain-peirce}
+\end{figure}
 
 Тогда $w_1 \not\Vdash q$, откуда $w_0 \not\Vdash p \rightarrow q$: для
 $v = w_1$ имеем $v \Vdash p$, но $v \not\Vdash q$. Проверим
@@ -316,7 +324,8 @@ $w_0 \not\Vdash ((p \rightarrow q) \rightarrow p) \rightarrow p$.
 \textbf{Пример 3.} Не всякая контрмодель является цепочкой. Рассмотрим формулу
 $(p \rightarrow q) \lor (q \rightarrow p)$ и модель с ветвлением:
 
-\begin{center}
+\begin{figure}[!htb]
+\centering
 \begin{tikzpicture}[
     world/.style={circle, draw, minimum size=8mm, inner sep=0pt},
     >=stealth
@@ -330,7 +339,9 @@ $(p \rightarrow q) \lor (q \rightarrow p)$ и модель с ветвление
   \node[right=4mm] at (w2.east) {$V(w_2) = \{q\}$};
   \node[below=2mm] at (w0.south) {$V(w_0) = \varnothing$};
 \end{tikzpicture}
-\end{center}
+\caption{Ветвящаяся модель Крипке}
+\label{fig:kripke-branching}
+\end{figure}
 
 Здесь $w_0 \not\Vdash p \rightarrow q$, поскольку $w_1 \Vdash p$, но
 $w_1 \not\Vdash q$. Аналогично $w_0 \not\Vdash q \rightarrow p$, так как
@@ -357,14 +368,19 @@ $w_0 \not\Vdash (p \rightarrow q) \lor (q \rightarrow p)$. Эта формула
 Гильбертова система представляет собой аксиоматическую формализацию
 интуиционистской логики. Она включает набор аксиом и правило вывода modus
 ponens:
-\begin{center}
+\begin{figure}[!htb]
+\centering
 \AxiomC{$A$}
 \AxiomC{$A \rightarrow B$}
 \BinaryInfC{$B$}
 \DisplayProof
-\end{center}
+\caption{Правило modus ponens}
+\label{fig:hilbert-mp}
+\end{figure}
 
 Ниже приведён стандартный набор аксиом:
+\begin{figure}[!htb]
+\centering
 \begin{align*}
 &\text{(A1)} \quad A \rightarrow (B \rightarrow A) \\
 &\text{(A2)} \quad (A \rightarrow (B \rightarrow C)) \rightarrow ((A \rightarrow B) \rightarrow (A \rightarrow C)) \\
@@ -376,8 +392,12 @@ ponens:
 &\text{(A8)} \quad (A \rightarrow C) \rightarrow ((B \rightarrow C) \rightarrow (A \lor B \rightarrow C)) \\
 &\text{(A9)} \quad \bot \rightarrow A
 \end{align*}
+\caption{Аксиомы гильбертовой системы для IPL}
+\label{fig:hilbert-axioms}
+\end{figure}
 
 Пример. Вывод формулы $A \rightarrow A$:
+\begin{figure}[!htb]
 \begin{enumerate}
 \item $A \rightarrow \bigl((A \rightarrow A) \rightarrow A\bigr)$ \hfill (A1)
 \item $\bigl(A \rightarrow ((A \rightarrow A) \rightarrow A)\bigr) \rightarrow \bigl((A \rightarrow (A \rightarrow A)) \rightarrow (A \rightarrow A)\bigr)$ \hfill (A2)
@@ -385,6 +405,9 @@ ponens:
 \item $A \rightarrow (A \rightarrow A)$ \hfill (A1)
 \item $A \rightarrow A$ \hfill (MP ~4,~3)
 \end{enumerate}
+\caption{Гильбертов вывод формулы $A \rightarrow A$}
+\label{fig:hilbert-a-implies-a}
+\end{figure}
 
 Гильбертова аксиоматика компактна и удобна для металогических рассуждений, но
 плохо приспособлена для практического построения доказательств: даже простые
@@ -393,9 +416,10 @@ modus ponens, а структура рассуждения <<спрятана>> 
 
 \subsubsection{Натуральный вывод}
 
-Натуральный вывод представляет собой систему, в которой доказательства строятся
+Натуральный вывод~\cite{Gentzen1935} представляет собой систему, в которой доказательства строятся
 с использованием правил введения и устранения для каждой логической связки.
 
+\begin{figure}[!htb]
 \begin{center}
 \AxiomC{$\Gamma, A \vdash B$}
 \RightLabel{\scriptsize$\rightarrow I$}
@@ -457,9 +481,13 @@ modus ponens, а структура рассуждения <<спрятана>> 
 \UnaryInfC{$\Gamma, A \vdash A$}
 \DisplayProof
 \end{center}
+\caption{Основные правила натурального вывода}
+\label{fig:natural-deduction-rules}
+\end{figure}
 
 Пример. Формула $A \rightarrow (B \rightarrow A)$ выводится так:
-\begin{center}
+\begin{figure}[!htb]
+\centering
 \AxiomC{}
 \RightLabel{\scriptsize$Ax$}
 \UnaryInfC{$A, B \vdash A$}
@@ -468,7 +496,9 @@ modus ponens, а структура рассуждения <<спрятана>> 
 \RightLabel{\scriptsize$\rightarrow I$}
 \UnaryInfC{$\vdash A \rightarrow (B \rightarrow A)$}
 \DisplayProof
-\end{center}
+\caption{Вывод формулы $A \rightarrow (B \rightarrow A)$ в натуральном выводе}
+\label{fig:natural-deduction-example}
+\end{figure}
 
 По сравнению с гильбертовой аксиоматикой натуральный вывод гораздо проще для
 восприятия человеком: правила введения и устранения связок напрямую отражают ход
@@ -479,7 +509,7 @@ modus ponens, а структура рассуждения <<спрятана>> 
 
 \subsubsection{Секвенциальное исчисление}
 
-Секвенциальное исчисление основано на понятии \emph{секвенции}.
+Секвенциальное исчисление~\cite{Gentzen1935} основано на понятии \emph{секвенции}.
 Пусть $\mathcal{L}$ --- множество формул пропозициональной логики, построенных из
 пропозициональных переменных, связок $\land$, $\lor$, $\rightarrow$ и константы
 $\bot$. \emph{Секвенцией} называется пара $(\Gamma, \Delta)$, записываемая
@@ -496,6 +526,7 @@ $\bot$. \emph{Секвенцией} называется пара $(\Gamma, \Del
 Ниже приведена система правил классического секвенциального исчисления
 высказываний (исчисление LK в стиле Генцена).
 
+\begin{figure}[!htb]
 \textbf{Аксиомы}
 
 \begin{center}
@@ -605,17 +636,23 @@ $\bot$. \emph{Секвенцией} называется пара $(\Gamma, \Del
 \BinaryInfC{$\Gamma \vdash \Delta, \Sigma$}
 \DisplayProof
 \end{center}
+\caption{Правила классического секвенциального исчисления LK}
+\label{fig:lk-rules}
+\end{figure}
 
 Секвенция $\vdash A \rightarrow A$ выводится без сечения и структурных правил:
 
-\begin{center}
+\begin{figure}[!htb]
+\centering
 \AxiomC{}
 \RightLabel{\scriptsize$Ax$}
 \UnaryInfC{$A \vdash A$}
 \RightLabel{\scriptsize$\rightarrow R$}
 \UnaryInfC{$\vdash A \rightarrow A$}
 \DisplayProof
-\end{center}
+\caption{Вывод секвенции $\vdash A \rightarrow A$ в LK}
+\label{fig:lk-a-implies-a}
+\end{figure}
 
 Интуиционистская версия секвенциального исчисления получается ограничением на
 форму секвенций: \emph{интуиционистскими} называются те секвенции, в которых
@@ -623,6 +660,7 @@ $\bot$. \emph{Секвенцией} называется пара $(\Gamma, \Del
 где $\Delta$ либо пусто, либо состоит ровно из одной формулы). Ниже приведены
 правила интуиционистского секвенциального исчисления LJ.
 
+\begin{figure}[!htb]
 \textbf{Аксиомы}
 
 \begin{center}
@@ -714,6 +752,9 @@ $\bot$. \emph{Секвенцией} называется пара $(\Gamma, \Del
 \BinaryInfC{$\Gamma \vdash \Delta$}
 \DisplayProof
 \end{center}
+\caption{Правила интуиционистского секвенциального исчисления LJ}
+\label{fig:lj-rules}
+\end{figure}
 
 Ключевое отличие от LK --- отсутствие правых структурных правил (ослабления,
 сокращения и перестановки справа), поскольку в сукцеденте находится не более
@@ -744,33 +785,42 @@ $\Gamma$ используют суждение $\Gamma \vdash M : \psi$.
 Правило устранения импликации в натуральном выводе с аннотациями: если
 $\Gamma \vdash M : A \rightarrow B$ и $\Gamma \vdash N : A$, то доказательством
 $B$ задаётся применение $M\,N$:
-\begin{center}
+\begin{figure}[!htb]
+\centering
 \AxiomC{$\Gamma \vdash M : A \rightarrow B$}
 \AxiomC{$\Gamma \vdash N : A$}
 \RightLabel{\scriptsize$\rightarrow E$}
 \BinaryInfC{$\Gamma \vdash M\,N : B$}
 \DisplayProof
-\end{center}
+\caption{Правило применения для импликации}
+\label{fig:lambda-application}
+\end{figure}
 
 Аксиома гипотезы: переменная, помеченная формулой $A$, служит доказательством
 $A$ в расширенном контексте:
 
-\begin{center}
+\begin{figure}[!htb]
+\centering
 \AxiomC{}
 \RightLabel{\scriptsize$Ax$}
 \UnaryInfC{$\Gamma,\, x : A \vdash x : A$}
 \DisplayProof
-\end{center}
+\caption{Аксиома гипотезы}
+\label{fig:lambda-variable}
+\end{figure}
 
 Введение импликации: доказательство $A \rightarrow B$ из подвывода с гипотезой
 $x : A$ записывают как $\lambda$-абстракцию по $x$:
 
-\begin{center}
+\begin{figure}[!htb]
+\centering
 \AxiomC{$\Gamma,\, x : A \vdash M : B$}
 \RightLabel{\scriptsize$\rightarrow I$}
 \UnaryInfC{$\Gamma \vdash \lambda x.\, M : A \rightarrow B$}
 \DisplayProof
-\end{center}
+\caption{Правило абстракции для импликации}
+\label{fig:lambda-abstraction}
+\end{figure}
 
 Таким образом аннотированный натуральный вывод совпадает по виду с правилами
 типизации в $\lambda$-исчислении. В интерпретации интуиционистской логики конструкция для импликации
@@ -782,7 +832,8 @@ $A \rightarrow B$ --- это функция, сопоставляющая кон
 Подход с аннотированном термами к формулам можно распространить и на
 секвенциальное исчисление:
 
-\begin{center}
+\begin{figure}[!htb]
+\centering
 \AxiomC{}
 \RightLabel{\scriptsize$Ax$}
 \UnaryInfC{$\Gamma,\, x : A \vdash x : A$}
@@ -791,15 +842,20 @@ $A \rightarrow B$ --- это функция, сопоставляющая кон
 \RightLabel{\scriptsize$\rightarrow R$}
 \UnaryInfC{$\Gamma \vdash \lambda x.\, M : A \rightarrow B$}
 \DisplayProof
-\end{center}
+\caption{Аннотированные правила $Ax$ и $(\rightarrow R)$}
+\label{fig:annotated-lj-imp-right}
+\end{figure}
 
-\begin{center}
+\begin{figure}[!htb]
+\centering
 \AxiomC{$\Gamma \vdash M : A$}
 \AxiomC{$\Delta,\, z : B \vdash N : C$}
 \RightLabel{\scriptsize$\rightarrow L$}
 \BinaryInfC{$\Gamma,\, \Delta,\, u : A \rightarrow B \vdash N[z := u\,M] : C$}
 \DisplayProof
-\end{center}
+\caption{Аннотированное правило $(\rightarrow L)$}
+\label{fig:annotated-lj-imp-left}
+\end{figure}
 
 Основная суть аннотирования в том, чтобы устранять свободные переменные у терма
 справа. Под свободными переменными понимаются только те свободные относительно
@@ -820,45 +876,64 @@ $(\rightarrow L)$. В нем мы в результате справа полу�
 Аннотировать можно также и остальные правила секвенциального исчисления, но для
 этого требуется ввести лямбда-термы для произведения и суммы типов. Для произведения
 подойдет терм пары следующего вида:
+\begin{figure}[!htb]
+\centering
 \begin{gather*}
 \langle M, N \rangle = \lambda x.xMN \\
 \pi_1 = \lambda p.p(\lambda xy.x) \\
 \pi_2 = \lambda p.p(\lambda xy.y)
 \end{gather*}
+\caption{Термы для произведения типов}
+\label{fig:product-terms}
+\end{figure}
 
 Здесь $\pi_1$ и $\pi_2$ --- проекции на первую и вторую компоненту пары. Причем
 $ \pi_1 \langle M, N \rangle \rightarrow_\beta M$ и $\pi_2 \langle M, N \rangle
 \rightarrow_\beta N$.
 
 Для суммы типов можно использовать следующие термы:
+\begin{figure}[!htb]
+\centering
 \begin{gather*}
 L = \lambda e c_1 c_2. c_1 e \\
 R = \lambda e c_1 c_2. c_2 e \\
 case\, M\, of\, [x]P\, or\, [y]Q = M(\lambda x.P)(\lambda y.Q)
 \end{gather*}
+\caption{Термы для суммы типов}
+\label{fig:sum-terms}
+\end{figure}
 
 Тут $L$ и $R$ --- конструкторы суммы, а $case$ --- элиминатор. В выражении
 $case$ $M$ может быть вида $LV$ либо $RV$, где $V$ какой либо терм. Таким
 образом
+\begin{figure}[!htb]
+\centering
 \begin{gather*}
 case\, LM\, of\, [x]P\, or\, [y]Q\, \rightarrow_\beta P[x := M] \\
 case\, RM\, of\, [x]P\, or\, [y]Q\, \rightarrow_\beta Q[y := M]
 \end{gather*}
+\caption{Редукция разбора случаев для суммы}
+\label{fig:case-reduction}
+\end{figure}
 
 \subsubsection{Аннотирование правил LJ (полный фрагмент)}
 Теперь благодаря введенным термам для произведения и суммы типов, можно аннотировать
 остальные правила секвенциального исчисления. Для простоты будем аннотировать только
 логические правила, так как в структурные аннотируются естественно.
 
-\begin{center}
+\begin{figure}[!htb]
+\centering
 \AxiomC{$\Gamma \vdash a: A$}
 \AxiomC{$\Gamma \vdash b: B$}
 \RightLabel{\scriptsize$\land R$}
 \BinaryInfC{$\Gamma \vdash \langle a, b \rangle : A \land B$}
 \DisplayProof
-\end{center}
+\caption{Аннотированное правило $(\land R)$}
+\label{fig:annotated-lj-and-right}
+\end{figure}
 
-\begin{center}
+\begin{figure}[!htb]
+\centering
 \AxiomC{$\Gamma, a: A \vdash d: C$}
 \RightLabel{\scriptsize$\land L_1$}
 \UnaryInfC{$\Gamma, p: A \land B \vdash d[a:=\pi_1 p]: C$}
@@ -867,17 +942,23 @@ case\, RM\, of\, [x]P\, or\, [y]Q\, \rightarrow_\beta Q[y := M]
 \RightLabel{\scriptsize$\land L_2$}
 \UnaryInfC{$\Gamma, p: A \land B \vdash d[b:=\pi_2 p]: C$}
 \DisplayProof
-\end{center}
+\caption{Аннотированные правила $(\land L_1)$ и $(\land L_2)$}
+\label{fig:annotated-lj-and-left}
+\end{figure}
 
-\begin{center}
+\begin{figure}[!htb]
+\centering
 \AxiomC{$\Gamma, a: A \vdash d_1: C$}
 \AxiomC{$\Gamma, b: B \vdash d_2: C$}
 \RightLabel{\scriptsize$\lor L$}
 \BinaryInfC{$\Gamma, p: A \lor B \vdash case\, p\, of\, [a]d_1\, or\, [b]d_2: C$}
 \DisplayProof
-\end{center}
+\caption{Аннотированное правило $(\lor L)$}
+\label{fig:annotated-lj-or-left}
+\end{figure}
 
-\begin{center}
+\begin{figure}[!htb]
+\centering
 \AxiomC{$\Gamma \vdash a: A$}
 \RightLabel{\scriptsize$\lor R_1$}
 \UnaryInfC{$\Gamma \vdash La: A \lor B$}
@@ -886,7 +967,9 @@ case\, RM\, of\, [x]P\, or\, [y]Q\, \rightarrow_\beta Q[y := M]
 \RightLabel{\scriptsize$\lor R_2$}
 \UnaryInfC{$\Gamma \vdash Rb: A \lor B$}
 \DisplayProof
-\end{center}
+\caption{Аннотированные правила $(\lor R_1)$ и $(\lor R_2)$}
+\label{fig:annotated-lj-or-right}
+\end{figure}
 
 \section{Конструкторская часть}
 
@@ -905,6 +988,7 @@ $\bot$. Константа $\bot$ \emph{не считается} атомом.
 Выделенная формула в заключении каждого правила называется \emph{главной}
 (principal).
 
+\begin{figure}[!htb]
 \textbf{Аксиома и абсурд}
 
 \begin{center}
@@ -959,6 +1043,9 @@ $\bot$. Константа $\bot$ \emph{не считается} атомом.
 \UnaryInfC{$\Gamma \vdash \underline{A \rightarrow B}$}
 \DisplayProof
 \end{center}
+\caption{Правила LJ в формулировке Дайкхоффа}
+\label{fig:dyckhoff-lj-rules}
+\end{figure}
 
 Ключевая особенность данной формулировки --- правило $(\rightarrow L)$: главная
 формула $A \rightarrow B$ \emph{сохраняется} в левой посылке. Тем самым
@@ -969,12 +1056,17 @@ $\bot$. Константа $\bot$ \emph{не считается} атомом.
 \subsubsection{Проблема завершаемости}
 
 Для формализации завершаемости вводится \emph{вес} формулы $\mathrm{wt}(A)$:
+\begin{figure}[!htb]
+\centering
 \begin{align*}
 \mathrm{wt}(p) &= \mathrm{wt}(\bot) = 1, \\
 \mathrm{wt}(A \land B) &= \mathrm{wt}(A) + \mathrm{wt}(B) + 2, \\
 \mathrm{wt}(A \lor B) &= \mathrm{wt}(A) + \mathrm{wt}(B) + 1, \\
 \mathrm{wt}(A \rightarrow B) &= \mathrm{wt}(A) + \mathrm{wt}(B) + 1.
 \end{align*}
+\caption{Вес формул в доказательстве завершаемости LJT}
+\label{fig:ljt-formula-weights}
+\end{figure}
 Формулы антецедента и сукцедент секвенции образуют мультимножество; на
 мультимножествах определяется отношение $\gg$ (мультимножественное упорядочение
 Дершовица--Манны), которое \emph{фундировано}: если из мультимножества удалить
@@ -1001,40 +1093,52 @@ $A \rightarrow B, \Gamma \vdash A$ содержит ту же формулу $A 
 
 \textbf{Случай 1.} $D = p$ --- пропозициональная переменная:
 
-\begin{center}
+\begin{figure}[!htb]
+\centering
 \AxiomC{$B, p, \Gamma \vdash G$}
 \RightLabel{\scriptsize$\rightarrow L_1$}
 \UnaryInfC{$p \rightarrow B, p, \Gamma \vdash G$}
 \DisplayProof
-\end{center}
+\caption{Правило $(\rightarrow L_1)$ исчисления LJT}
+\label{fig:ljt-l1}
+\end{figure}
 
 \textbf{Случай 2.} $D = C_1 \land C_2$:
 
-\begin{center}
+\begin{figure}[!htb]
+\centering
 \AxiomC{$C_1 \rightarrow (C_2 \rightarrow B), \Gamma \vdash G$}
 \RightLabel{\scriptsize$\rightarrow L_2$}
 \UnaryInfC{$(C_1 \land C_2) \rightarrow B, \Gamma \vdash G$}
 \DisplayProof
-\end{center}
+\caption{Правило $(\rightarrow L_2)$ исчисления LJT}
+\label{fig:ljt-l2}
+\end{figure}
 
 \textbf{Случай 3.} $D = C_1 \lor C_2$:
 
-\begin{center}
+\begin{figure}[!htb]
+\centering
 \AxiomC{$C_1 \rightarrow B, C_2 \rightarrow B, \Gamma \vdash G$}
 \RightLabel{\scriptsize$\rightarrow L_3$}
 \UnaryInfC{$(C_1 \lor C_2) \rightarrow B, \Gamma \vdash G$}
 \DisplayProof
-\end{center}
+\caption{Правило $(\rightarrow L_3)$ исчисления LJT}
+\label{fig:ljt-l3}
+\end{figure}
 
 \textbf{Случай 4.} $D = C_1 \rightarrow C_2$:
 
-\begin{center}
+\begin{figure}[!htb]
+\centering
 \AxiomC{$C_2 \rightarrow B, \Gamma \vdash C_1 \rightarrow C_2$}
 \AxiomC{$B, \Gamma \vdash G$}
 \RightLabel{\scriptsize$\rightarrow L_4$}
 \BinaryInfC{$(C_1 \rightarrow C_2) \rightarrow B, \Gamma \vdash G$}
 \DisplayProof
-\end{center}
+\caption{Правило $(\rightarrow L_4)$ исчисления LJT}
+\label{fig:ljt-l4}
+\end{figure}
 
 Во всех четырёх правилах главная формула \emph{не сохраняется} ни в одной из
 посылок: она заменяется формулами строго меньшего веса. Действительно:
@@ -1085,7 +1189,8 @@ $(\rightarrow L_4)$ (выбор импликационной клаузы из �
 Покажем вывод формулы $((a \lor (a \rightarrow b)) \rightarrow b) \rightarrow b$
 в системе LJT с $\lambda$-термовыми аннотациями.
 
-\begin{center}
+\begin{figure}[!htb]
+\centering
 \def\extraVskip{4pt}
 \AxiomC{}
 \RightLabel{\scriptsize$Ax$}
@@ -1100,7 +1205,9 @@ $(\rightarrow L_4)$ (выбор импликационной клаузы из �
 \RightLabel{\scriptsize$\rightarrow R$}
 \UnaryInfC{$\vdash \lambda f.\, f(R(\lambda x.\, f(Lx))) : ((a \lor (a \rightarrow b)) \rightarrow b) \rightarrow b$}
 \DisplayProof
-\end{center}
+\caption{Пример LJT-вывода с $\lambda$-термовыми аннотациями}
+\label{fig:ljt-annotated-example}
+\end{figure}
 
 Более сложный пример --- вывод формулы
 $((((a \land b) \rightarrow c) \rightarrow ((a \rightarrow c) \lor (b \rightarrow c)))
@@ -1150,14 +1257,21 @@ $R, X \Rightarrow q$, где:
 A \;\leadsto\; \top \rightarrow A.
 \]
 Далее применяются структурные правила, упрощающие вид импликации:
+\begin{figure}[!htb]
+\centering
 \begin{align*}
 (A \lor B) \rightarrow a &\;\leadsto\; A \rightarrow a,\quad B \rightarrow a, \\
 a \rightarrow (A \land B) &\;\leadsto\; a \rightarrow A,\quad a \rightarrow B, \\
 A \rightarrow (B \rightarrow C) &\;\leadsto\; (A \land B) \rightarrow C,
 \end{align*}
+\caption{Структурные правила клаузификации}
+\label{fig:clausification-structural-rules}
+\end{figure}
 где $a$ --- атом или константа $\bot$, $\top$. Для введения атомов на нужных
 позициях используются правила с введением свежих переменных (обозначены строчными
 буквами справа):
+\begin{figure}[!htb]
+\centering
 \begin{align*}
 A \rightarrow (\ldots \lor B \lor \ldots) &\;\leadsto\;
   A \rightarrow (\ldots \lor b \lor \ldots),\quad b \rightarrow B, \\
@@ -1170,6 +1284,9 @@ A \rightarrow (\ldots \lor B \lor \ldots) &\;\leadsto\;
 (A \rightarrow B) \rightarrow C &\;\leadsto\;
   (A \rightarrow B) \rightarrow c,\quad c \rightarrow C.
 \end{align*}
+\caption{Правила клаузификации с введением свежих атомов}
+\label{fig:clausification-aliasing-rules}
+\end{figure}
 Здесь $a$, $b$, $c$ --- свежие атомы, не встречающиеся в формуле. Каждая
 подформула именуется не более одного раза, поэтому суммарный размер $(R, X, q)$
 линеен относительно размера~$\alpha$.
@@ -1191,37 +1308,46 @@ q$, что позволяет делегировать работу с ними 
 
 \textbf{Правило $(cpl)$.} Если множество плоских клауз $R$ классически влечёт
 $q$ (что проверяется SAT-решателем), секвенция выводима:
-\begin{center}
+\begin{figure}[!htb]
+\centering
 \AxiomC{$R \vdash_{\mathit{cpl}} q$}
 \RightLabel{\scriptsize$cpl$}
 \UnaryInfC{$R, X \Rightarrow q$}
 \DisplayProof
-\end{center}
+\caption{Правило $(cpl)$ исчисления $LJT_{SAT}$}
+\label{fig:ljtsat-cpl}
+\end{figure}
 
 \textbf{Правило $(cut_{\mathit{ipl}})$.} Интуиционистское сечение: если левая
 посылка является интуиционистской теоремой и плоская клауза $\varphi$ позволяет
 вывести правую посылку, то заключение выводимо:
 
-\begin{center}
+\begin{figure}[!htb]
+\centering
 \AxiomC{$R_1, X_1 \vdash_{\mathit{ipl}} \varphi$}
 \AxiomC{$\varphi, R_2, X_2 \Rightarrow q$}
 \RightLabel{\scriptsize$cut_{\mathit{ipl}}$}
 \BinaryInfC{$R_1, R_2, X_1, X_2 \Rightarrow q$}
 \DisplayProof
-\end{center}
+\caption{Правило $(cut_{\mathit{ipl}})$ исчисления $LJT_{SAT}$}
+\label{fig:ljtsat-cut}
+\end{figure}
 
 \textbf{Правило $(ljt)$.} Обобщённое правило левого введения импликации,
 соответствующее $(\rightarrow L_4)$ из LJT, адаптированное к клаузальной форме.
 Пусть $\iota = (a \rightarrow b) \rightarrow c \in X$, $X_\iota = X \setminus
 \{\iota\}$ и $A_1$ --- множество атомов. Тогда:
 
-\begin{center}
+\begin{figure}[!htb]
+\centering
 \AxiomC{$R_1,\, b \rightarrow c,\, X_\iota,\, A_1 \Rightarrow b$}
 \AxiomC{$R_2,\, \textstyle\bigwedge(A_1 \setminus \{a\}) \rightarrow c,\, X,\, \iota \Rightarrow q$}
 \RightLabel{\scriptsize$ljt$}
 \BinaryInfC{$R_1, R_2, X, \iota \Rightarrow q$}
 \DisplayProof
-\end{center}
+\caption{Правило $(ljt)$ исчисления $LJT_{SAT}$}
+\label{fig:ljtsat-ljt}
+\end{figure}
 
 Правило $(ljt)$ обобщает $(\rightarrow L_4)$ из LJT в двух направлениях.
 Во-первых, допускается расщепление контекста ($R_1$ и $R_2$ могут различаться).
@@ -1252,7 +1378,8 @@ $s$: клаузы могут добавляться в $s$, но не удаля
 $\textsc{LJTSat}$.
 
 Функция $\textsc{LJTSat}(R, X, A, q)$ реализует цикл CEGAR
-(Counter-Example Guided Abstraction Refinement). Она запрашивает SAT-решатель:
+(Counter-Example Guided Abstraction Refinement)~\cite{Clarke2000CEGAR}. Она
+запрашивает SAT-решатель:
 выполняется ли $R(s), A \vdash_{\mathit{cpl}} q$? Если да, секвенция выводима по
 правилу $(cpl)$; SAT-решатель возвращает подмножество $A' \subseteq A$,
 достаточное для вывода. В противном случае SAT-решатель возвращает классическую
@@ -1329,41 +1456,53 @@ $\lor R$, $\rightarrow R$), аннотируются так же, как в LJ. 
 
 \textbf{Правило $(\rightarrow L_1)$.} Атом $p$ присутствует в антецеденте,
 поэтому терм для $B$ получается применением $f$ к $x$:
-\begin{center}
+\begin{figure}[!htb]
+\centering
 \AxiomC{$\Gamma,\, x : p,\, y : B \vdash t : G$}
 \RightLabel{\scriptsize$\rightarrow L_1$}
 \UnaryInfC{$\Gamma,\, x : p,\, f : p \rightarrow B \vdash t[y := f\,x] : G$}
 \DisplayProof
-\end{center}
+\caption{Аннотированное правило $(\rightarrow L_1)$}
+\label{fig:annotated-ljt-l1}
+\end{figure}
 
 \textbf{Правило $(\rightarrow L_2)$.} Импликация $(A \land B) \rightarrow C$
 заменяется на $A \rightarrow (B \rightarrow C)$:
-\begin{center}
+\begin{figure}[!htb]
+\centering
 \AxiomC{$\Gamma,\, g : A \rightarrow (B \rightarrow C) \vdash t : G$}
 \RightLabel{\scriptsize$\rightarrow L_2$}
 \UnaryInfC{$\Gamma,\, f : (A \land B) \rightarrow C \vdash t[g := \lambda x.\,\lambda y.\,f\,\langle x,y \rangle] : G$}
 \DisplayProof
-\end{center}
+\caption{Аннотированное правило $(\rightarrow L_2)$}
+\label{fig:annotated-ljt-l2}
+\end{figure}
 
 \textbf{Правило $(\rightarrow L_3)$.} Импликация $(A \lor B) \rightarrow C$
 заменяется парой $A \rightarrow C$ и $B \rightarrow C$:
-\begin{center}
+\begin{figure}[!htb]
+\centering
 \AxiomC{$\Gamma,\, g_1 : A \rightarrow C,\, g_2 : B \rightarrow C \vdash t : G$}
 \RightLabel{\scriptsize$\rightarrow L_3$}
 \UnaryInfC{$\Gamma,\, f : (A \lor B) \rightarrow C \vdash t[g_1 := \lambda x.\,f\,(Lx),\; g_2 := \lambda y.\,f\,(Ry)] : G$}
 \DisplayProof
-\end{center}
+\caption{Аннотированное правило $(\rightarrow L_3)$}
+\label{fig:annotated-ljt-l3}
+\end{figure}
 
 \textbf{Правило $(\rightarrow L_4)$.} Единственное правило с двумя посылками.
 В левой посылке формула $(C_1 \rightarrow C_2) \rightarrow B$ заменяется на
 $C_2 \rightarrow B$:
-\begin{center}
+\begin{figure}[!htb]
+\centering
 \AxiomC{$\Gamma,\, g : C_2 \rightarrow B \vdash s : C_1 \rightarrow C_2$}
 \AxiomC{$\Gamma,\, y : B \vdash t : G$}
 \RightLabel{\scriptsize$\rightarrow L_4$}
 \BinaryInfC{$\Gamma,\, f : (C_1 \rightarrow C_2) \rightarrow B \vdash t[y := f\,s',\; g := \lambda z.\,f\,(Kz)] : G$}
 \DisplayProof
-\end{center}
+\caption{Аннотированное правило $(\rightarrow L_4)$}
+\label{fig:annotated-ljt-l4}
+\end{figure}
 
 \noindent
 где $K = \lambda a.\,\lambda b.\, a$ --- комбинатор константы, а
@@ -1389,32 +1528,44 @@ $\lambda$-термами: каждому шагу перезаписи соот�
 реализующего это преобразование.
 
 \textbf{Начальное правило.} Формула, не являющаяся импликацией, оборачивается:
-\begin{center}
+\begin{figure}[!htb]
+\centering
 \AxiomC{$\Gamma,\, f : \top \rightarrow A \vdash t : G$}
 \UnaryInfC{$\Gamma,\, x : A \vdash t[f := \lambda u.\, x] : G$}
 \DisplayProof
-\end{center}
+\caption{Аннотированное начальное правило клаузификации}
+\label{fig:annotated-clausification-start}
+\end{figure}
 
 \textbf{Дизъюнкция слева от стрелки:}
-\begin{center}
+\begin{figure}[!htb]
+\centering
 \AxiomC{$\Gamma,\, f_1 : A \rightarrow a,\, f_2 : B \rightarrow a \vdash t : G$}
 \UnaryInfC{$\Gamma,\, f : (A \lor B) \rightarrow a \vdash t[f_1 := \lambda x.\, f\,(Lx),\; f_2 := \lambda y.\, f\,(Ry)] : G$}
 \DisplayProof
-\end{center}
+\caption{Аннотированное правило клаузификации для дизъюнкции слева}
+\label{fig:annotated-clausification-left-disjunction}
+\end{figure}
 
 \textbf{Конъюнкция справа от стрелки:}
-\begin{center}
+\begin{figure}[!htb]
+\centering
 \AxiomC{$\Gamma,\, f_1 : a \rightarrow A,\, f_2 : a \rightarrow B \vdash t : G$}
 \UnaryInfC{$\Gamma,\, f : a \rightarrow (A \land B) \vdash t[f_1 := \lambda x.\, \pi_1(f\,x),\; f_2 := \lambda x.\, \pi_2(f\,x)] : G$}
 \DisplayProof
-\end{center}
+\caption{Аннотированное правило клаузификации для конъюнкции справа}
+\label{fig:annotated-clausification-right-conjunction}
+\end{figure}
 
 \textbf{Каррирование:}
-\begin{center}
+\begin{figure}[!htb]
+\centering
 \AxiomC{$\Gamma,\, g : (A \land B) \rightarrow C \vdash t : G$}
 \UnaryInfC{$\Gamma,\, f : A \rightarrow (B \rightarrow C) \vdash t[g := \lambda p.\, f\,(\pi_1 p)\,(\pi_2 p)] : G$}
 \DisplayProof
-\end{center}
+\caption{Аннотированное правило клаузификации для каррирования}
+\label{fig:annotated-clausification-uncurry}
+\end{figure}
 
 \textbf{Правила именования подформул.} При клаузификации для сложной подформулы
 $B$ вводится свежий атом $b$, играющий роль \emph{определительного сокращения}:
@@ -1424,19 +1575,25 @@ $b \equiv B$. Поскольку $b$ и $B$ отождествляются на 
 
 \textit{Именование в положительной позиции} (например, в сукцеденте дизъюнкции).
 Подформула $B$ заменяется на $b$, добавляется клауза $b \rightarrow B$:
-\begin{center}
+\begin{figure}[!htb]
+\centering
 \AxiomC{$\Gamma,\, f' : A \rightarrow (\ldots \lor b \lor \ldots),\, h : b \rightarrow B \vdash t : G$}
 \UnaryInfC{$\Gamma,\, f : A \rightarrow (\ldots \lor B \lor \ldots) \vdash t[f' := f,\; h := \lambda x.\, x] : G$}
 \DisplayProof
-\end{center}
+\caption{Аннотированное правило именования в положительной позиции}
+\label{fig:annotated-clausification-positive-alias}
+\end{figure}
 
 \textit{Именование в отрицательной позиции} (например, в антецеденте дизъюнкции).
 Подформула $B$ заменяется на $b$, добавляется клауза $B \rightarrow b$:
-\begin{center}
+\begin{figure}[!htb]
+\centering
 \AxiomC{$\Gamma,\, f' : (\ldots \lor b \lor \ldots) \rightarrow a,\, h : B \rightarrow b \vdash t : G$}
 \UnaryInfC{$\Gamma,\, f : (\ldots \lor B \lor \ldots) \rightarrow a \vdash t[f' := f,\; h := \lambda x.\, x] : G$}
 \DisplayProof
-\end{center}
+\caption{Аннотированное правило именования в отрицательной позиции}
+\label{fig:annotated-clausification-negative-alias}
+\end{figure}
 
 В обоих случаях подстановка тождественна: $f' := f$ и $h := \lambda x.\, x$,
 поскольку $b$ является определительным сокращением для $B$ и значения этих типов
@@ -1492,25 +1649,31 @@ $\lambda$-терма.
 
 \textbf{Правило $(cpl_0)$.} Аксиома: если плоские клаузы $R$ классически
 влекут $g$, секвенция выводима:
-\begin{center}
+\begin{figure}[!htb]
+\centering
 \AxiomC{$R \vdash_{\mathit{cpl}} g$}
 \RightLabel{\scriptsize$cpl_0$}
 \UnaryInfC{$R, X \Rightarrow g$}
 \DisplayProof
-\end{center}
+\caption{Правило $(cpl_0)$ исчисления $C^{\rightarrow}$}
+\label{fig:carrow-cpl0}
+\end{figure}
 
 \textbf{Правило $(cpl_1)$.} Пусть $(a \rightarrow b) \rightarrow c \in X$ и
 $A \subseteq \mathcal{V}$ --- множество пропозициональных переменных (локальные
 допущения). Если $R, A \vdash_{\mathit{cpl}} b$, формируется выученная клауза
 $\varphi = \bigwedge(A \setminus \{a\}) \rightarrow c$:
 
-\begin{center}
+\begin{figure}[!htb]
+\centering
 \AxiomC{$R, A \vdash_{\mathit{cpl}} b$}
 \AxiomC{$R \cup \{\varphi\}, X \Rightarrow g$}
 \RightLabel{\scriptsize$cpl_1$}
 \BinaryInfC{$R, X \Rightarrow g$}
 \DisplayProof
-\end{center}
+\caption{Правило $(cpl_1)$ исчисления $C^{\rightarrow}$}
+\label{fig:carrow-cpl1}
+\end{figure}
 
 Вывод в $C^{\rightarrow}$ представляет собой линейную последовательность
 применений правила $(cpl_1)$, завершающуюся применением $(cpl_0)$:
@@ -1537,22 +1700,28 @@ $h : (a \rightarrow b) \rightarrow c$, заключению --- терм $t : g$
 \textbf{Правило $(cpl_0)$.} Если $R \vdash_{\mathit{cpl}} g$, терм $t : g$
 строится из переменных плоских клауз $R$; множество $X$ в аннотации не
 участвует:
-\begin{center}
+\begin{figure}[!htb]
+\centering
 \AxiomC{$R \vdash_{\mathit{cpl}} g$}
 \RightLabel{\scriptsize$cpl_0$}
 \UnaryInfC{$R, X \vdash t : g$}
 \DisplayProof
-\end{center}
+\caption{Аннотированное правило $(cpl_0)$}
+\label{fig:annotated-carrow-cpl0}
+\end{figure}
 
 \textbf{Сечение $(cut_{\mathit{ipl}})$.} Правило $(cpl_1)$ реализует сечение
 с синтезированным доказательством выученной клаузы. Общая схема:
-\begin{center}
+\begin{figure}[!htb]
+\centering
 \AxiomC{$\Gamma \vdash s : \varphi$}
 \AxiomC{$\Delta,\, f : \varphi \vdash t : g$}
 \RightLabel{\scriptsize$cut_{\mathit{ipl}}$}
 \BinaryInfC{$\Gamma, \Delta \vdash t[f := s] : g$}
 \DisplayProof
-\end{center}
+\caption{Аннотированная схема сечения}
+\label{fig:annotated-carrow-cut}
+\end{figure}
 
 \textbf{Правило $(cpl_1)$.} Пусть $\iota = (a \rightarrow b) \rightarrow c \in X$,
 $A \subseteq \mathcal{V}$ и $R, A \vdash_{\mathit{cpl}} b$. SAT-решатель
@@ -1568,13 +1737,16 @@ s \;=\; \lambda \vec u.\; h(\lambda x^a.\, p'),
 где $\vec u$ --- последовательность абстракций по атомам из $A \setminus \{a\}$,
 а $p'$ --- терм $p$ с подстановкой соответствующих $\vec u$ вместо переменных
 из $A'$. Аннотированное правило:
-\begin{center}
+\begin{figure}[!htb]
+\centering
 \AxiomC{$R, A \vdash_{\mathit{cpl}} b$}
 \AxiomC{$R,\, f : \varphi,\, X \vdash t : g$}
 \RightLabel{\scriptsize$cpl_1$}
 \BinaryInfC{$R,\, h : (a \rightarrow b) \rightarrow c,\, X \vdash t[f := s] : g$}
 \DisplayProof
-\end{center}
+\caption{Аннотированное правило $(cpl_1)$}
+\label{fig:annotated-carrow-cpl1}
+\end{figure}
 
 \noindent
 Левая посылка не содержит $\lambda$-терма --- только классическое
@@ -1990,6 +2162,22 @@ data Lambda_ =
 
 Листинг~\ref{lst:refactoring-lambda} перечисляет термовые конструкции,
 соответствующие импликации, конъюнкции и дизъюнкции по Карри--Говарду.
+Некоторые конструкции являются специальными термами, которые используются для
+компактной записи операций над произведениями и суммами типов:
+\begin{itemize}
+\item \texttt{Const} печатается как \texttt{K}. Это абстракция, которая
+  принимает одну переменную и возвращает зафиксированное тело;
+\item \texttt{Case} печатается в виде
+  \texttt{Case(expr, [c]Body...)}. Здесь \texttt{expr} имеет тип суммы. Если
+  \texttt{expr = Sum(n, i, e)}, где \texttt{n} --- размер суммы типов,
+  \texttt{i} --- номер выбранного варианта, а \texttt{e} --- значение выбранного
+  типа, то результатом редукции является \texttt{Body\_i[c := e]};
+\item \texttt{Product} задаёт терм произведения типов своих операндов;
+\item \texttt{Proj(n, i, p)} задаёт $i$-ю проекцию пары \texttt{p} длины
+  \texttt{n};
+\item \texttt{Insert(n, i, p, e)} задаёт вставку элемента \texttt{e} в пару
+  \texttt{p} длины \texttt{n} на позицию \texttt{i}.
+\end{itemize}
 
 \begin{listing}[!htb]
 \caption{Подстановка \texttt{Substitution\_}}
@@ -2367,12 +2555,15 @@ $C^{\rightarrow}$. В конструкторах правил сохраняют
 Далее приведены локальные функции из блока \texttt{where} функции \texttt{ljt}.
 Аксиома завершает ветвь доказательства. В терминах секвенций она соответствует
 правилу
-\begin{center}
+\begin{figure}[!htb]
+\centering
 \AxiomC{}
 \RightLabel{\scriptsize$Ax$}
 \UnaryInfC{$R,\; A,\; g \vdash g$}
 \DisplayProof
-\end{center}
+\caption{Аксиома LJT-поддерева в реализации}
+\label{fig:tech-ljt-axiom}
+\end{figure}
 и в коде проверяется простым условием \texttt{goal `elem` assumptions}.
 
 \begin{listing}[!htb]
@@ -2394,14 +2585,17 @@ applyAxiom cseq@(Classic flats assumptions goal) =
 частью. Такая клауза имеет вид $\top \rightarrow d_1 \lor \ldots \lor d_m$,
 то есть в текущем контексте истинна дизъюнкция. Чтобы доказать цель $g$, нужно
 показать её из каждого возможного дизъюнкта:
-\begin{center}
+\begin{figure}[!htb]
+\centering
 \AxiomC{$R,\; A,\; d_1 \vdash g$}
 \AxiomC{$\ldots$}
 \AxiomC{$R,\; A,\; d_m \vdash g$}
 \RightLabel{\scriptsize$\lor L$}
 \TrinaryInfC{$R,\; A,\; d_1 \lor \ldots \lor d_m \vdash g$}
 \DisplayProof
-\end{center}
+\caption{Разбиение LJT-поддерева по дизъюнкции}
+\label{fig:tech-ljt-split}
+\end{figure}
 
 \begin{listing}[!htb]
 \caption{Локальное разбиение по правой части плоской клаузы}
@@ -2433,12 +2627,15 @@ applyDs cseq@(Classic flats assumptions goal) = do
 $(a_i \land C) \rightarrow D$, а среди допущений есть $a_i$. Тогда вместо этой
 клаузы можно продолжить доказательство с более простой клаузой
 $C \rightarrow D$:
-\begin{center}
+\begin{figure}[!htb]
+\centering
 \AxiomC{$R,\; C \rightarrow D,\; A,\; a_i \vdash g$}
 \RightLabel{\scriptsize$reduce$}
 \UnaryInfC{$R,\; (a_i \land C) \rightarrow D,\; A,\; a_i \vdash g$}
 \DisplayProof
-\end{center}
+\caption{Сокращение левой конъюнкции в LJT-поддереве}
+\label{fig:tech-ljt-reduce}
+\end{figure}
 В терминах исходных правил это сокращение соответствует каррированию
 $(a_i \land C) \rightarrow D$ и одному применению modus ponens к допущению
 $a_i$.
@@ -2723,23 +2920,120 @@ instance Buildable (CounterModel_ a) where
 
 \subsection{Примеры использования}
 
-Текущий исполняемый модуль \texttt{app/Main.hs} демонстрирует работу доказателя
-на формуле, сконструированной непосредственно средствами типа
-\texttt{Formula\_}. Например, формула тождества задаётся как
-\texttt{Implication [a, a]}, где \texttt{a = variable "a"}. После запуска
-\texttt{prove} выполняет весь конвейер и печатает либо граф доказательства,
-либо граф контрмодели.
+Исполняемый модуль \texttt{app/Main.hs} читает формулу из файла, путь к которому
+передаётся единственным аргументом командной строки. Примеры входных формул
+находятся в каталоге \texttt{examples/formulas}. Для части этих формул заранее
+сохранены результаты работы программы: редуцированные термы для выводимых формул
+и изображения контрмоделей для невыводимых. Эти файлы находятся в каталоге
+\texttt{examples/terms} и имеют те же имена, что и соответствующие входные
+данные.
 
-Для валидной формулы $A \rightarrow A$ результатом является доказательство,
-завершающееся правилом \texttt{CPL0} после добавления необходимых плоских
-клауз. После аннотирования из дерева извлекается редуцированный
-$\lambda$-терм, соответствующий функции тождества.
+\begin{listing}[!htb]
+\caption{Запуск программы на файле с формулой}
+\label{lst:usage-command}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{text}
+stack exec diploma-exe -- examples/formulas/complex-and-impl-chain.txt
+\end{minted}
+\end{listing}
 
-Для невалидных классических схем, например закона исключённого третьего
-$A \lor \neg A$ или схемы Пирса $((A \rightarrow B) \rightarrow A)
-\rightarrow A$, процедура не находит вывода в $C^{\rightarrow}$. В этом случае
-внутренний цикл завершается построением контрмодели Крипке, показывающей, в
-каком мире формула не выполняется.
+Листинг~\ref{lst:usage-command} показывает общий способ запуска. После чтения
+файла программа разбирает формулу, запускает конвейер доказательства и печатает
+DOT-представление результата. Для валидных формул из этого результата можно
+извлечь редуцированный $\lambda$-терм.
+
+\begin{listing}[!htb]
+\caption{Входная формула \texttt{complex-and-impl-chain.txt}}
+\label{lst:usage-complex-and-impl-chain-input}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{text}
+(((a /\ (b /\ c) /\ d) => c) => a) => a
+\end{minted}
+\end{listing}
+
+Листинг~\ref{lst:usage-complex-and-impl-chain-input} задаёт формулу, в которой из
+доказательства импликации к $a$ нужно передать функцию, извлекающую компоненту
+$c$ из конъюнкции.
+
+\begin{listing}[!htb]
+\caption{Редуцированный терм для \texttt{complex-and-impl-chain.txt}}
+\label{lst:usage-complex-and-impl-chain-term}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{text}
+\_23.(_23(\_7.Proj(4, 3, _7)))
+\end{minted}
+\end{listing}
+
+Листинг~\ref{lst:usage-complex-and-impl-chain-term} показывает результат
+аннотирования и редукции: терм применяет входной аргумент к функции, которая
+проецирует третью компоненту из произведения.
+
+\begin{listing}[!htb]
+\caption{Входная формула \texttt{complex-impl-disjunction.txt}}
+\label{lst:usage-complex-impl-disjunction-input}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{text}
+(((a \/ (a => b))) => b) => b
+\end{minted}
+\end{listing}
+
+Листинг~\ref{lst:usage-complex-impl-disjunction-input} демонстрирует пример с
+дизъюнкцией: для доказательства $b$ достаточно уметь обработать либо готовое
+доказательство $a$, либо функцию $a \rightarrow b$.
+
+\begin{listing}[!htb]
+\caption{Редуцированный терм для \texttt{complex-impl-disjunction.txt}}
+\label{lst:usage-complex-impl-disjunction-term}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{text}
+\_5.(_5Sum(2, 2, (\_4.(_5Sum(2, 1, _4)))))
+\end{minted}
+\end{listing}
+
+Листинг~\ref{lst:usage-complex-impl-disjunction-term} показывает, что в терме
+используется вложение в сумму: программа передаёт обработчику правый вариант
+дизъюнкции, а внутри него при необходимости строит левый вариант.
+
+Если формула не является теоремой IPL, вместо терма строится конечная
+контрмодель Крипке. Для закона исключённого третьего входной файл содержит
+формулу, приведённую в листинге~\ref{lst:usage-invalid-excluded-middle-input}.
+
+\begin{listing}[!htb]
+\caption{Входная формула \texttt{invalid-excluded-middle.txt}}
+\label{lst:usage-invalid-excluded-middle-input}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{text}
+A \/ -A
+\end{minted}
+\end{listing}
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[height=0.28\textheight]{../examples/terms/invalid-excluded-middle.png}
+\caption{Контрмодель для закона исключённого третьего}
+\label{fig:usage-invalid-excluded-middle}
+\end{figure}
+
+На рисунке~\ref{fig:usage-invalid-excluded-middle} показана контрмодель, в
+которой корневой мир не вынуждает ни $A$, ни $\neg A$, поэтому дизъюнкция
+$A \lor \neg A$ не является интуиционистски общезначимой.
+
+\begin{listing}[!htb]
+\caption{Входная формула \texttt{invalid-peirce.txt}}
+\label{lst:usage-invalid-peirce-input}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{text}
+((A => B) => A) => A
+\end{minted}
+\end{listing}
+
+Листинг~\ref{lst:usage-invalid-peirce-input} задаёт схему Пирса, которая
+выводима в классической логике, но не выводима в IPL.
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[height=0.34\textheight]{../examples/terms/invalid-peirce.png}
+\caption{Контрмодель для схемы Пирса}
+\label{fig:usage-invalid-peirce}
+\end{figure}
+
+Рисунок~\ref{fig:usage-invalid-peirce} показывает соответствующую контрмодель:
+в разных потомках корневого мира реализуются разные атомарные оценки, из-за чего
+формула $((A \rightarrow B) \rightarrow A) \rightarrow A$ не вынуждается в
+корне.
 
 \anonsection{ЗАКЛЮЧЕНИЕ}
 

@@ -43,7 +43,6 @@ prove formula = do
   let goal = Atom goalAtom
   let sequent = Unclausified [] [] [Annotated () (implication formula goal)] (Annotated ((), ()) goalAtom)
   let (clausified, st) = runState (clausify sequent) (ClausificationState 0)
-  fmtLn $ buildDotClausify 0 clausified
 
   let (Intuit flats impls goal) = getSequent clausified
 

@@ -11,6 +11,8 @@ import Refactoring.Sequent.Annotated
 import Refactoring.Formula.Atom
 import Refactoring.Lambda.Lambda (Substitution_)
 
+import Debug.Trace
+
 data LJTRule_ a c =
   Axiom
     (Classic_ a c) -- root
