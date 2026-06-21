@@ -67,7 +67,15 @@ prove formula = do
   case result of  
     Left counterModel -> fmtLn $ counterModel |+ ""
     Right proof -> do
-      let extended = extendProof (second (const ()) proof)
+      let nonAnnotatedProof = second (const ()) proof
+--      fmtLn $ 
+--        "digraph {\n" <>
+--        "  graph [rankdir=BT]\n" <>
+--        "  node [shape=record;fontname=Arial]\n" <>
+--        indentF 2 (buildDotCArrow 0 nonAnnotatedProof) <>
+--        "}\n"
+
+      let extended = extendProof nonAnnotatedProof
       let concated = concatTrees clausified (second (const ()) extended)
       let (annotatedProof, _) = runState (annotateClausification concated) (Environment 0 Map.empty)
       let reducedAnnotatedProof = first Lambda.reduce annotatedProof

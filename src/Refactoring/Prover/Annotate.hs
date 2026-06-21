@@ -3,6 +3,7 @@ module Refactoring.Prover.Annotate(module Refactoring.Prover.Annotate) where
 import Control.Monad
 import Control.Monad.State
 import Data.Map (Map)
+import Data.Maybe
 import qualified Data.Map as Map
 import qualified Data.List as List
 
@@ -12,6 +13,7 @@ import Refactoring.Lambda.Lambda
 import Refactoring.Prover.CArrow
 import Refactoring.Prover.LJT
 import Refactoring.Formula.Formula
+import qualified Refactoring.Formula.Atom as Atom
 import Refactoring.Formula
 import Refactoring.Sequent.Annotated
 import Refactoring.Clause.Flat
@@ -309,7 +311,9 @@ annotateLJT (ReduceConjunction cseq rule clause@(Flat cs ds) atom _) = do
   let (Classic flats' assumptions' goal') = rootLJT annotatedRule
 
   let (Just f', flats) = extract ((== reduced) . annotated) flats'
-  let (Just a) = List.find ((== atom) . annotated) assumptions'
+  let a = case atom of
+            Atom.Top -> Annotated (Product [], ()) Atom.Top 
+            _ -> fromJust $ List.find ((== atom) . annotated) assumptions'
   f <- getTerm clause
   p <- getNewTerm
 

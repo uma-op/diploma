@@ -8,10 +8,17 @@ import Refactoring.Formula.Formula
 import Text.Parsec.Error (ParseError)
 import Text.Parsec (parse, eof, try, many1)
 
-var :: Parser Formula_
-var = do
+atom :: Parser Formula_
+atom = do
+  _ <- string "$TOP"
+  return top
+  <|> do
+  _ <- string "$BOT"
+  return bottom
+  <|> do
   name <- many1 letter
   return $ variable name
+  
 
 spaceSurroundedSign :: String -> Parser ()
 spaceSurroundedSign sign = spaces >> string sign >> spaces
@@ -39,7 +46,7 @@ unit = do lparen
           formula <- implications
           rparen
           return formula
-       <|> var
+       <|> atom
 
 negations :: Parser Formula_
 negations = do negationSign

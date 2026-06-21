@@ -69,7 +69,7 @@ ljt cseq@(Classic flats assumptions goal) =
           (annotated flat)
           (annotated atom) [])
       where
-        maybeFoundCs = List.find (uncurry csPred) [(a', r') | a' <- assumptions, r' <- flats]
+        maybeFoundCs = List.find (uncurry csPred) [(a', r') | a' <- (Annotated ((), ()) Top : assumptions), r' <- flats]
         csPred atom (Annotated () (Flat cs _)) = annotated atom `elem` map annotated cs
 
     applyDs :: Classic_ () () -> Maybe (LJTRule_ () ())
