@@ -58,13 +58,32 @@ executables:
     ghc-options:
     - -threaded
     - -rtsopts
-    - -with-rtsopts=-N
+    - -with-rtsopts=-N1
     dependencies:
     - diploma
     - z3
     - containers
     - mtl
     - fmt
+  diploma-bench:
+    main:                Main.hs
+    source-dirs:         bench
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N1
+    dependencies:
+    - diploma
+    - directory
+    - filepath
+    - unix
+  syj201-gen:
+    main:                Main.hs
+    source-dirs:         syj201
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
 
 tests:
   diploma-test:

@@ -1,0 +1,71 @@
+IMPLS: True IMPLD: True V: p1
+IMPLS: True IMPLD: True V: p2
+IMPLS: True IMPLD: False V: (p1 & (p2 & (p3 & (p4 & p5))))
+IMPLS: True IMPLD: False V: p1
+IMPLS: True IMPLD: False V: (p2 & (p3 & (p4 & p5)))
+IMPLS: True IMPLD: False V: p2
+IMPLS: True IMPLD: False V: (p3 & (p4 & p5))
+IMPLS: True IMPLD: False V: p3
+IMPLS: True IMPLD: False V: (p4 & p5)
+IMPLS: True IMPLD: False V: p4
+IMPLS: True IMPLD: False V: p5
+IMPLS: True IMPLD: True V: p2
+IMPLS: True IMPLD: True V: p3
+IMPLS: True IMPLD: False V: (p1 & (p2 & (p3 & (p4 & p5))))
+IMPLS: True IMPLD: False V: p1
+IMPLS: True IMPLD: False V: (p2 & (p3 & (p4 & p5)))
+IMPLS: True IMPLD: False V: p2
+IMPLS: True IMPLD: False V: (p3 & (p4 & p5))
+IMPLS: True IMPLD: False V: p3
+IMPLS: True IMPLD: False V: (p4 & p5)
+IMPLS: True IMPLD: False V: p4
+IMPLS: True IMPLD: False V: p5
+IMPLS: True IMPLD: True V: p3
+IMPLS: True IMPLD: True V: p4
+IMPLS: True IMPLD: False V: (p1 & (p2 & (p3 & (p4 & p5))))
+IMPLS: True IMPLD: False V: p1
+IMPLS: True IMPLD: False V: (p2 & (p3 & (p4 & p5)))
+IMPLS: True IMPLD: False V: p2
+IMPLS: True IMPLD: False V: (p3 & (p4 & p5))
+IMPLS: True IMPLD: False V: p3
+IMPLS: True IMPLD: False V: (p4 & p5)
+IMPLS: True IMPLD: False V: p4
+IMPLS: True IMPLD: False V: p5
+IMPLS: True IMPLD: True V: p4
+IMPLS: True IMPLD: True V: p5
+IMPLS: True IMPLD: False V: (p1 & (p2 & (p3 & (p4 & p5))))
+IMPLS: True IMPLD: False V: p1
+IMPLS: True IMPLD: False V: (p2 & (p3 & (p4 & p5)))
+IMPLS: True IMPLD: False V: p2
+IMPLS: True IMPLD: False V: (p3 & (p4 & p5))
+IMPLS: True IMPLD: False V: p3
+IMPLS: True IMPLD: False V: (p4 & p5)
+IMPLS: True IMPLD: False V: p4
+IMPLS: True IMPLD: False V: p5
+IMPLS: True IMPLD: True V: p5
+IMPLS: True IMPLD: True V: p1
+IMPLS: True IMPLD: False V: (p1 & (p2 & (p3 & (p4 & p5))))
+IMPLS: True IMPLD: False V: p1
+IMPLS: True IMPLD: False V: (p2 & (p3 & (p4 & p5)))
+IMPLS: True IMPLD: False V: p2
+IMPLS: True IMPLD: False V: (p3 & (p4 & p5))
+IMPLS: True IMPLD: False V: p3
+IMPLS: True IMPLD: False V: (p4 & p5)
+IMPLS: True IMPLD: False V: p4
+IMPLS: True IMPLD: False V: p5
+IMPLS: False IMPLD: True V: p1
+IMPLS: False IMPLD: True V: p2
+IMPLS: False IMPLD: True V: p3
+IMPLS: False IMPLD: True V: p4
+IMPLS: False IMPLD: True V: p5
+IMPLS: True IMPLD: False V: $goal
++++ Reading file '"benchmarks/syj201/intuitr-formulas/syj201-n02.p"'...
++++ Clausification...
+[((p1 <=> p2) => (p1 & (p2 & (p3 & (p4 & p5))))),((p2 <=> p3) => (p1 & (p2 & (p3 & (p4 & p5))))),((p3 <=> p4) => (p1 & (p2 & (p3 & (p4 & p5))))),((p4 <=> p5) => (p1 & (p2 & (p3 & (p4 & p5))))),((p5 <=> p1) => (p1 & (p2 & (p3 & (p4 & p5))))),((p1 & (p2 & (p3 & (p4 & p5)))) => $goal)]
+([["$p1","$p2"] =>  ["$p0"],["$p3"] =>  ["p4"],["$p3"] =>  ["p5"],["$p4"] =>  ["p3"],["$p4"] =>  ["$p3"],["$p5"] =>  ["p2"],["$p5"] =>  ["$p4"],["$p6"] =>  ["p1"],["$p6"] =>  ["$p5"],["$p0"] =>  ["$p6"],["$p8","$p9"] =>  ["$p7"],["$p7"] =>  ["$p6"],["$p11","$p12"] =>  ["$p10"],["$p10"] =>  ["$p6"],["$p14","$p15"] =>  ["$p13"],["$p13"] =>  ["$p6"],["$p17","$p18"] =>  ["$p16"],["$p16"] =>  ["$p6"],["p1","p2","p3","p4","p5"] =>  ["$goal"]],[(("p1") -> ("p2")) -> ("$p1"),(("p2") -> ("p1")) -> ("$p2"),(("p2") -> ("p3")) -> ("$p8"),(("p3") -> ("p2")) -> ("$p9"),(("p3") -> ("p4")) -> ("$p11"),(("p4") -> ("p3")) -> ("$p12"),(("p4") -> ("p5")) -> ("$p14"),(("p5") -> ("p4")) -> ("$p15"),(("p5") -> ("p1")) -> ("$p17"),(("p1") -> ("p5")) -> ("$p18")],"$goal")
++++ Created 29 flat clauses and 10 implication clauses
++++ Proving (intuitR, CADE 2021)
++++ RESULT: Valid (intuitionistically)
+============================
+Clausification time: 0.001 sec
+Prover time: 0.000 sec

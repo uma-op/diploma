@@ -1,0 +1,935 @@
+IMPLS: True IMPLD: True V: p1
+IMPLS: True IMPLD: True V: p2
+IMPLS: True IMPLD: False V: (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))))))
+IMPLS: True IMPLD: False V: p1
+IMPLS: True IMPLD: False V: (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))))))))
+IMPLS: True IMPLD: False V: p2
+IMPLS: True IMPLD: False V: (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))))
+IMPLS: True IMPLD: False V: p3
+IMPLS: True IMPLD: False V: (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))))))
+IMPLS: True IMPLD: False V: p4
+IMPLS: True IMPLD: False V: (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))
+IMPLS: True IMPLD: False V: p5
+IMPLS: True IMPLD: False V: (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))))
+IMPLS: True IMPLD: False V: p6
+IMPLS: True IMPLD: False V: (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))
+IMPLS: True IMPLD: False V: p7
+IMPLS: True IMPLD: False V: (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))
+IMPLS: True IMPLD: False V: p8
+IMPLS: True IMPLD: False V: (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))
+IMPLS: True IMPLD: False V: p9
+IMPLS: True IMPLD: False V: (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))
+IMPLS: True IMPLD: False V: p10
+IMPLS: True IMPLD: False V: (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))
+IMPLS: True IMPLD: False V: p11
+IMPLS: True IMPLD: False V: (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))
+IMPLS: True IMPLD: False V: p12
+IMPLS: True IMPLD: False V: (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))
+IMPLS: True IMPLD: False V: p13
+IMPLS: True IMPLD: False V: (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))
+IMPLS: True IMPLD: False V: p14
+IMPLS: True IMPLD: False V: (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))
+IMPLS: True IMPLD: False V: p15
+IMPLS: True IMPLD: False V: (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))
+IMPLS: True IMPLD: False V: p16
+IMPLS: True IMPLD: False V: (p17 & (p18 & (p19 & (p20 & p21))))
+IMPLS: True IMPLD: False V: p17
+IMPLS: True IMPLD: False V: (p18 & (p19 & (p20 & p21)))
+IMPLS: True IMPLD: False V: p18
+IMPLS: True IMPLD: False V: (p19 & (p20 & p21))
+IMPLS: True IMPLD: False V: p19
+IMPLS: True IMPLD: False V: (p20 & p21)
+IMPLS: True IMPLD: False V: p20
+IMPLS: True IMPLD: False V: p21
+IMPLS: True IMPLD: True V: p2
+IMPLS: True IMPLD: True V: p3
+IMPLS: True IMPLD: False V: (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))))))
+IMPLS: True IMPLD: False V: p1
+IMPLS: True IMPLD: False V: (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))))))))
+IMPLS: True IMPLD: False V: p2
+IMPLS: True IMPLD: False V: (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))))
+IMPLS: True IMPLD: False V: p3
+IMPLS: True IMPLD: False V: (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))))))
+IMPLS: True IMPLD: False V: p4
+IMPLS: True IMPLD: False V: (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))
+IMPLS: True IMPLD: False V: p5
+IMPLS: True IMPLD: False V: (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))))
+IMPLS: True IMPLD: False V: p6
+IMPLS: True IMPLD: False V: (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))
+IMPLS: True IMPLD: False V: p7
+IMPLS: True IMPLD: False V: (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))
+IMPLS: True IMPLD: False V: p8
+IMPLS: True IMPLD: False V: (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))
+IMPLS: True IMPLD: False V: p9
+IMPLS: True IMPLD: False V: (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))
+IMPLS: True IMPLD: False V: p10
+IMPLS: True IMPLD: False V: (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))
+IMPLS: True IMPLD: False V: p11
+IMPLS: True IMPLD: False V: (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))
+IMPLS: True IMPLD: False V: p12
+IMPLS: True IMPLD: False V: (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))
+IMPLS: True IMPLD: False V: p13
+IMPLS: True IMPLD: False V: (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))
+IMPLS: True IMPLD: False V: p14
+IMPLS: True IMPLD: False V: (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))
+IMPLS: True IMPLD: False V: p15
+IMPLS: True IMPLD: False V: (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))
+IMPLS: True IMPLD: False V: p16
+IMPLS: True IMPLD: False V: (p17 & (p18 & (p19 & (p20 & p21))))
+IMPLS: True IMPLD: False V: p17
+IMPLS: True IMPLD: False V: (p18 & (p19 & (p20 & p21)))
+IMPLS: True IMPLD: False V: p18
+IMPLS: True IMPLD: False V: (p19 & (p20 & p21))
+IMPLS: True IMPLD: False V: p19
+IMPLS: True IMPLD: False V: (p20 & p21)
+IMPLS: True IMPLD: False V: p20
+IMPLS: True IMPLD: False V: p21
+IMPLS: True IMPLD: True V: p3
+IMPLS: True IMPLD: True V: p4
+IMPLS: True IMPLD: False V: (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))))))
+IMPLS: True IMPLD: False V: p1
+IMPLS: True IMPLD: False V: (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))))))))
+IMPLS: True IMPLD: False V: p2
+IMPLS: True IMPLD: False V: (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))))
+IMPLS: True IMPLD: False V: p3
+IMPLS: True IMPLD: False V: (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))))))
+IMPLS: True IMPLD: False V: p4
+IMPLS: True IMPLD: False V: (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))
+IMPLS: True IMPLD: False V: p5
+IMPLS: True IMPLD: False V: (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))))
+IMPLS: True IMPLD: False V: p6
+IMPLS: True IMPLD: False V: (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))
+IMPLS: True IMPLD: False V: p7
+IMPLS: True IMPLD: False V: (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))
+IMPLS: True IMPLD: False V: p8
+IMPLS: True IMPLD: False V: (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))
+IMPLS: True IMPLD: False V: p9
+IMPLS: True IMPLD: False V: (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))
+IMPLS: True IMPLD: False V: p10
+IMPLS: True IMPLD: False V: (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))
+IMPLS: True IMPLD: False V: p11
+IMPLS: True IMPLD: False V: (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))
+IMPLS: True IMPLD: False V: p12
+IMPLS: True IMPLD: False V: (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))
+IMPLS: True IMPLD: False V: p13
+IMPLS: True IMPLD: False V: (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))
+IMPLS: True IMPLD: False V: p14
+IMPLS: True IMPLD: False V: (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))
+IMPLS: True IMPLD: False V: p15
+IMPLS: True IMPLD: False V: (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))
+IMPLS: True IMPLD: False V: p16
+IMPLS: True IMPLD: False V: (p17 & (p18 & (p19 & (p20 & p21))))
+IMPLS: True IMPLD: False V: p17
+IMPLS: True IMPLD: False V: (p18 & (p19 & (p20 & p21)))
+IMPLS: True IMPLD: False V: p18
+IMPLS: True IMPLD: False V: (p19 & (p20 & p21))
+IMPLS: True IMPLD: False V: p19
+IMPLS: True IMPLD: False V: (p20 & p21)
+IMPLS: True IMPLD: False V: p20
+IMPLS: True IMPLD: False V: p21
+IMPLS: True IMPLD: True V: p4
+IMPLS: True IMPLD: True V: p5
+IMPLS: True IMPLD: False V: (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))))))
+IMPLS: True IMPLD: False V: p1
+IMPLS: True IMPLD: False V: (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))))))))
+IMPLS: True IMPLD: False V: p2
+IMPLS: True IMPLD: False V: (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))))
+IMPLS: True IMPLD: False V: p3
+IMPLS: True IMPLD: False V: (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))))))
+IMPLS: True IMPLD: False V: p4
+IMPLS: True IMPLD: False V: (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))
+IMPLS: True IMPLD: False V: p5
+IMPLS: True IMPLD: False V: (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))))
+IMPLS: True IMPLD: False V: p6
+IMPLS: True IMPLD: False V: (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))
+IMPLS: True IMPLD: False V: p7
+IMPLS: True IMPLD: False V: (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))
+IMPLS: True IMPLD: False V: p8
+IMPLS: True IMPLD: False V: (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))
+IMPLS: True IMPLD: False V: p9
+IMPLS: True IMPLD: False V: (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))
+IMPLS: True IMPLD: False V: p10
+IMPLS: True IMPLD: False V: (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))
+IMPLS: True IMPLD: False V: p11
+IMPLS: True IMPLD: False V: (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))
+IMPLS: True IMPLD: False V: p12
+IMPLS: True IMPLD: False V: (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))
+IMPLS: True IMPLD: False V: p13
+IMPLS: True IMPLD: False V: (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))
+IMPLS: True IMPLD: False V: p14
+IMPLS: True IMPLD: False V: (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))
+IMPLS: True IMPLD: False V: p15
+IMPLS: True IMPLD: False V: (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))
+IMPLS: True IMPLD: False V: p16
+IMPLS: True IMPLD: False V: (p17 & (p18 & (p19 & (p20 & p21))))
+IMPLS: True IMPLD: False V: p17
+IMPLS: True IMPLD: False V: (p18 & (p19 & (p20 & p21)))
+IMPLS: True IMPLD: False V: p18
+IMPLS: True IMPLD: False V: (p19 & (p20 & p21))
+IMPLS: True IMPLD: False V: p19
+IMPLS: True IMPLD: False V: (p20 & p21)
+IMPLS: True IMPLD: False V: p20
+IMPLS: True IMPLD: False V: p21
+IMPLS: True IMPLD: True V: p5
+IMPLS: True IMPLD: True V: p6
+IMPLS: True IMPLD: False V: (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))))))
+IMPLS: True IMPLD: False V: p1
+IMPLS: True IMPLD: False V: (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))))))))
+IMPLS: True IMPLD: False V: p2
+IMPLS: True IMPLD: False V: (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))))
+IMPLS: True IMPLD: False V: p3
+IMPLS: True IMPLD: False V: (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))))))
+IMPLS: True IMPLD: False V: p4
+IMPLS: True IMPLD: False V: (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))
+IMPLS: True IMPLD: False V: p5
+IMPLS: True IMPLD: False V: (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))))
+IMPLS: True IMPLD: False V: p6
+IMPLS: True IMPLD: False V: (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))
+IMPLS: True IMPLD: False V: p7
+IMPLS: True IMPLD: False V: (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))
+IMPLS: True IMPLD: False V: p8
+IMPLS: True IMPLD: False V: (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))
+IMPLS: True IMPLD: False V: p9
+IMPLS: True IMPLD: False V: (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))
+IMPLS: True IMPLD: False V: p10
+IMPLS: True IMPLD: False V: (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))
+IMPLS: True IMPLD: False V: p11
+IMPLS: True IMPLD: False V: (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))
+IMPLS: True IMPLD: False V: p12
+IMPLS: True IMPLD: False V: (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))
+IMPLS: True IMPLD: False V: p13
+IMPLS: True IMPLD: False V: (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))
+IMPLS: True IMPLD: False V: p14
+IMPLS: True IMPLD: False V: (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))
+IMPLS: True IMPLD: False V: p15
+IMPLS: True IMPLD: False V: (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))
+IMPLS: True IMPLD: False V: p16
+IMPLS: True IMPLD: False V: (p17 & (p18 & (p19 & (p20 & p21))))
+IMPLS: True IMPLD: False V: p17
+IMPLS: True IMPLD: False V: (p18 & (p19 & (p20 & p21)))
+IMPLS: True IMPLD: False V: p18
+IMPLS: True IMPLD: False V: (p19 & (p20 & p21))
+IMPLS: True IMPLD: False V: p19
+IMPLS: True IMPLD: False V: (p20 & p21)
+IMPLS: True IMPLD: False V: p20
+IMPLS: True IMPLD: False V: p21
+IMPLS: True IMPLD: True V: p6
+IMPLS: True IMPLD: True V: p7
+IMPLS: True IMPLD: False V: (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))))))
+IMPLS: True IMPLD: False V: p1
+IMPLS: True IMPLD: False V: (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))))))))
+IMPLS: True IMPLD: False V: p2
+IMPLS: True IMPLD: False V: (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))))
+IMPLS: True IMPLD: False V: p3
+IMPLS: True IMPLD: False V: (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))))))
+IMPLS: True IMPLD: False V: p4
+IMPLS: True IMPLD: False V: (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))
+IMPLS: True IMPLD: False V: p5
+IMPLS: True IMPLD: False V: (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))))
+IMPLS: True IMPLD: False V: p6
+IMPLS: True IMPLD: False V: (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))
+IMPLS: True IMPLD: False V: p7
+IMPLS: True IMPLD: False V: (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))
+IMPLS: True IMPLD: False V: p8
+IMPLS: True IMPLD: False V: (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))
+IMPLS: True IMPLD: False V: p9
+IMPLS: True IMPLD: False V: (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))
+IMPLS: True IMPLD: False V: p10
+IMPLS: True IMPLD: False V: (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))
+IMPLS: True IMPLD: False V: p11
+IMPLS: True IMPLD: False V: (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))
+IMPLS: True IMPLD: False V: p12
+IMPLS: True IMPLD: False V: (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))
+IMPLS: True IMPLD: False V: p13
+IMPLS: True IMPLD: False V: (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))
+IMPLS: True IMPLD: False V: p14
+IMPLS: True IMPLD: False V: (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))
+IMPLS: True IMPLD: False V: p15
+IMPLS: True IMPLD: False V: (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))
+IMPLS: True IMPLD: False V: p16
+IMPLS: True IMPLD: False V: (p17 & (p18 & (p19 & (p20 & p21))))
+IMPLS: True IMPLD: False V: p17
+IMPLS: True IMPLD: False V: (p18 & (p19 & (p20 & p21)))
+IMPLS: True IMPLD: False V: p18
+IMPLS: True IMPLD: False V: (p19 & (p20 & p21))
+IMPLS: True IMPLD: False V: p19
+IMPLS: True IMPLD: False V: (p20 & p21)
+IMPLS: True IMPLD: False V: p20
+IMPLS: True IMPLD: False V: p21
+IMPLS: True IMPLD: True V: p7
+IMPLS: True IMPLD: True V: p8
+IMPLS: True IMPLD: False V: (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))))))
+IMPLS: True IMPLD: False V: p1
+IMPLS: True IMPLD: False V: (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))))))))
+IMPLS: True IMPLD: False V: p2
+IMPLS: True IMPLD: False V: (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))))
+IMPLS: True IMPLD: False V: p3
+IMPLS: True IMPLD: False V: (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))))))
+IMPLS: True IMPLD: False V: p4
+IMPLS: True IMPLD: False V: (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))
+IMPLS: True IMPLD: False V: p5
+IMPLS: True IMPLD: False V: (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))))
+IMPLS: True IMPLD: False V: p6
+IMPLS: True IMPLD: False V: (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))
+IMPLS: True IMPLD: False V: p7
+IMPLS: True IMPLD: False V: (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))
+IMPLS: True IMPLD: False V: p8
+IMPLS: True IMPLD: False V: (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))
+IMPLS: True IMPLD: False V: p9
+IMPLS: True IMPLD: False V: (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))
+IMPLS: True IMPLD: False V: p10
+IMPLS: True IMPLD: False V: (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))
+IMPLS: True IMPLD: False V: p11
+IMPLS: True IMPLD: False V: (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))
+IMPLS: True IMPLD: False V: p12
+IMPLS: True IMPLD: False V: (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))
+IMPLS: True IMPLD: False V: p13
+IMPLS: True IMPLD: False V: (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))
+IMPLS: True IMPLD: False V: p14
+IMPLS: True IMPLD: False V: (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))
+IMPLS: True IMPLD: False V: p15
+IMPLS: True IMPLD: False V: (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))
+IMPLS: True IMPLD: False V: p16
+IMPLS: True IMPLD: False V: (p17 & (p18 & (p19 & (p20 & p21))))
+IMPLS: True IMPLD: False V: p17
+IMPLS: True IMPLD: False V: (p18 & (p19 & (p20 & p21)))
+IMPLS: True IMPLD: False V: p18
+IMPLS: True IMPLD: False V: (p19 & (p20 & p21))
+IMPLS: True IMPLD: False V: p19
+IMPLS: True IMPLD: False V: (p20 & p21)
+IMPLS: True IMPLD: False V: p20
+IMPLS: True IMPLD: False V: p21
+IMPLS: True IMPLD: True V: p8
+IMPLS: True IMPLD: True V: p9
+IMPLS: True IMPLD: False V: (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))))))
+IMPLS: True IMPLD: False V: p1
+IMPLS: True IMPLD: False V: (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))))))))
+IMPLS: True IMPLD: False V: p2
+IMPLS: True IMPLD: False V: (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))))
+IMPLS: True IMPLD: False V: p3
+IMPLS: True IMPLD: False V: (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))))))
+IMPLS: True IMPLD: False V: p4
+IMPLS: True IMPLD: False V: (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))
+IMPLS: True IMPLD: False V: p5
+IMPLS: True IMPLD: False V: (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))))
+IMPLS: True IMPLD: False V: p6
+IMPLS: True IMPLD: False V: (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))
+IMPLS: True IMPLD: False V: p7
+IMPLS: True IMPLD: False V: (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))
+IMPLS: True IMPLD: False V: p8
+IMPLS: True IMPLD: False V: (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))
+IMPLS: True IMPLD: False V: p9
+IMPLS: True IMPLD: False V: (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))
+IMPLS: True IMPLD: False V: p10
+IMPLS: True IMPLD: False V: (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))
+IMPLS: True IMPLD: False V: p11
+IMPLS: True IMPLD: False V: (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))
+IMPLS: True IMPLD: False V: p12
+IMPLS: True IMPLD: False V: (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))
+IMPLS: True IMPLD: False V: p13
+IMPLS: True IMPLD: False V: (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))
+IMPLS: True IMPLD: False V: p14
+IMPLS: True IMPLD: False V: (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))
+IMPLS: True IMPLD: False V: p15
+IMPLS: True IMPLD: False V: (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))
+IMPLS: True IMPLD: False V: p16
+IMPLS: True IMPLD: False V: (p17 & (p18 & (p19 & (p20 & p21))))
+IMPLS: True IMPLD: False V: p17
+IMPLS: True IMPLD: False V: (p18 & (p19 & (p20 & p21)))
+IMPLS: True IMPLD: False V: p18
+IMPLS: True IMPLD: False V: (p19 & (p20 & p21))
+IMPLS: True IMPLD: False V: p19
+IMPLS: True IMPLD: False V: (p20 & p21)
+IMPLS: True IMPLD: False V: p20
+IMPLS: True IMPLD: False V: p21
+IMPLS: True IMPLD: True V: p9
+IMPLS: True IMPLD: True V: p10
+IMPLS: True IMPLD: False V: (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))))))
+IMPLS: True IMPLD: False V: p1
+IMPLS: True IMPLD: False V: (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))))))))
+IMPLS: True IMPLD: False V: p2
+IMPLS: True IMPLD: False V: (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))))
+IMPLS: True IMPLD: False V: p3
+IMPLS: True IMPLD: False V: (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))))))
+IMPLS: True IMPLD: False V: p4
+IMPLS: True IMPLD: False V: (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))
+IMPLS: True IMPLD: False V: p5
+IMPLS: True IMPLD: False V: (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))))
+IMPLS: True IMPLD: False V: p6
+IMPLS: True IMPLD: False V: (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))
+IMPLS: True IMPLD: False V: p7
+IMPLS: True IMPLD: False V: (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))
+IMPLS: True IMPLD: False V: p8
+IMPLS: True IMPLD: False V: (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))
+IMPLS: True IMPLD: False V: p9
+IMPLS: True IMPLD: False V: (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))
+IMPLS: True IMPLD: False V: p10
+IMPLS: True IMPLD: False V: (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))
+IMPLS: True IMPLD: False V: p11
+IMPLS: True IMPLD: False V: (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))
+IMPLS: True IMPLD: False V: p12
+IMPLS: True IMPLD: False V: (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))
+IMPLS: True IMPLD: False V: p13
+IMPLS: True IMPLD: False V: (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))
+IMPLS: True IMPLD: False V: p14
+IMPLS: True IMPLD: False V: (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))
+IMPLS: True IMPLD: False V: p15
+IMPLS: True IMPLD: False V: (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))
+IMPLS: True IMPLD: False V: p16
+IMPLS: True IMPLD: False V: (p17 & (p18 & (p19 & (p20 & p21))))
+IMPLS: True IMPLD: False V: p17
+IMPLS: True IMPLD: False V: (p18 & (p19 & (p20 & p21)))
+IMPLS: True IMPLD: False V: p18
+IMPLS: True IMPLD: False V: (p19 & (p20 & p21))
+IMPLS: True IMPLD: False V: p19
+IMPLS: True IMPLD: False V: (p20 & p21)
+IMPLS: True IMPLD: False V: p20
+IMPLS: True IMPLD: False V: p21
+IMPLS: True IMPLD: True V: p10
+IMPLS: True IMPLD: True V: p11
+IMPLS: True IMPLD: False V: (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))))))
+IMPLS: True IMPLD: False V: p1
+IMPLS: True IMPLD: False V: (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))))))))
+IMPLS: True IMPLD: False V: p2
+IMPLS: True IMPLD: False V: (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))))
+IMPLS: True IMPLD: False V: p3
+IMPLS: True IMPLD: False V: (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))))))
+IMPLS: True IMPLD: False V: p4
+IMPLS: True IMPLD: False V: (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))
+IMPLS: True IMPLD: False V: p5
+IMPLS: True IMPLD: False V: (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))))
+IMPLS: True IMPLD: False V: p6
+IMPLS: True IMPLD: False V: (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))
+IMPLS: True IMPLD: False V: p7
+IMPLS: True IMPLD: False V: (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))
+IMPLS: True IMPLD: False V: p8
+IMPLS: True IMPLD: False V: (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))
+IMPLS: True IMPLD: False V: p9
+IMPLS: True IMPLD: False V: (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))
+IMPLS: True IMPLD: False V: p10
+IMPLS: True IMPLD: False V: (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))
+IMPLS: True IMPLD: False V: p11
+IMPLS: True IMPLD: False V: (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))
+IMPLS: True IMPLD: False V: p12
+IMPLS: True IMPLD: False V: (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))
+IMPLS: True IMPLD: False V: p13
+IMPLS: True IMPLD: False V: (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))
+IMPLS: True IMPLD: False V: p14
+IMPLS: True IMPLD: False V: (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))
+IMPLS: True IMPLD: False V: p15
+IMPLS: True IMPLD: False V: (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))
+IMPLS: True IMPLD: False V: p16
+IMPLS: True IMPLD: False V: (p17 & (p18 & (p19 & (p20 & p21))))
+IMPLS: True IMPLD: False V: p17
+IMPLS: True IMPLD: False V: (p18 & (p19 & (p20 & p21)))
+IMPLS: True IMPLD: False V: p18
+IMPLS: True IMPLD: False V: (p19 & (p20 & p21))
+IMPLS: True IMPLD: False V: p19
+IMPLS: True IMPLD: False V: (p20 & p21)
+IMPLS: True IMPLD: False V: p20
+IMPLS: True IMPLD: False V: p21
+IMPLS: True IMPLD: True V: p11
+IMPLS: True IMPLD: True V: p12
+IMPLS: True IMPLD: False V: (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))))))
+IMPLS: True IMPLD: False V: p1
+IMPLS: True IMPLD: False V: (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))))))))
+IMPLS: True IMPLD: False V: p2
+IMPLS: True IMPLD: False V: (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))))
+IMPLS: True IMPLD: False V: p3
+IMPLS: True IMPLD: False V: (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))))))
+IMPLS: True IMPLD: False V: p4
+IMPLS: True IMPLD: False V: (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))
+IMPLS: True IMPLD: False V: p5
+IMPLS: True IMPLD: False V: (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))))
+IMPLS: True IMPLD: False V: p6
+IMPLS: True IMPLD: False V: (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))
+IMPLS: True IMPLD: False V: p7
+IMPLS: True IMPLD: False V: (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))
+IMPLS: True IMPLD: False V: p8
+IMPLS: True IMPLD: False V: (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))
+IMPLS: True IMPLD: False V: p9
+IMPLS: True IMPLD: False V: (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))
+IMPLS: True IMPLD: False V: p10
+IMPLS: True IMPLD: False V: (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))
+IMPLS: True IMPLD: False V: p11
+IMPLS: True IMPLD: False V: (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))
+IMPLS: True IMPLD: False V: p12
+IMPLS: True IMPLD: False V: (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))
+IMPLS: True IMPLD: False V: p13
+IMPLS: True IMPLD: False V: (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))
+IMPLS: True IMPLD: False V: p14
+IMPLS: True IMPLD: False V: (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))
+IMPLS: True IMPLD: False V: p15
+IMPLS: True IMPLD: False V: (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))
+IMPLS: True IMPLD: False V: p16
+IMPLS: True IMPLD: False V: (p17 & (p18 & (p19 & (p20 & p21))))
+IMPLS: True IMPLD: False V: p17
+IMPLS: True IMPLD: False V: (p18 & (p19 & (p20 & p21)))
+IMPLS: True IMPLD: False V: p18
+IMPLS: True IMPLD: False V: (p19 & (p20 & p21))
+IMPLS: True IMPLD: False V: p19
+IMPLS: True IMPLD: False V: (p20 & p21)
+IMPLS: True IMPLD: False V: p20
+IMPLS: True IMPLD: False V: p21
+IMPLS: True IMPLD: True V: p12
+IMPLS: True IMPLD: True V: p13
+IMPLS: True IMPLD: False V: (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))))))
+IMPLS: True IMPLD: False V: p1
+IMPLS: True IMPLD: False V: (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))))))))
+IMPLS: True IMPLD: False V: p2
+IMPLS: True IMPLD: False V: (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))))
+IMPLS: True IMPLD: False V: p3
+IMPLS: True IMPLD: False V: (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))))))
+IMPLS: True IMPLD: False V: p4
+IMPLS: True IMPLD: False V: (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))
+IMPLS: True IMPLD: False V: p5
+IMPLS: True IMPLD: False V: (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))))
+IMPLS: True IMPLD: False V: p6
+IMPLS: True IMPLD: False V: (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))
+IMPLS: True IMPLD: False V: p7
+IMPLS: True IMPLD: False V: (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))
+IMPLS: True IMPLD: False V: p8
+IMPLS: True IMPLD: False V: (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))
+IMPLS: True IMPLD: False V: p9
+IMPLS: True IMPLD: False V: (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))
+IMPLS: True IMPLD: False V: p10
+IMPLS: True IMPLD: False V: (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))
+IMPLS: True IMPLD: False V: p11
+IMPLS: True IMPLD: False V: (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))
+IMPLS: True IMPLD: False V: p12
+IMPLS: True IMPLD: False V: (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))
+IMPLS: True IMPLD: False V: p13
+IMPLS: True IMPLD: False V: (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))
+IMPLS: True IMPLD: False V: p14
+IMPLS: True IMPLD: False V: (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))
+IMPLS: True IMPLD: False V: p15
+IMPLS: True IMPLD: False V: (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))
+IMPLS: True IMPLD: False V: p16
+IMPLS: True IMPLD: False V: (p17 & (p18 & (p19 & (p20 & p21))))
+IMPLS: True IMPLD: False V: p17
+IMPLS: True IMPLD: False V: (p18 & (p19 & (p20 & p21)))
+IMPLS: True IMPLD: False V: p18
+IMPLS: True IMPLD: False V: (p19 & (p20 & p21))
+IMPLS: True IMPLD: False V: p19
+IMPLS: True IMPLD: False V: (p20 & p21)
+IMPLS: True IMPLD: False V: p20
+IMPLS: True IMPLD: False V: p21
+IMPLS: True IMPLD: True V: p13
+IMPLS: True IMPLD: True V: p14
+IMPLS: True IMPLD: False V: (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))))))
+IMPLS: True IMPLD: False V: p1
+IMPLS: True IMPLD: False V: (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))))))))
+IMPLS: True IMPLD: False V: p2
+IMPLS: True IMPLD: False V: (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))))
+IMPLS: True IMPLD: False V: p3
+IMPLS: True IMPLD: False V: (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))))))
+IMPLS: True IMPLD: False V: p4
+IMPLS: True IMPLD: False V: (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))
+IMPLS: True IMPLD: False V: p5
+IMPLS: True IMPLD: False V: (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))))
+IMPLS: True IMPLD: False V: p6
+IMPLS: True IMPLD: False V: (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))
+IMPLS: True IMPLD: False V: p7
+IMPLS: True IMPLD: False V: (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))
+IMPLS: True IMPLD: False V: p8
+IMPLS: True IMPLD: False V: (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))
+IMPLS: True IMPLD: False V: p9
+IMPLS: True IMPLD: False V: (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))
+IMPLS: True IMPLD: False V: p10
+IMPLS: True IMPLD: False V: (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))
+IMPLS: True IMPLD: False V: p11
+IMPLS: True IMPLD: False V: (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))
+IMPLS: True IMPLD: False V: p12
+IMPLS: True IMPLD: False V: (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))
+IMPLS: True IMPLD: False V: p13
+IMPLS: True IMPLD: False V: (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))
+IMPLS: True IMPLD: False V: p14
+IMPLS: True IMPLD: False V: (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))
+IMPLS: True IMPLD: False V: p15
+IMPLS: True IMPLD: False V: (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))
+IMPLS: True IMPLD: False V: p16
+IMPLS: True IMPLD: False V: (p17 & (p18 & (p19 & (p20 & p21))))
+IMPLS: True IMPLD: False V: p17
+IMPLS: True IMPLD: False V: (p18 & (p19 & (p20 & p21)))
+IMPLS: True IMPLD: False V: p18
+IMPLS: True IMPLD: False V: (p19 & (p20 & p21))
+IMPLS: True IMPLD: False V: p19
+IMPLS: True IMPLD: False V: (p20 & p21)
+IMPLS: True IMPLD: False V: p20
+IMPLS: True IMPLD: False V: p21
+IMPLS: True IMPLD: True V: p14
+IMPLS: True IMPLD: True V: p15
+IMPLS: True IMPLD: False V: (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))))))
+IMPLS: True IMPLD: False V: p1
+IMPLS: True IMPLD: False V: (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))))))))
+IMPLS: True IMPLD: False V: p2
+IMPLS: True IMPLD: False V: (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))))
+IMPLS: True IMPLD: False V: p3
+IMPLS: True IMPLD: False V: (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))))))
+IMPLS: True IMPLD: False V: p4
+IMPLS: True IMPLD: False V: (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))
+IMPLS: True IMPLD: False V: p5
+IMPLS: True IMPLD: False V: (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))))
+IMPLS: True IMPLD: False V: p6
+IMPLS: True IMPLD: False V: (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))
+IMPLS: True IMPLD: False V: p7
+IMPLS: True IMPLD: False V: (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))
+IMPLS: True IMPLD: False V: p8
+IMPLS: True IMPLD: False V: (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))
+IMPLS: True IMPLD: False V: p9
+IMPLS: True IMPLD: False V: (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))
+IMPLS: True IMPLD: False V: p10
+IMPLS: True IMPLD: False V: (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))
+IMPLS: True IMPLD: False V: p11
+IMPLS: True IMPLD: False V: (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))
+IMPLS: True IMPLD: False V: p12
+IMPLS: True IMPLD: False V: (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))
+IMPLS: True IMPLD: False V: p13
+IMPLS: True IMPLD: False V: (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))
+IMPLS: True IMPLD: False V: p14
+IMPLS: True IMPLD: False V: (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))
+IMPLS: True IMPLD: False V: p15
+IMPLS: True IMPLD: False V: (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))
+IMPLS: True IMPLD: False V: p16
+IMPLS: True IMPLD: False V: (p17 & (p18 & (p19 & (p20 & p21))))
+IMPLS: True IMPLD: False V: p17
+IMPLS: True IMPLD: False V: (p18 & (p19 & (p20 & p21)))
+IMPLS: True IMPLD: False V: p18
+IMPLS: True IMPLD: False V: (p19 & (p20 & p21))
+IMPLS: True IMPLD: False V: p19
+IMPLS: True IMPLD: False V: (p20 & p21)
+IMPLS: True IMPLD: False V: p20
+IMPLS: True IMPLD: False V: p21
+IMPLS: True IMPLD: True V: p15
+IMPLS: True IMPLD: True V: p16
+IMPLS: True IMPLD: False V: (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))))))
+IMPLS: True IMPLD: False V: p1
+IMPLS: True IMPLD: False V: (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))))))))
+IMPLS: True IMPLD: False V: p2
+IMPLS: True IMPLD: False V: (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))))
+IMPLS: True IMPLD: False V: p3
+IMPLS: True IMPLD: False V: (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))))))
+IMPLS: True IMPLD: False V: p4
+IMPLS: True IMPLD: False V: (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))
+IMPLS: True IMPLD: False V: p5
+IMPLS: True IMPLD: False V: (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))))
+IMPLS: True IMPLD: False V: p6
+IMPLS: True IMPLD: False V: (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))
+IMPLS: True IMPLD: False V: p7
+IMPLS: True IMPLD: False V: (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))
+IMPLS: True IMPLD: False V: p8
+IMPLS: True IMPLD: False V: (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))
+IMPLS: True IMPLD: False V: p9
+IMPLS: True IMPLD: False V: (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))
+IMPLS: True IMPLD: False V: p10
+IMPLS: True IMPLD: False V: (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))
+IMPLS: True IMPLD: False V: p11
+IMPLS: True IMPLD: False V: (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))
+IMPLS: True IMPLD: False V: p12
+IMPLS: True IMPLD: False V: (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))
+IMPLS: True IMPLD: False V: p13
+IMPLS: True IMPLD: False V: (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))
+IMPLS: True IMPLD: False V: p14
+IMPLS: True IMPLD: False V: (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))
+IMPLS: True IMPLD: False V: p15
+IMPLS: True IMPLD: False V: (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))
+IMPLS: True IMPLD: False V: p16
+IMPLS: True IMPLD: False V: (p17 & (p18 & (p19 & (p20 & p21))))
+IMPLS: True IMPLD: False V: p17
+IMPLS: True IMPLD: False V: (p18 & (p19 & (p20 & p21)))
+IMPLS: True IMPLD: False V: p18
+IMPLS: True IMPLD: False V: (p19 & (p20 & p21))
+IMPLS: True IMPLD: False V: p19
+IMPLS: True IMPLD: False V: (p20 & p21)
+IMPLS: True IMPLD: False V: p20
+IMPLS: True IMPLD: False V: p21
+IMPLS: True IMPLD: True V: p16
+IMPLS: True IMPLD: True V: p17
+IMPLS: True IMPLD: False V: (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))))))
+IMPLS: True IMPLD: False V: p1
+IMPLS: True IMPLD: False V: (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))))))))
+IMPLS: True IMPLD: False V: p2
+IMPLS: True IMPLD: False V: (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))))
+IMPLS: True IMPLD: False V: p3
+IMPLS: True IMPLD: False V: (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))))))
+IMPLS: True IMPLD: False V: p4
+IMPLS: True IMPLD: False V: (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))
+IMPLS: True IMPLD: False V: p5
+IMPLS: True IMPLD: False V: (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))))
+IMPLS: True IMPLD: False V: p6
+IMPLS: True IMPLD: False V: (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))
+IMPLS: True IMPLD: False V: p7
+IMPLS: True IMPLD: False V: (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))
+IMPLS: True IMPLD: False V: p8
+IMPLS: True IMPLD: False V: (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))
+IMPLS: True IMPLD: False V: p9
+IMPLS: True IMPLD: False V: (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))
+IMPLS: True IMPLD: False V: p10
+IMPLS: True IMPLD: False V: (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))
+IMPLS: True IMPLD: False V: p11
+IMPLS: True IMPLD: False V: (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))
+IMPLS: True IMPLD: False V: p12
+IMPLS: True IMPLD: False V: (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))
+IMPLS: True IMPLD: False V: p13
+IMPLS: True IMPLD: False V: (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))
+IMPLS: True IMPLD: False V: p14
+IMPLS: True IMPLD: False V: (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))
+IMPLS: True IMPLD: False V: p15
+IMPLS: True IMPLD: False V: (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))
+IMPLS: True IMPLD: False V: p16
+IMPLS: True IMPLD: False V: (p17 & (p18 & (p19 & (p20 & p21))))
+IMPLS: True IMPLD: False V: p17
+IMPLS: True IMPLD: False V: (p18 & (p19 & (p20 & p21)))
+IMPLS: True IMPLD: False V: p18
+IMPLS: True IMPLD: False V: (p19 & (p20 & p21))
+IMPLS: True IMPLD: False V: p19
+IMPLS: True IMPLD: False V: (p20 & p21)
+IMPLS: True IMPLD: False V: p20
+IMPLS: True IMPLD: False V: p21
+IMPLS: True IMPLD: True V: p17
+IMPLS: True IMPLD: True V: p18
+IMPLS: True IMPLD: False V: (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))))))
+IMPLS: True IMPLD: False V: p1
+IMPLS: True IMPLD: False V: (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))))))))
+IMPLS: True IMPLD: False V: p2
+IMPLS: True IMPLD: False V: (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))))
+IMPLS: True IMPLD: False V: p3
+IMPLS: True IMPLD: False V: (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))))))
+IMPLS: True IMPLD: False V: p4
+IMPLS: True IMPLD: False V: (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))
+IMPLS: True IMPLD: False V: p5
+IMPLS: True IMPLD: False V: (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))))
+IMPLS: True IMPLD: False V: p6
+IMPLS: True IMPLD: False V: (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))
+IMPLS: True IMPLD: False V: p7
+IMPLS: True IMPLD: False V: (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))
+IMPLS: True IMPLD: False V: p8
+IMPLS: True IMPLD: False V: (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))
+IMPLS: True IMPLD: False V: p9
+IMPLS: True IMPLD: False V: (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))
+IMPLS: True IMPLD: False V: p10
+IMPLS: True IMPLD: False V: (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))
+IMPLS: True IMPLD: False V: p11
+IMPLS: True IMPLD: False V: (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))
+IMPLS: True IMPLD: False V: p12
+IMPLS: True IMPLD: False V: (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))
+IMPLS: True IMPLD: False V: p13
+IMPLS: True IMPLD: False V: (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))
+IMPLS: True IMPLD: False V: p14
+IMPLS: True IMPLD: False V: (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))
+IMPLS: True IMPLD: False V: p15
+IMPLS: True IMPLD: False V: (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))
+IMPLS: True IMPLD: False V: p16
+IMPLS: True IMPLD: False V: (p17 & (p18 & (p19 & (p20 & p21))))
+IMPLS: True IMPLD: False V: p17
+IMPLS: True IMPLD: False V: (p18 & (p19 & (p20 & p21)))
+IMPLS: True IMPLD: False V: p18
+IMPLS: True IMPLD: False V: (p19 & (p20 & p21))
+IMPLS: True IMPLD: False V: p19
+IMPLS: True IMPLD: False V: (p20 & p21)
+IMPLS: True IMPLD: False V: p20
+IMPLS: True IMPLD: False V: p21
+IMPLS: True IMPLD: True V: p18
+IMPLS: True IMPLD: True V: p19
+IMPLS: True IMPLD: False V: (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))))))
+IMPLS: True IMPLD: False V: p1
+IMPLS: True IMPLD: False V: (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))))))))
+IMPLS: True IMPLD: False V: p2
+IMPLS: True IMPLD: False V: (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))))
+IMPLS: True IMPLD: False V: p3
+IMPLS: True IMPLD: False V: (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))))))
+IMPLS: True IMPLD: False V: p4
+IMPLS: True IMPLD: False V: (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))
+IMPLS: True IMPLD: False V: p5
+IMPLS: True IMPLD: False V: (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))))
+IMPLS: True IMPLD: False V: p6
+IMPLS: True IMPLD: False V: (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))
+IMPLS: True IMPLD: False V: p7
+IMPLS: True IMPLD: False V: (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))
+IMPLS: True IMPLD: False V: p8
+IMPLS: True IMPLD: False V: (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))
+IMPLS: True IMPLD: False V: p9
+IMPLS: True IMPLD: False V: (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))
+IMPLS: True IMPLD: False V: p10
+IMPLS: True IMPLD: False V: (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))
+IMPLS: True IMPLD: False V: p11
+IMPLS: True IMPLD: False V: (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))
+IMPLS: True IMPLD: False V: p12
+IMPLS: True IMPLD: False V: (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))
+IMPLS: True IMPLD: False V: p13
+IMPLS: True IMPLD: False V: (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))
+IMPLS: True IMPLD: False V: p14
+IMPLS: True IMPLD: False V: (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))
+IMPLS: True IMPLD: False V: p15
+IMPLS: True IMPLD: False V: (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))
+IMPLS: True IMPLD: False V: p16
+IMPLS: True IMPLD: False V: (p17 & (p18 & (p19 & (p20 & p21))))
+IMPLS: True IMPLD: False V: p17
+IMPLS: True IMPLD: False V: (p18 & (p19 & (p20 & p21)))
+IMPLS: True IMPLD: False V: p18
+IMPLS: True IMPLD: False V: (p19 & (p20 & p21))
+IMPLS: True IMPLD: False V: p19
+IMPLS: True IMPLD: False V: (p20 & p21)
+IMPLS: True IMPLD: False V: p20
+IMPLS: True IMPLD: False V: p21
+IMPLS: True IMPLD: True V: p19
+IMPLS: True IMPLD: True V: p20
+IMPLS: True IMPLD: False V: (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))))))
+IMPLS: True IMPLD: False V: p1
+IMPLS: True IMPLD: False V: (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))))))))
+IMPLS: True IMPLD: False V: p2
+IMPLS: True IMPLD: False V: (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))))
+IMPLS: True IMPLD: False V: p3
+IMPLS: True IMPLD: False V: (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))))))
+IMPLS: True IMPLD: False V: p4
+IMPLS: True IMPLD: False V: (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))
+IMPLS: True IMPLD: False V: p5
+IMPLS: True IMPLD: False V: (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))))
+IMPLS: True IMPLD: False V: p6
+IMPLS: True IMPLD: False V: (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))
+IMPLS: True IMPLD: False V: p7
+IMPLS: True IMPLD: False V: (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))
+IMPLS: True IMPLD: False V: p8
+IMPLS: True IMPLD: False V: (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))
+IMPLS: True IMPLD: False V: p9
+IMPLS: True IMPLD: False V: (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))
+IMPLS: True IMPLD: False V: p10
+IMPLS: True IMPLD: False V: (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))
+IMPLS: True IMPLD: False V: p11
+IMPLS: True IMPLD: False V: (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))
+IMPLS: True IMPLD: False V: p12
+IMPLS: True IMPLD: False V: (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))
+IMPLS: True IMPLD: False V: p13
+IMPLS: True IMPLD: False V: (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))
+IMPLS: True IMPLD: False V: p14
+IMPLS: True IMPLD: False V: (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))
+IMPLS: True IMPLD: False V: p15
+IMPLS: True IMPLD: False V: (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))
+IMPLS: True IMPLD: False V: p16
+IMPLS: True IMPLD: False V: (p17 & (p18 & (p19 & (p20 & p21))))
+IMPLS: True IMPLD: False V: p17
+IMPLS: True IMPLD: False V: (p18 & (p19 & (p20 & p21)))
+IMPLS: True IMPLD: False V: p18
+IMPLS: True IMPLD: False V: (p19 & (p20 & p21))
+IMPLS: True IMPLD: False V: p19
+IMPLS: True IMPLD: False V: (p20 & p21)
+IMPLS: True IMPLD: False V: p20
+IMPLS: True IMPLD: False V: p21
+IMPLS: True IMPLD: True V: p20
+IMPLS: True IMPLD: True V: p21
+IMPLS: True IMPLD: False V: (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))))))
+IMPLS: True IMPLD: False V: p1
+IMPLS: True IMPLD: False V: (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))))))))
+IMPLS: True IMPLD: False V: p2
+IMPLS: True IMPLD: False V: (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))))
+IMPLS: True IMPLD: False V: p3
+IMPLS: True IMPLD: False V: (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))))))
+IMPLS: True IMPLD: False V: p4
+IMPLS: True IMPLD: False V: (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))
+IMPLS: True IMPLD: False V: p5
+IMPLS: True IMPLD: False V: (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))))
+IMPLS: True IMPLD: False V: p6
+IMPLS: True IMPLD: False V: (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))
+IMPLS: True IMPLD: False V: p7
+IMPLS: True IMPLD: False V: (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))
+IMPLS: True IMPLD: False V: p8
+IMPLS: True IMPLD: False V: (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))
+IMPLS: True IMPLD: False V: p9
+IMPLS: True IMPLD: False V: (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))
+IMPLS: True IMPLD: False V: p10
+IMPLS: True IMPLD: False V: (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))
+IMPLS: True IMPLD: False V: p11
+IMPLS: True IMPLD: False V: (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))
+IMPLS: True IMPLD: False V: p12
+IMPLS: True IMPLD: False V: (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))
+IMPLS: True IMPLD: False V: p13
+IMPLS: True IMPLD: False V: (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))
+IMPLS: True IMPLD: False V: p14
+IMPLS: True IMPLD: False V: (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))
+IMPLS: True IMPLD: False V: p15
+IMPLS: True IMPLD: False V: (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))
+IMPLS: True IMPLD: False V: p16
+IMPLS: True IMPLD: False V: (p17 & (p18 & (p19 & (p20 & p21))))
+IMPLS: True IMPLD: False V: p17
+IMPLS: True IMPLD: False V: (p18 & (p19 & (p20 & p21)))
+IMPLS: True IMPLD: False V: p18
+IMPLS: True IMPLD: False V: (p19 & (p20 & p21))
+IMPLS: True IMPLD: False V: p19
+IMPLS: True IMPLD: False V: (p20 & p21)
+IMPLS: True IMPLD: False V: p20
+IMPLS: True IMPLD: False V: p21
+IMPLS: True IMPLD: True V: p21
+IMPLS: True IMPLD: True V: p1
+IMPLS: True IMPLD: False V: (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))))))
+IMPLS: True IMPLD: False V: p1
+IMPLS: True IMPLD: False V: (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))))))))
+IMPLS: True IMPLD: False V: p2
+IMPLS: True IMPLD: False V: (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))))
+IMPLS: True IMPLD: False V: p3
+IMPLS: True IMPLD: False V: (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))))))
+IMPLS: True IMPLD: False V: p4
+IMPLS: True IMPLD: False V: (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))
+IMPLS: True IMPLD: False V: p5
+IMPLS: True IMPLD: False V: (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))))
+IMPLS: True IMPLD: False V: p6
+IMPLS: True IMPLD: False V: (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))
+IMPLS: True IMPLD: False V: p7
+IMPLS: True IMPLD: False V: (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))
+IMPLS: True IMPLD: False V: p8
+IMPLS: True IMPLD: False V: (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))
+IMPLS: True IMPLD: False V: p9
+IMPLS: True IMPLD: False V: (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))
+IMPLS: True IMPLD: False V: p10
+IMPLS: True IMPLD: False V: (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))
+IMPLS: True IMPLD: False V: p11
+IMPLS: True IMPLD: False V: (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))
+IMPLS: True IMPLD: False V: p12
+IMPLS: True IMPLD: False V: (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))
+IMPLS: True IMPLD: False V: p13
+IMPLS: True IMPLD: False V: (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))
+IMPLS: True IMPLD: False V: p14
+IMPLS: True IMPLD: False V: (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))
+IMPLS: True IMPLD: False V: p15
+IMPLS: True IMPLD: False V: (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))
+IMPLS: True IMPLD: False V: p16
+IMPLS: True IMPLD: False V: (p17 & (p18 & (p19 & (p20 & p21))))
+IMPLS: True IMPLD: False V: p17
+IMPLS: True IMPLD: False V: (p18 & (p19 & (p20 & p21)))
+IMPLS: True IMPLD: False V: p18
+IMPLS: True IMPLD: False V: (p19 & (p20 & p21))
+IMPLS: True IMPLD: False V: p19
+IMPLS: True IMPLD: False V: (p20 & p21)
+IMPLS: True IMPLD: False V: p20
+IMPLS: True IMPLD: False V: p21
+IMPLS: False IMPLD: True V: p1
+IMPLS: False IMPLD: True V: p2
+IMPLS: False IMPLD: True V: p3
+IMPLS: False IMPLD: True V: p4
+IMPLS: False IMPLD: True V: p5
+IMPLS: False IMPLD: True V: p6
+IMPLS: False IMPLD: True V: p7
+IMPLS: False IMPLD: True V: p8
+IMPLS: False IMPLD: True V: p9
+IMPLS: False IMPLD: True V: p10
+IMPLS: False IMPLD: True V: p11
+IMPLS: False IMPLD: True V: p12
+IMPLS: False IMPLD: True V: p13
+IMPLS: False IMPLD: True V: p14
+IMPLS: False IMPLD: True V: p15
+IMPLS: False IMPLD: True V: p16
+IMPLS: False IMPLD: True V: p17
+IMPLS: False IMPLD: True V: p18
+IMPLS: False IMPLD: True V: p19
+IMPLS: False IMPLD: True V: p20
+IMPLS: False IMPLD: True V: p21
+IMPLS: True IMPLD: False V: $goal
++++ Reading file '"benchmarks/syj201/intuitr-formulas/syj201-n10.p"'...
++++ Clausification...
+[((p1 <=> p2) => (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))))))),((p2 <=> p3) => (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))))))),((p3 <=> p4) => (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))))))),((p4 <=> p5) => (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))))))),((p5 <=> p6) => (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))))))),((p6 <=> p7) => (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))))))),((p7 <=> p8) => (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))))))),((p8 <=> p9) => (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))))))),((p9 <=> p10) => (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))))))),((p10 <=> p11) => (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))))))),((p11 <=> p12) => (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))))))),((p12 <=> p13) => (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))))))),((p13 <=> p14) => (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))))))),((p14 <=> p15) => (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))))))),((p15 <=> p16) => (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))))))),((p16 <=> p17) => (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))))))),((p17 <=> p18) => (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))))))),((p18 <=> p19) => (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))))))),((p19 <=> p20) => (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))))))),((p20 <=> p21) => (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))))))),((p21 <=> p1) => (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21))))))))))))))))))))),((p1 & (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & (p10 & (p11 & (p12 & (p13 & (p14 & (p15 & (p16 & (p17 & (p18 & (p19 & (p20 & p21)))))))))))))))))))) => $goal)]
+([["$p1","$p2"] =>  ["$p0"],["$p3"] =>  ["p20"],["$p3"] =>  ["p21"],["$p4"] =>  ["p19"],["$p4"] =>  ["$p3"],["$p5"] =>  ["p18"],["$p5"] =>  ["$p4"],["$p6"] =>  ["p17"],["$p6"] =>  ["$p5"],["$p7"] =>  ["p16"],["$p7"] =>  ["$p6"],["$p8"] =>  ["p15"],["$p8"] =>  ["$p7"],["$p9"] =>  ["p14"],["$p9"] =>  ["$p8"],["$p10"] =>  ["p13"],["$p10"] =>  ["$p9"],["$p11"] =>  ["p12"],["$p11"] =>  ["$p10"],["$p12"] =>  ["p11"],["$p12"] =>  ["$p11"],["$p13"] =>  ["p10"],["$p13"] =>  ["$p12"],["$p14"] =>  ["p9"],["$p14"] =>  ["$p13"],["$p15"] =>  ["p8"],["$p15"] =>  ["$p14"],["$p16"] =>  ["p7"],["$p16"] =>  ["$p15"],["$p17"] =>  ["p6"],["$p17"] =>  ["$p16"],["$p18"] =>  ["p5"],["$p18"] =>  ["$p17"],["$p19"] =>  ["p4"],["$p19"] =>  ["$p18"],["$p20"] =>  ["p3"],["$p20"] =>  ["$p19"],["$p21"] =>  ["p2"],["$p21"] =>  ["$p20"],["$p22"] =>  ["p1"],["$p22"] =>  ["$p21"],["$p0"] =>  ["$p22"],["$p24","$p25"] =>  ["$p23"],["$p23"] =>  ["$p22"],["$p27","$p28"] =>  ["$p26"],["$p26"] =>  ["$p22"],["$p30","$p31"] =>  ["$p29"],["$p29"] =>  ["$p22"],["$p33","$p34"] =>  ["$p32"],["$p32"] =>  ["$p22"],["$p36","$p37"] =>  ["$p35"],["$p35"] =>  ["$p22"],["$p39","$p40"] =>  ["$p38"],["$p38"] =>  ["$p22"],["$p42","$p43"] =>  ["$p41"],["$p41"] =>  ["$p22"],["$p45","$p46"] =>  ["$p44"],["$p44"] =>  ["$p22"],["$p48","$p49"] =>  ["$p47"],["$p47"] =>  ["$p22"],["$p51","$p52"] =>  ["$p50"],["$p50"] =>  ["$p22"],["$p54","$p55"] =>  ["$p53"],["$p53"] =>  ["$p22"],["$p57","$p58"] =>  ["$p56"],["$p56"] =>  ["$p22"],["$p60","$p61"] =>  ["$p59"],["$p59"] =>  ["$p22"],["$p63","$p64"] =>  ["$p62"],["$p62"] =>  ["$p22"],["$p66","$p67"] =>  ["$p65"],["$p65"] =>  ["$p22"],["$p69","$p70"] =>  ["$p68"],["$p68"] =>  ["$p22"],["$p72","$p73"] =>  ["$p71"],["$p71"] =>  ["$p22"],["$p75","$p76"] =>  ["$p74"],["$p74"] =>  ["$p22"],["$p78","$p79"] =>  ["$p77"],["$p77"] =>  ["$p22"],["$p81","$p82"] =>  ["$p80"],["$p80"] =>  ["$p22"],["p1","p2","p3","p4","p5","p6","p7","p8","p9","p10","p11","p12","p13","p14","p15","p16","p17","p18","p19","p20","p21"] =>  ["$goal"]],[(("p1") -> ("p2")) -> ("$p1"),(("p2") -> ("p1")) -> ("$p2"),(("p2") -> ("p3")) -> ("$p24"),(("p3") -> ("p2")) -> ("$p25"),(("p3") -> ("p4")) -> ("$p27"),(("p4") -> ("p3")) -> ("$p28"),(("p4") -> ("p5")) -> ("$p30"),(("p5") -> ("p4")) -> ("$p31"),(("p5") -> ("p6")) -> ("$p33"),(("p6") -> ("p5")) -> ("$p34"),(("p6") -> ("p7")) -> ("$p36"),(("p7") -> ("p6")) -> ("$p37"),(("p7") -> ("p8")) -> ("$p39"),(("p8") -> ("p7")) -> ("$p40"),(("p8") -> ("p9")) -> ("$p42"),(("p9") -> ("p8")) -> ("$p43"),(("p9") -> ("p10")) -> ("$p45"),(("p10") -> ("p9")) -> ("$p46"),(("p10") -> ("p11")) -> ("$p48"),(("p11") -> ("p10")) -> ("$p49"),(("p11") -> ("p12")) -> ("$p51"),(("p12") -> ("p11")) -> ("$p52"),(("p12") -> ("p13")) -> ("$p54"),(("p13") -> ("p12")) -> ("$p55"),(("p13") -> ("p14")) -> ("$p57"),(("p14") -> ("p13")) -> ("$p58"),(("p14") -> ("p15")) -> ("$p60"),(("p15") -> ("p14")) -> ("$p61"),(("p15") -> ("p16")) -> ("$p63"),(("p16") -> ("p15")) -> ("$p64"),(("p16") -> ("p17")) -> ("$p66"),(("p17") -> ("p16")) -> ("$p67"),(("p17") -> ("p18")) -> ("$p69"),(("p18") -> ("p17")) -> ("$p70"),(("p18") -> ("p19")) -> ("$p72"),(("p19") -> ("p18")) -> ("$p73"),(("p19") -> ("p20")) -> ("$p75"),(("p20") -> ("p19")) -> ("$p76"),(("p20") -> ("p21")) -> ("$p78"),(("p21") -> ("p20")) -> ("$p79"),(("p21") -> ("p1")) -> ("$p81"),(("p1") -> ("p21")) -> ("$p82")],"$goal")
++++ Created 125 flat clauses and 42 implication clauses
++++ Proving (intuitR, CADE 2021)
++++ RESULT: Valid (intuitionistically)
+============================
+Clausification time: 0.005 sec
+Prover time: 0.001 sec

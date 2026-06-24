@@ -37,8 +37,8 @@ instance (BuildableDotAnnotation a, BuildableDot b) => BuildableDot (Annotated_ 
 
 instance BuildableDot Atom_ where
   buildDot (Variable vname) = vname |+ ""
-  buildDot Top = "$top;"
-  buildDot Bottom = "$perp;"
+  buildDot Top = "&top;"
+  buildDot Bottom = "&perp;"
 
 instance BuildableDot Formula_ where
   buildDot (Implication is) = "(" <> joinBy " &rarr; " (buildDot <$> is) <> ")"

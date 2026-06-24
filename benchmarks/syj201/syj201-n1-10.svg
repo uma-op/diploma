@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="580" viewBox="0 0 980 580">
+<rect width="100%" height="100%" fill="white"/>
+<style>text{font-family:Arial, sans-serif;font-size:14px}.title{font-size:20px;font-weight:bold}.axis{stroke:#333;stroke-width:1.2}.grid{stroke:#ddd;stroke-width:1}.line{fill:none;stroke-width:2.5}.marker{stroke:white;stroke-width:1}.legend{font-size:14px}.note{font-size:13px;fill:#555}</style>
+<text class="title" x="490.0" y="28" text-anchor="middle">Время фаз для семейства syj201, N=1..10</text>
+<line class="grid" x1="90" y1="454.9" x2="940" y2="454.9"/>
+<text x="78" y="459.9" text-anchor="end">0.1</text>
+<line class="grid" x1="90" y1="388.3" x2="940" y2="388.3"/>
+<text x="78" y="393.3" text-anchor="end">1</text>
+<line class="grid" x1="90" y1="321.6" x2="940" y2="321.6"/>
+<text x="78" y="326.6" text-anchor="end">10</text>
+<line class="grid" x1="90" y1="255.0" x2="940" y2="255.0"/>
+<text x="78" y="260.0" text-anchor="end">100</text>
+<line class="grid" x1="90" y1="188.3" x2="940" y2="188.3"/>
+<text x="78" y="193.3" text-anchor="end">1000</text>
+<line class="grid" x1="90" y1="121.7" x2="940" y2="121.7"/>
+<text x="78" y="126.7" text-anchor="end">10000</text>
+<line class="grid" x1="90" y1="55.0" x2="940" y2="55.0"/>
+<text x="78" y="60.0" text-anchor="end">300000 timeout</text>
+<line class="axis" x1="90" y1="55" x2="90" y2="475"/>
+<line class="axis" x1="90" y1="475" x2="940" y2="475"/>
+<line class="axis" x1="90.0" y1="475" x2="90.0" y2="480"/>
+<text x="90.0" y="499" text-anchor="middle">1</text>
+<line class="axis" x1="184.4" y1="475" x2="184.4" y2="480"/>
+<text x="184.4" y="499" text-anchor="middle">2</text>
+<line class="axis" x1="278.9" y1="475" x2="278.9" y2="480"/>
+<text x="278.9" y="499" text-anchor="middle">3</text>
+<line class="axis" x1="373.3" y1="475" x2="373.3" y2="480"/>
+<text x="373.3" y="499" text-anchor="middle">4</text>
+<line class="axis" x1="467.8" y1="475" x2="467.8" y2="480"/>
+<text x="467.8" y="499" text-anchor="middle">5</text>
+<line class="axis" x1="562.2" y1="475" x2="562.2" y2="480"/>
+<text x="562.2" y="499" text-anchor="middle">6</text>
+<line class="axis" x1="656.7" y1="475" x2="656.7" y2="480"/>
+<text x="656.7" y="499" text-anchor="middle">7</text>
+<line class="axis" x1="751.1" y1="475" x2="751.1" y2="480"/>
+<text x="751.1" y="499" text-anchor="middle">8</text>
+<line class="axis" x1="845.6" y1="475" x2="845.6" y2="480"/>
+<text x="845.6" y="499" text-anchor="middle">9</text>
+<line class="axis" x1="940.0" y1="475" x2="940.0" y2="480"/>
+<text x="940.0" y="499" text-anchor="middle">10</text>
+<text x="490.0" y="536" text-anchor="middle">N</text>
+<text transform="translate(25,290.0) rotate(-90)" text-anchor="middle">Время, мс (логарифмическая шкала)</text>
+<path class="line" d="M 90.0 395.2 L 184.4 397.0 L 278.9 383.3" stroke="#1f77b4"/>
+<circle class="marker" cx="90.0" cy="395.2" r="4" fill="#1f77b4"><title>Клаузификация: 0.787 мс</title></circle>
+<circle class="marker" cx="184.4" cy="397.0" r="4" fill="#1f77b4"><title>Клаузификация: 0.739 мс</title></circle>
+<circle class="marker" cx="278.9" cy="383.3" r="4" fill="#1f77b4"><title>Клаузификация: 1.188 мс</title></circle>
+<path class="line" d="M 90.0 284.9 L 184.4 201.2 L 278.9 121.6" stroke="#d62728"/>
+<circle class="marker" cx="90.0" cy="284.9" r="4" fill="#d62728"><title>Доказательство: 35.585 мс</title></circle>
+<circle class="marker" cx="184.4" cy="201.2" r="4" fill="#d62728"><title>Доказательство: 641.343 мс</title></circle>
+<circle class="marker" cx="278.9" cy="121.6" r="4" fill="#d62728"><title>Доказательство: 10002.820 мс</title></circle>
+<path class="line" d="M 90.0 454.4 L 184.4 420.8 L 278.9 376.8" stroke="#2ca02c"/>
+<circle class="marker" cx="90.0" cy="454.4" r="4" fill="#2ca02c"><title>Аннотирование: 0.102 мс</title></circle>
+<circle class="marker" cx="184.4" cy="420.8" r="4" fill="#2ca02c"><title>Аннотирование: 0.325 мс</title></circle>
+<circle class="marker" cx="278.9" cy="376.8" r="4" fill="#2ca02c"><title>Аннотирование: 1.489 мс</title></circle>
+<polygon points="373.3,48.0 380.3,62.0 366.3,62.0" fill="#ff7f0e"><title>timeout 300000 мс</title></polygon>
+<polygon points="467.8,48.0 474.8,62.0 460.8,62.0" fill="#ff7f0e"><title>timeout 300000 мс</title></polygon>
+<polygon points="562.2,48.0 569.2,62.0 555.2,62.0" fill="#ff7f0e"><title>timeout 300000 мс</title></polygon>
+<polygon points="656.7,48.0 663.7,62.0 649.7,62.0" fill="#ff7f0e"><title>timeout 300000 мс</title></polygon>
+<polygon points="751.1,48.0 758.1,62.0 744.1,62.0" fill="#ff7f0e"><title>timeout 300000 мс</title></polygon>
+<polygon points="845.6,48.0 852.6,62.0 838.6,62.0" fill="#ff7f0e"><title>timeout 300000 мс</title></polygon>
+<polygon points="940.0,48.0 947.0,62.0 933.0,62.0" fill="#ff7f0e"><title>timeout 300000 мс</title></polygon>
+<line x1="110" y1="496" x2="138" y2="496" stroke="#1f77b4" stroke-width="3"/>
+<text class="legend" x="148" y="501">Клаузификация</text>
+<line x1="110" y1="518" x2="138" y2="518" stroke="#d62728" stroke-width="3"/>
+<text class="legend" x="148" y="523">Доказательство</text>
+<line x1="110" y1="540" x2="138" y2="540" stroke="#2ca02c" stroke-width="3"/>
+<text class="legend" x="148" y="545">Аннотирование</text>
+<polygon points="340,489 354,503 326,503" fill="#ff7f0e"/>
+<text class="legend" x="365" y="501">timeout 300 с</text>
+<text class="note" x="90" y="566">CSV: benchmarks/syj201/syj201-n1-10.csv. Запуски выполнялись с RTS -N1 из-за нестабильности Z3 FFI при -N.</text>
+</svg>

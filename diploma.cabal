@@ -43,6 +43,7 @@ library
       Refactoring.Lambda.Lambda
       Refactoring.Parser
       Refactoring.Prover.Annotate
+      Refactoring.Prover.Benchmark
       Refactoring.Prover.CArrow
       Refactoring.Prover.Clausify
       Refactoring.Prover.CounterModel
@@ -80,6 +81,29 @@ library
     , z3
   default-language: Haskell2010
 
+executable diploma-bench
+  main-is: Main.hs
+  other-modules:
+      Paths_diploma
+  autogen-modules:
+      Paths_diploma
+  hs-source-dirs:
+      bench
+  default-extensions:
+      OverloadedStrings
+      UndecidableInstances
+      StandaloneDeriving
+      FlexibleInstances
+      TupleSections
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -Wno-name-shadowing -Wno-unused-matches -threaded -rtsopts -with-rtsopts=-N1
+  build-depends:
+      base >=4.7 && <5
+    , diploma
+    , directory
+    , filepath
+    , unix
+  default-language: Haskell2010
+
 executable diploma-exe
   main-is: Main.hs
   other-modules:
@@ -94,7 +118,7 @@ executable diploma-exe
       StandaloneDeriving
       FlexibleInstances
       TupleSections
-  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -Wno-name-shadowing -Wno-unused-matches -threaded -rtsopts -with-rtsopts=-N
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -Wno-name-shadowing -Wno-unused-matches -threaded -rtsopts -with-rtsopts=-N1
   build-depends:
       base >=4.7 && <5
     , containers
@@ -102,6 +126,25 @@ executable diploma-exe
     , fmt
     , mtl
     , z3
+  default-language: Haskell2010
+
+executable syj201-gen
+  main-is: Main.hs
+  other-modules:
+      Paths_diploma
+  autogen-modules:
+      Paths_diploma
+  hs-source-dirs:
+      syj201
+  default-extensions:
+      OverloadedStrings
+      UndecidableInstances
+      StandaloneDeriving
+      FlexibleInstances
+      TupleSections
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -Wno-name-shadowing -Wno-unused-matches -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
   default-language: Haskell2010
 
 test-suite diploma-test

@@ -17,6 +17,7 @@ import Refactoring.Prover.Solver
 import Refactoring.Clause.Flat
 import Refactoring.Clause.Impl
 import Refactoring.Prover.CArrow
+import Refactoring.Prover.LJT
 import Refactoring.Utils.Dot
 import Refactoring.Prover.Annotate
 import qualified Refactoring.Lambda.Lambda as Lambda
@@ -24,6 +25,8 @@ import qualified Refactoring.Lambda.Lambda as Lambda
 import qualified Z3.Base as Z3
 
 import Fmt
+import Refactoring.Sequent.Classic (Classic_(Classic))
+import Refactoring.Lambda.Lambda (reduce)
 
 getSequent :: ClausificationRuleII -> Intuit_ () ()
 getSequent (AsImpl _ rule _ _ _) = getSequent rule
@@ -67,28 +70,36 @@ prove formula = do
   case result of  
     Left counterModel -> fmtLn $ counterModel |+ ""
     Right proof -> do
+      proof `seq` putStrLn "Proof done"
       let nonAnnotatedProof = second (const ()) proof
---      fmtLn $ 
---        "digraph {\n" <>
---        "  graph [rankdir=BT]\n" <>
---        "  node [shape=record;fontname=Arial]\n" <>
---        indentF 2 (buildDotCArrow 0 nonAnnotatedProof) <>
---        "}\n"
-
       let extended = extendProof nonAnnotatedProof
       let concated = concatTrees clausified (second (const ()) extended)
       let (annotatedProof, _) = runState (annotateClausification concated) (Environment 0 Map.empty)
       let reducedAnnotatedProof = first Lambda.reduce annotatedProof
-      fmtLn $ 
-        "digraph {\n" <>
-        "  graph [rankdir=BT]\n" <>
-        "  node [shape=record;fontname=Arial]\n" <>
-        indentF 2 (buildDotClausify 0 reducedAnnotatedProof) <>
-        "}\n"
+      let term (Unclausified _ _ _ (Annotated (t, ()) _)) = t 
+      fmtLn $ term (rootClausification reducedAnnotatedProof) |+ ""
+      --   "digraph {\n" <>
+      --   "  graph [rankdir=BT]\n" <>
+      --   "  node [shape=record;fontname=Arial]\n" <>
+      --   indentF 2 (buildDotClausify 0 annotatedProof) <>
+      --   "}\n"
+
+--      let reducedAnnotatedProof = first Lambda.reduce annotatedProof
+--      fmtLn $ 
+--        "digraph {\n" <>
+--        "  graph [rankdir=BT]\n" <>
+--        "  node [shape=record;fontname=Arial]\n" <>
+--        indentF 2 (buildDotClausify 0 reducedAnnotatedProof) <>
+--        "}\n"
 
   return ()
 
   where
+    getLJTBranches :: CArrowRule_ () () -> [LJTRule_ () ()]
+    getLJTBranches (ExCPL0 iseq ljtBranch _) = [ljtBranch]
+    getLJTBranches (ExCPL1 iseq ljtBranch carrowBranch _ _ _) = ljtBranch : getLJTBranches carrowBranch
+    getLJTBranches _ = undefined
+
     mkFreshAtom :: Z3.Context -> Atom_ -> IO Z3.AST
     mkFreshAtom context (Variable vname) = Z3.mkFreshBoolVar context vname
     mkFreshAtom context Bottom = Z3.mkFalse context

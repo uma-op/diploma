@@ -10,7 +10,6 @@ import Refactoring.Formula.Atom
 
 import qualified Z3.Base as Z3
 import Refactoring.Sequent.Annotated
-import Fmt
 
 data Solver_ =
   Solver
@@ -21,8 +20,6 @@ data Solver_ =
 newSolver :: IO Solver_
 newSolver = do
   config <- Z3.mkConfig
-  Z3.setParamValue config "proof" "true"
-
   context <- Z3.mkContext config
   solver <- Z3.mkSolver context
 

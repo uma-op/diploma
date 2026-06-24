@@ -1,0 +1,27 @@
+% Generated from chi.p schema for syj201 benchmarking
+% N = 3, m = 7
+
+fof(axiom1,axiom,(
+( ( p1 <=> p2)  => ( (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & p7)))))) ) ) )).
+
+fof(axiom2,axiom,(
+( ( p2 <=> p3)  => ( (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & p7)))))) ) ) )).
+
+fof(axiom3,axiom,(
+( ( p3 <=> p4)  => ( (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & p7)))))) ) ) )).
+
+fof(axiom4,axiom,(
+( ( p4 <=> p5)  => ( (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & p7)))))) ) ) )).
+
+fof(axiom5,axiom,(
+( ( p5 <=> p6)  => ( (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & p7)))))) ) ) )).
+
+fof(axiom6,axiom,(
+( ( p6 <=> p7)  => ( (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & p7)))))) ) ) )).
+
+fof(axiom7,axiom,(
+( ( p7 <=> p1)  => ( (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & p7)))))) ) ) )).
+
+fof(con,conjecture,(
+( (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & p7)))))) )
+)).

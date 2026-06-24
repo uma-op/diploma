@@ -385,11 +385,23 @@
 \makeatletter
 \def\p@subsection{}
 \def\p@subsubsection{\thesection\,\thesubsection\,}
+\newcounter{cyrapx}
+\renewcommand{\thecyrapx}{%
+  \ifcase\value{cyrapx}\or
+  А\or Б\or В\or Г\or Д\or Е\or
+  \else\arabic{cyrapx}\fi
+}
 \makeatother
 \newcommand{\anonsection}[1]{\cleardoublepage
 \phantomsection
 \addcontentsline{toc}{section}{\protect\numberline{}#1}
 \section*{#1}\vspace*{2.5ex} % По госту положены 3 пустые строки после заголовка ненумеруемого раздела
+}
+\newcommand{\anonappendix}{\cleardoublepage
+\refstepcounter{cyrapx}%
+\phantomsection
+\addcontentsline{toc}{section}{\protect\numberline{}ПРИЛОЖЕНИЕ \thecyrapx}
+\section*{ПРИЛОЖЕНИЕ \thecyrapx}\vspace*{2.5ex}
 }
 \newcommand{\sectionbreak}{\clearpage}
 \renewcommand{\sectionfont}{\normalsize} % Сбиваем стиль оглавления в стандартный

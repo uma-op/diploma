@@ -1,0 +1,122 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.3 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{none/global//global/global/global}
+    \entry{Vybegallo}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=4c4eef539a5ce210580135eea80a0f15}{%
+           family={Vybegallo},
+           familyi={V\bibinitperiod},
+           given={A.\bibnamedelimi A.},
+           giveni={A\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
+        {{hash=4c4eef539a5ce210580135eea80a0f15}{%
+           family={Vybegallo},
+           familyi={V\bibinitperiod},
+           given={A.\bibnamedelimi A.},
+           giveni={A\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
+      }
+      \list{language}{1}{%
+        {english}%
+      }
+      \strng{namehash}{410bf993475ad69c039dbf82e5de0d21}
+      \strng{fullhash}{410bf993475ad69c039dbf82e5de0d21}
+      \strng{fullhashraw}{410bf993475ad69c039dbf82e5de0d21}
+      \strng{bibnamehash}{410bf993475ad69c039dbf82e5de0d21}
+      \strng{authorbibnamehash}{410bf993475ad69c039dbf82e5de0d21}
+      \strng{authornamehash}{410bf993475ad69c039dbf82e5de0d21}
+      \strng{authorfullhash}{410bf993475ad69c039dbf82e5de0d21}
+      \strng{authorfullhashraw}{410bf993475ad69c039dbf82e5de0d21}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Vestnik NII CHAVO}
+      \field{title}{About Reverse Analysis of Gorilla Language}
+      \field{year}{2222}
+      \field{number}{1}
+      \range{number}{1}
+      \field{pages}{1\bibrangedash 111}
+      \range{pages}{111}
+      \verb{doi}
+      \verb 10.1090/trans2/015
+      \endverb
+    \endentry
+    \entry{Normcor}{misc}{}{}
+      \list{publisher}{1}{%
+        {МГТУ им. Н.Э. Баумана}%
+      }
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labeltitlesource}{title}
+      \field{annotation}{дата обращения: 20.07.2021}
+      \field{title}{Самораспаковывающийся архив "ПРИЛОЖЕНИЕ 1 К ПОЛОЖЕНИЮ О нормоконтроле, размещении текстов в электронно-библиотечной системе и проверке на объем заимствования выпускных квалификационных работ бакалавров, специалистов, магистров и аспирантов МГТУ им. Н. Э. Баумана ИНСТРУКЦИЯ ПО РАБОТЕ С ЭЛЕКТРОННО-БИБЛИОТЕЧНОЙ СИСТЕМОЙ <<БАНК ВКР>>"}
+      \verb{urlraw}
+      \verb http://vkr.bmstu.ru/
+      \endverb
+      \verb{url}
+      \verb http://vkr.bmstu.ru/
+      \endverb
+    \endentry
+    \entry{LaTeX2e}{book}{}{}
+      \name{author}{1}{}{%
+        {{hash=2e0635297c872410c2a240b855085f04}{%
+           family={Львовский},
+           familyi={Л\bibinitperiod},
+           given={С.\bibnamedelimi М.},
+           giveni={С\bibinitperiod\bibinitdelim М\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {Москва}%
+      }
+      \list{publisher}{1}{%
+        {Московский центр непрерывного математического образования}%
+      }
+      \strng{namehash}{2e0635297c872410c2a240b855085f04}
+      \strng{fullhash}{2e0635297c872410c2a240b855085f04}
+      \strng{fullhashraw}{2e0635297c872410c2a240b855085f04}
+      \strng{bibnamehash}{2e0635297c872410c2a240b855085f04}
+      \strng{authorbibnamehash}{2e0635297c872410c2a240b855085f04}
+      \strng{authornamehash}{2e0635297c872410c2a240b855085f04}
+      \strng{authorfullhash}{2e0635297c872410c2a240b855085f04}
+      \strng{authorfullhashraw}{2e0635297c872410c2a240b855085f04}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Набор и верстка в системе LaTeX}
+      \field{year}{2003}
+    \endentry
+    \entry{Stackexchange}{misc}{}{}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
+      \field{labeltitlesource}{title}
+      \field{annotation}{дата обращения: 22.07.2021}
+      \field{title}{StackExchange [Электронный ресурс]}
+      \verb{urlraw}
+      \verb https://tex.stackexchange.com/
+      \endverb
+      \verb{url}
+      \verb https://tex.stackexchange.com/
+      \endverb
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+

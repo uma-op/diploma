@@ -1,0 +1,15 @@
+% Generated from chi.p schema for syj201 benchmarking
+% N = 1, m = 3
+
+fof(axiom1,axiom,(
+( ( p1 <=> p2)  => ( (p1 & (p2 & p3)) ) ) )).
+
+fof(axiom2,axiom,(
+( ( p2 <=> p3)  => ( (p1 & (p2 & p3)) ) ) )).
+
+fof(axiom3,axiom,(
+( ( p3 <=> p1)  => ( (p1 & (p2 & p3)) ) ) )).
+
+fof(con,conjecture,(
+( (p1 & (p2 & p3)) )
+)).

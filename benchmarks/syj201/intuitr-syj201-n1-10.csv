@@ -1,0 +1,11 @@
+name,result,intuitr_clausification_ms,intuitr_proving_ms,intuitr_reported_total_ms,intuitr_wall_ms
+syj201-n01.p,valid,0.000,0.000,0.000,12.360
+syj201-n02.p,valid,1.000,0.000,1.000,12.287
+syj201-n03.p,valid,1.000,0.000,1.000,12.236
+syj201-n04.p,valid,1.000,0.000,1.000,12.948
+syj201-n05.p,valid,2.000,0.000,2.000,12.784
+syj201-n06.p,valid,2.000,1.000,3.000,12.670
+syj201-n07.p,valid,4.000,1.000,5.000,12.122
+syj201-n08.p,valid,3.000,1.000,4.000,12.676
+syj201-n09.p,valid,7.000,1.000,8.000,22.046
+syj201-n10.p,valid,5.000,1.000,6.000,12.587

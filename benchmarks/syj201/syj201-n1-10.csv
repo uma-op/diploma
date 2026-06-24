@@ -1,0 +1,11 @@
+name,result,clausification_ms,proving_ms,annotation_ms,total_ms
+"syj201-n01.txt",valid,0.787,35.585,0.102,36.473
+"syj201-n02.txt",valid,0.739,641.343,0.325,642.408
+"syj201-n03.txt",valid,1.188,10002.820,1.489,10005.497
+"syj201-n04.txt",timeout,,,,300000.000
+"syj201-n05.txt",timeout,,,,300000.000
+"syj201-n06.txt",timeout,,,,300000.000
+"syj201-n07.txt",timeout,,,,300000.000
+"syj201-n08.txt",timeout,,,,300000.000
+"syj201-n09.txt",timeout,,,,300000.000
+"syj201-n10.txt",timeout,,,,300000.000
