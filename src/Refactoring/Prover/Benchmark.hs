@@ -7,6 +7,8 @@ import Data.Map ((!))
 import qualified Data.Set as Set
 import Data.Word (Word64)
 import GHC.Clock (getMonotonicTimeNSec)
+import Control.Monad
+import Fmt
 
 import qualified Z3.Base as Z3
 
@@ -24,6 +26,7 @@ import Refactoring.Sequent.Annotated
 import Refactoring.Sequent.Classic
 import Refactoring.Sequent.Intuit
 import Refactoring.Sequent.Unclausified
+import qualified Refactoring.Lambda.Lambda as Lambda
 
 data BenchmarkOutcome = BenchmarkValid | BenchmarkInvalid
   deriving (Eq, Show)
@@ -52,7 +55,7 @@ proveMeasured formula = do
             []
             [Annotated () (implication formula goalFormula)]
             (Annotated ((), ()) goalAtom)
-    let (clausified, _) = runState (clausify sequent) (ClausificationState 0)
+    let (clausified, _) = runState (clausify sequent) (ClausificationState 0 Map.empty Map.empty)
     let Intuit flats impls goal = getSequent clausified
     length flats `seq` length impls `seq` goal `seq` return (clausified, (flats, impls, goal))
 
@@ -68,14 +71,9 @@ proveMeasured formula = do
     universeAsts <- mapM (mkFreshAtom context) universe
     let atomToAst = Map.fromList $ zip universe universeAsts
 
-    let solverWithUniverse =
-          case solver of
-            Solver context' solver' _ ->
-              Solver context' solver' [Annotated (atomToAst ! a) a | a <- universe]
-
     let reannotatedFlats =
           Annotated () <$> reannotateFlat (atomToAst !) <$> annotated <$> flats
-    mapM_ (addClause solverWithUniverse) (annotated <$> reannotatedFlats)
+    solverWithUniverse <- foldM addClause solver (annotated <$> reannotatedFlats)
 
     let reannotatedImpls =
           Annotated () <$> reannotateImpl (atomToAst !) <$> annotated <$> impls
@@ -98,7 +96,7 @@ proveMeasured formula = do
           let extended = extendProof proof
           let concated = concatTrees clausified (second (const ()) extended)
           let (annotatedProof, _) =
-                runState (annotateClausification concated) (Environment 0 Map.empty)
+                runState (annotateClausification concated) (Lambda.Environment 0 Map.empty)
           let term (Unclausified _ _ _ (Annotated (t, ()) _)) = t
           let extractedTerm = term (rootClausification annotatedProof)
           extractedTerm `seq` return extractedTerm

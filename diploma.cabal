@@ -128,6 +128,25 @@ executable diploma-exe
     , z3
   default-language: Haskell2010
 
+executable fresh-tail-gen
+  main-is: Main.hs
+  other-modules:
+      Paths_diploma
+  autogen-modules:
+      Paths_diploma
+  hs-source-dirs:
+      freshTail
+  default-extensions:
+      OverloadedStrings
+      UndecidableInstances
+      StandaloneDeriving
+      FlexibleInstances
+      TupleSections
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -Wno-name-shadowing -Wno-unused-matches -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+  default-language: Haskell2010
+
 executable syj201-gen
   main-is: Main.hs
   other-modules:
@@ -136,6 +155,25 @@ executable syj201-gen
       Paths_diploma
   hs-source-dirs:
       syj201
+  default-extensions:
+      OverloadedStrings
+      UndecidableInstances
+      StandaloneDeriving
+      FlexibleInstances
+      TupleSections
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -Wno-name-shadowing -Wno-unused-matches -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+  default-language: Haskell2010
+
+executable syj207-gen
+  main-is: Main.hs
+  other-modules:
+      Paths_diploma
+  autogen-modules:
+      Paths_diploma
+  hs-source-dirs:
+      syj207
   default-extensions:
       OverloadedStrings
       UndecidableInstances

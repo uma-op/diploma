@@ -3,6 +3,8 @@ module Refactoring.Prover.Clausify(module Refactoring.Prover.Clausify) where
 import Data.Maybe (fromJust, catMaybes)
 import Data.Bifunctor (Bifunctor(second, first))
 import Control.Monad.State
+import Data.Map (Map)
+import qualified Data.Map as Map
 
 import Refactoring.Formula.Formula
 import Refactoring.Formula.Atom
@@ -22,19 +24,27 @@ import Refactoring.Utils.Formatting (joinBy)
 import qualified Data.Bifunctor as Bifunctor
 import Refactoring.Lambda.Lambda (Substitution_)
 
-newtype ClausificationState_ = ClausificationState Int
+data ClausificationState_ =
+  ClausificationState
+    Int  -- last named atom
+    (Map Formula_ Atom_)  -- aliases for implies
+    (Map Formula_ Atom_)  -- aliases for implied by
 
 aliasS :: Bool -> Formula_ -> State ClausificationState_ (Atom_, Maybe Formula_)
 aliasS _ (Atom a) = return (a, Nothing)
 aliasS isReversed f = do
-  (ClausificationState i) <- get
-  put (ClausificationState (i + 1))
-
-  let freshAtom = Variable $ "v" ++ show i
-  let freshVariable = Atom freshAtom
-  if isReversed
-    then return (freshAtom, Just $ implication f freshVariable)
-    else return (freshAtom, Just $ implication freshVariable f)
+  (ClausificationState i c1 c2) <- get
+  let lookupMap = if isReversed then c1 else c2
+  let implWithReverse = if isReversed then implication else flip implication
+  case Map.lookup f lookupMap of
+    Just a -> return (a, Just $ implWithReverse f (Atom a))
+    Nothing -> do
+      let freshAtom = Variable $ "v" ++ show i
+      let freshVariable = Atom freshAtom
+      if isReversed
+        then put (ClausificationState (i + 1) (Map.insert f freshAtom c1) c2)
+        else put (ClausificationState (i + 1) c1 (Map.insert f freshAtom c2))
+      return (freshAtom, Just $ implWithReverse f freshVariable)
 
 data ClausificationRule_ a c =
   AsImpl

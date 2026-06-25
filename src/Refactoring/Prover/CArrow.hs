@@ -58,14 +58,25 @@ carrow iseq@(Intuit flats impls goal) solver = do
   case result of
     Yes _ -> return $ Right $ CPL0 iseq (Classic flats [] goal)
     No model -> do
-      result <- innerLoop iseq (newCounterModel model) solver
+      let modelAtoms = annotated <$> model
+      result <-
+        innerLoop
+          iseq
+          (newCounterModel model
+            [i | i@(Impl a b c) <- (annotated <$> impls),
+              not $ (annotated a) `elem` modelAtoms,
+              not $ (annotated b) `elem` modelAtoms,
+              not $ (annotated c) `elem` modelAtoms
+            ]
+          )
+          solver
       case result of 
         Left counterModel -> return $ Left counterModel
         Right (assumptions, learnedClause) -> do
           let (Impl a b c) = learnedClause
-          let classicSequent = Classic flats (addAnnotation () <$> a : assumptions) (addAnnotation () b)
+          let classicSequent = Classic flats (addAnnotation () <$> assumptions) (addAnnotation () b)
           let newClause = Flat (List.delete a assumptions) [c]
-          addClause solver newClause
+          solver <- addClause solver newClause
 
           let intuitSequent = Intuit (Annotated () newClause : flats) impls goal
           result <- carrow intuitSequent solver
@@ -80,13 +91,23 @@ innerLoop ::
   Solver_ ->
   IO (Either (CounterModel_ AST) ([Annotated_ AST Atom_], Impl_ AST))
 innerLoop iseq@(Intuit flats impls goal) counterModel solver = do
-  let selectedWorld = asum [do sw <- selectWorld counterModel i; return (i, sw) | (Annotated () i) <- impls] 
+  let selectedWorld = selectWorld counterModel
   case selectedWorld of 
-    Just (learned@(Impl a b c), (World worldId as)) -> do
+    Just (learned@(Impl a b c), (World worldId as worldImpls)) -> do
       result <- satProve solver (Set.toList $ Set.insert a as) (addAnnotation () b)
       case result of
         Yes core -> return $ Right (core, learned)
-        No model -> innerLoop iseq (addWorld counterModel worldId model) solver
+        No model ->
+          innerLoop
+            iseq
+            (addWorld counterModel worldId model
+              [i | i@(Impl a b c) <- worldImpls,
+               not $ annotated a `elem` (annotated <$> model),
+               not $ annotated b `elem` (annotated <$> model),
+               not $ annotated c `elem` (annotated <$> model)
+              ]
+            )
+            solver
     Nothing -> return $ Left counterModel
 
 extendProof :: CArrowRule_ () () -> CArrowRule_ () ()

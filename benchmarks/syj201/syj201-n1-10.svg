@@ -1,71 +1,84 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="980" height="580" viewBox="0 0 980 580">
 <rect width="100%" height="100%" fill="white"/>
-<style>text{font-family:Arial, sans-serif;font-size:14px}.title{font-size:20px;font-weight:bold}.axis{stroke:#333;stroke-width:1.2}.grid{stroke:#ddd;stroke-width:1}.line{fill:none;stroke-width:2.5}.marker{stroke:white;stroke-width:1}.legend{font-size:14px}.note{font-size:13px;fill:#555}</style>
-<text class="title" x="490.0" y="28" text-anchor="middle">Время фаз для семейства syj201, N=1..10</text>
-<line class="grid" x1="90" y1="454.9" x2="940" y2="454.9"/>
-<text x="78" y="459.9" text-anchor="end">0.1</text>
-<line class="grid" x1="90" y1="388.3" x2="940" y2="388.3"/>
-<text x="78" y="393.3" text-anchor="end">1</text>
-<line class="grid" x1="90" y1="321.6" x2="940" y2="321.6"/>
-<text x="78" y="326.6" text-anchor="end">10</text>
-<line class="grid" x1="90" y1="255.0" x2="940" y2="255.0"/>
-<text x="78" y="260.0" text-anchor="end">100</text>
-<line class="grid" x1="90" y1="188.3" x2="940" y2="188.3"/>
-<text x="78" y="193.3" text-anchor="end">1000</text>
-<line class="grid" x1="90" y1="121.7" x2="940" y2="121.7"/>
-<text x="78" y="126.7" text-anchor="end">10000</text>
-<line class="grid" x1="90" y1="55.0" x2="940" y2="55.0"/>
-<text x="78" y="60.0" text-anchor="end">300000 timeout</text>
-<line class="axis" x1="90" y1="55" x2="90" y2="475"/>
-<line class="axis" x1="90" y1="475" x2="940" y2="475"/>
-<line class="axis" x1="90.0" y1="475" x2="90.0" y2="480"/>
-<text x="90.0" y="499" text-anchor="middle">1</text>
-<line class="axis" x1="184.4" y1="475" x2="184.4" y2="480"/>
-<text x="184.4" y="499" text-anchor="middle">2</text>
-<line class="axis" x1="278.9" y1="475" x2="278.9" y2="480"/>
-<text x="278.9" y="499" text-anchor="middle">3</text>
-<line class="axis" x1="373.3" y1="475" x2="373.3" y2="480"/>
-<text x="373.3" y="499" text-anchor="middle">4</text>
-<line class="axis" x1="467.8" y1="475" x2="467.8" y2="480"/>
-<text x="467.8" y="499" text-anchor="middle">5</text>
-<line class="axis" x1="562.2" y1="475" x2="562.2" y2="480"/>
-<text x="562.2" y="499" text-anchor="middle">6</text>
-<line class="axis" x1="656.7" y1="475" x2="656.7" y2="480"/>
-<text x="656.7" y="499" text-anchor="middle">7</text>
-<line class="axis" x1="751.1" y1="475" x2="751.1" y2="480"/>
-<text x="751.1" y="499" text-anchor="middle">8</text>
-<line class="axis" x1="845.6" y1="475" x2="845.6" y2="480"/>
-<text x="845.6" y="499" text-anchor="middle">9</text>
-<line class="axis" x1="940.0" y1="475" x2="940.0" y2="480"/>
-<text x="940.0" y="499" text-anchor="middle">10</text>
-<text x="490.0" y="536" text-anchor="middle">N</text>
-<text transform="translate(25,290.0) rotate(-90)" text-anchor="middle">Время, мс (логарифмическая шкала)</text>
-<path class="line" d="M 90.0 395.2 L 184.4 397.0 L 278.9 383.3" stroke="#1f77b4"/>
-<circle class="marker" cx="90.0" cy="395.2" r="4" fill="#1f77b4"><title>Клаузификация: 0.787 мс</title></circle>
-<circle class="marker" cx="184.4" cy="397.0" r="4" fill="#1f77b4"><title>Клаузификация: 0.739 мс</title></circle>
-<circle class="marker" cx="278.9" cy="383.3" r="4" fill="#1f77b4"><title>Клаузификация: 1.188 мс</title></circle>
-<path class="line" d="M 90.0 284.9 L 184.4 201.2 L 278.9 121.6" stroke="#d62728"/>
-<circle class="marker" cx="90.0" cy="284.9" r="4" fill="#d62728"><title>Доказательство: 35.585 мс</title></circle>
-<circle class="marker" cx="184.4" cy="201.2" r="4" fill="#d62728"><title>Доказательство: 641.343 мс</title></circle>
-<circle class="marker" cx="278.9" cy="121.6" r="4" fill="#d62728"><title>Доказательство: 10002.820 мс</title></circle>
-<path class="line" d="M 90.0 454.4 L 184.4 420.8 L 278.9 376.8" stroke="#2ca02c"/>
-<circle class="marker" cx="90.0" cy="454.4" r="4" fill="#2ca02c"><title>Аннотирование: 0.102 мс</title></circle>
-<circle class="marker" cx="184.4" cy="420.8" r="4" fill="#2ca02c"><title>Аннотирование: 0.325 мс</title></circle>
-<circle class="marker" cx="278.9" cy="376.8" r="4" fill="#2ca02c"><title>Аннотирование: 1.489 мс</title></circle>
-<polygon points="373.3,48.0 380.3,62.0 366.3,62.0" fill="#ff7f0e"><title>timeout 300000 мс</title></polygon>
-<polygon points="467.8,48.0 474.8,62.0 460.8,62.0" fill="#ff7f0e"><title>timeout 300000 мс</title></polygon>
-<polygon points="562.2,48.0 569.2,62.0 555.2,62.0" fill="#ff7f0e"><title>timeout 300000 мс</title></polygon>
-<polygon points="656.7,48.0 663.7,62.0 649.7,62.0" fill="#ff7f0e"><title>timeout 300000 мс</title></polygon>
-<polygon points="751.1,48.0 758.1,62.0 744.1,62.0" fill="#ff7f0e"><title>timeout 300000 мс</title></polygon>
-<polygon points="845.6,48.0 852.6,62.0 838.6,62.0" fill="#ff7f0e"><title>timeout 300000 мс</title></polygon>
-<polygon points="940.0,48.0 947.0,62.0 933.0,62.0" fill="#ff7f0e"><title>timeout 300000 мс</title></polygon>
-<line x1="110" y1="496" x2="138" y2="496" stroke="#1f77b4" stroke-width="3"/>
-<text class="legend" x="148" y="501">Клаузификация</text>
-<line x1="110" y1="518" x2="138" y2="518" stroke="#d62728" stroke-width="3"/>
-<text class="legend" x="148" y="523">Доказательство</text>
-<line x1="110" y1="540" x2="138" y2="540" stroke="#2ca02c" stroke-width="3"/>
-<text class="legend" x="148" y="545">Аннотирование</text>
-<polygon points="340,489 354,503 326,503" fill="#ff7f0e"/>
-<text class="legend" x="365" y="501">timeout 300 с</text>
-<text class="note" x="90" y="566">CSV: benchmarks/syj201/syj201-n1-10.csv. Запуски выполнялись с RTS -N1 из-за нестабильности Z3 FFI при -N.</text>
+<text x="490.0" y="28" text-anchor="middle" font-family="Arial,sans-serif" font-size="20" font-weight="bold">Время фаз для семейства syj201, N=1..10</text>
+<line x1="90" y1="475.0" x2="940" y2="475.0" stroke="#ddd" stroke-width="1"/>
+<text x="78" y="480.0" text-anchor="end" font-family="Arial,sans-serif" font-size="14">0.1</text>
+<line x1="90" y1="415.9" x2="940" y2="415.9" stroke="#ddd" stroke-width="1"/>
+<text x="78" y="420.9" text-anchor="end" font-family="Arial,sans-serif" font-size="14">1</text>
+<line x1="90" y1="356.8" x2="940" y2="356.8" stroke="#ddd" stroke-width="1"/>
+<text x="78" y="361.8" text-anchor="end" font-family="Arial,sans-serif" font-size="14">10</text>
+<line x1="90" y1="297.6" x2="940" y2="297.6" stroke="#ddd" stroke-width="1"/>
+<text x="78" y="302.6" text-anchor="end" font-family="Arial,sans-serif" font-size="14">100</text>
+<line x1="90" y1="238.5" x2="940" y2="238.5" stroke="#ddd" stroke-width="1"/>
+<text x="78" y="243.5" text-anchor="end" font-family="Arial,sans-serif" font-size="14">1000</text>
+<line x1="90" y1="179.4" x2="940" y2="179.4" stroke="#ddd" stroke-width="1"/>
+<text x="78" y="184.4" text-anchor="end" font-family="Arial,sans-serif" font-size="14">10000</text>
+<line x1="90" y1="120.3" x2="940" y2="120.3" stroke="#ddd" stroke-width="1"/>
+<text x="78" y="125.3" text-anchor="end" font-family="Arial,sans-serif" font-size="14">100000</text>
+<line x1="90" y1="61.1" x2="940" y2="61.1" stroke="#ddd" stroke-width="1"/>
+<text x="78" y="66.1" text-anchor="end" font-family="Arial,sans-serif" font-size="14">1e+06</text>
+<line x1="90" y1="55" x2="90" y2="475" stroke="#333" stroke-width="1.2"/>
+<line x1="90" y1="475" x2="940" y2="475" stroke="#333" stroke-width="1.2"/>
+<line x1="90.0" y1="475" x2="90.0" y2="480" stroke="#333" stroke-width="1.2"/>
+<text x="90.0" y="499" text-anchor="middle" font-family="Arial,sans-serif" font-size="14">1</text>
+<line x1="184.4" y1="475" x2="184.4" y2="480" stroke="#333" stroke-width="1.2"/>
+<text x="184.4" y="499" text-anchor="middle" font-family="Arial,sans-serif" font-size="14">2</text>
+<line x1="278.9" y1="475" x2="278.9" y2="480" stroke="#333" stroke-width="1.2"/>
+<text x="278.9" y="499" text-anchor="middle" font-family="Arial,sans-serif" font-size="14">3</text>
+<line x1="373.3" y1="475" x2="373.3" y2="480" stroke="#333" stroke-width="1.2"/>
+<text x="373.3" y="499" text-anchor="middle" font-family="Arial,sans-serif" font-size="14">4</text>
+<line x1="467.8" y1="475" x2="467.8" y2="480" stroke="#333" stroke-width="1.2"/>
+<text x="467.8" y="499" text-anchor="middle" font-family="Arial,sans-serif" font-size="14">5</text>
+<line x1="562.2" y1="475" x2="562.2" y2="480" stroke="#333" stroke-width="1.2"/>
+<text x="562.2" y="499" text-anchor="middle" font-family="Arial,sans-serif" font-size="14">6</text>
+<line x1="656.7" y1="475" x2="656.7" y2="480" stroke="#333" stroke-width="1.2"/>
+<text x="656.7" y="499" text-anchor="middle" font-family="Arial,sans-serif" font-size="14">7</text>
+<line x1="751.1" y1="475" x2="751.1" y2="480" stroke="#333" stroke-width="1.2"/>
+<text x="751.1" y="499" text-anchor="middle" font-family="Arial,sans-serif" font-size="14">8</text>
+<line x1="845.6" y1="475" x2="845.6" y2="480" stroke="#333" stroke-width="1.2"/>
+<text x="845.6" y="499" text-anchor="middle" font-family="Arial,sans-serif" font-size="14">9</text>
+<line x1="940.0" y1="475" x2="940.0" y2="480" stroke="#333" stroke-width="1.2"/>
+<text x="940.0" y="499" text-anchor="middle" font-family="Arial,sans-serif" font-size="14">10</text>
+<text x="490.0" y="525" text-anchor="middle" font-family="Arial,sans-serif" font-size="14">N</text>
+<text transform="translate(25,265.0) rotate(-90)" text-anchor="middle" font-family="Arial,sans-serif" font-size="14">Время, мс (логарифмическая шкала)</text>
+<polyline fill="none" stroke="#1f77b4" stroke-width="2.5" points="90.0,449.1 184.4,458.5 278.9,440.1 373.3,438.3 467.8,422.0 562.2,422.5 656.7,412.2 751.1,410.2 845.6,395.8 940.0,390.2"/>
+<circle cx="90.0" cy="449.1" r="4" fill="#1f77b4" stroke="white" stroke-width="1"/>
+<circle cx="184.4" cy="458.5" r="4" fill="#1f77b4" stroke="white" stroke-width="1"/>
+<circle cx="278.9" cy="440.1" r="4" fill="#1f77b4" stroke="white" stroke-width="1"/>
+<circle cx="373.3" cy="438.3" r="4" fill="#1f77b4" stroke="white" stroke-width="1"/>
+<circle cx="467.8" cy="422.0" r="4" fill="#1f77b4" stroke="white" stroke-width="1"/>
+<circle cx="562.2" cy="422.5" r="4" fill="#1f77b4" stroke="white" stroke-width="1"/>
+<circle cx="656.7" cy="412.2" r="4" fill="#1f77b4" stroke="white" stroke-width="1"/>
+<circle cx="751.1" cy="410.2" r="4" fill="#1f77b4" stroke="white" stroke-width="1"/>
+<circle cx="845.6" cy="395.8" r="4" fill="#1f77b4" stroke="white" stroke-width="1"/>
+<circle cx="940.0" cy="390.2" r="4" fill="#1f77b4" stroke="white" stroke-width="1"/>
+<polyline fill="none" stroke="#d62728" stroke-width="2.5" points="90.0,344.2 184.4,313.3 278.9,281.9 373.3,251.6 467.8,231.1 562.2,172.4 656.7,161.9 751.1,140.0 845.6,105.2 940.0,61.7"/>
+<circle cx="90.0" cy="344.2" r="4" fill="#d62728" stroke="white" stroke-width="1"/>
+<circle cx="184.4" cy="313.3" r="4" fill="#d62728" stroke="white" stroke-width="1"/>
+<circle cx="278.9" cy="281.9" r="4" fill="#d62728" stroke="white" stroke-width="1"/>
+<circle cx="373.3" cy="251.6" r="4" fill="#d62728" stroke="white" stroke-width="1"/>
+<circle cx="467.8" cy="231.1" r="4" fill="#d62728" stroke="white" stroke-width="1"/>
+<circle cx="562.2" cy="172.4" r="4" fill="#d62728" stroke="white" stroke-width="1"/>
+<circle cx="656.7" cy="161.9" r="4" fill="#d62728" stroke="white" stroke-width="1"/>
+<circle cx="751.1" cy="140.0" r="4" fill="#d62728" stroke="white" stroke-width="1"/>
+<circle cx="845.6" cy="105.2" r="4" fill="#d62728" stroke="white" stroke-width="1"/>
+<circle cx="940.0" cy="61.7" r="4" fill="#d62728" stroke="white" stroke-width="1"/>
+<polyline fill="none" stroke="#2ca02c" stroke-width="2.5" points="90.0,475.0 184.4,459.9 278.9,412.3 373.3,401.8 467.8,384.2 562.2,370.8 656.7,357.2 751.1,344.8 845.6,333.6 940.0,328.1"/>
+<circle cx="90.0" cy="475.0" r="4" fill="#2ca02c" stroke="white" stroke-width="1"/>
+<circle cx="184.4" cy="459.9" r="4" fill="#2ca02c" stroke="white" stroke-width="1"/>
+<circle cx="278.9" cy="412.3" r="4" fill="#2ca02c" stroke="white" stroke-width="1"/>
+<circle cx="373.3" cy="401.8" r="4" fill="#2ca02c" stroke="white" stroke-width="1"/>
+<circle cx="467.8" cy="384.2" r="4" fill="#2ca02c" stroke="white" stroke-width="1"/>
+<circle cx="562.2" cy="370.8" r="4" fill="#2ca02c" stroke="white" stroke-width="1"/>
+<circle cx="656.7" cy="357.2" r="4" fill="#2ca02c" stroke="white" stroke-width="1"/>
+<circle cx="751.1" cy="344.8" r="4" fill="#2ca02c" stroke="white" stroke-width="1"/>
+<circle cx="845.6" cy="333.6" r="4" fill="#2ca02c" stroke="white" stroke-width="1"/>
+<circle cx="940.0" cy="328.1" r="4" fill="#2ca02c" stroke="white" stroke-width="1"/>
+<line x1="110" y1="502" x2="138" y2="502" stroke="#1f77b4" stroke-width="3"/>
+<text x="148" y="507" font-family="Arial,sans-serif" font-size="14">Клаузификация</text>
+<line x1="110" y1="524" x2="138" y2="524" stroke="#d62728" stroke-width="3"/>
+<text x="148" y="529" font-family="Arial,sans-serif" font-size="14">Доказательство</text>
+<line x1="110" y1="546" x2="138" y2="546" stroke="#2ca02c" stroke-width="3"/>
+<text x="148" y="551" font-family="Arial,sans-serif" font-size="14">Аннотирование</text>
+<text x="90" y="568" font-family="Arial,sans-serif" font-size="13" fill="#555">CSV: benchmarks/syj201/syj201-n1-10.csv</text>
 </svg>

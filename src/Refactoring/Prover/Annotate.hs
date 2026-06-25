@@ -21,25 +21,6 @@ import Refactoring.Clause.Impl
 import Refactoring.Sequent.Intuit
 import Refactoring.Sequent.Unclausified
 
-data Environment = Environment Int (Map Formula_ Lambda_)
-
-getTerm :: Formula f => f -> State Environment Lambda_
-getTerm f = state getTerm'
-  where
-    formula = toFormula f
-    getTerm' st@(Environment i env) =
-      case Map.lookup formula env of
-        Just t -> (t, st)
-        Nothing -> let newTerm = Variable ("_" ++ show i)
-                   in (newTerm, Environment (i + 1) (Map.insert formula newTerm env))
-
-getNewTerm :: State Environment Lambda_
-getNewTerm = state getTerm'
-  where
-    getTerm' st@(Environment i env) = (newTerm, Environment (i + 1) env)
-      where
-        newTerm = Variable ("_" ++ show i)
-
 annotateClausification :: ClausificationRule_ () () -> State Environment (ClausificationRule_ Lambda_ ())
 annotateClausification (AsImpl useq rule implFormula implClause _) = do
   annotatedRule <- annotateClausification rule

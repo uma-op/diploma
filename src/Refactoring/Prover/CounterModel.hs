@@ -12,8 +12,9 @@ import Refactoring.Clause.Impl
 import Refactoring.Sequent.Annotated
 
 import Fmt
+import Control.Applicative (asum)
 
-data World a = World Int (Set (Annotated_ a Atom_))
+data World a = World Int (Set (Annotated_ a Atom_)) [Impl_ a]
 
 data CounterModel_ a = CounterModel {
   reachableTo :: Map Int [Int],
@@ -21,15 +22,15 @@ data CounterModel_ a = CounterModel {
   worlds :: Map Int (World a)
 }
 
-newCounterModel :: Ord a => [Annotated_ a Atom_] -> CounterModel_ a
-newCounterModel world = CounterModel {
+newCounterModel :: Ord a => [Annotated_ a Atom_] -> [Impl_ a] -> CounterModel_ a
+newCounterModel world impls = CounterModel {
   reachableTo = Map.singleton 0 [],
   reachableFrom = Map.singleton 0 [],
-  worlds = Map.singleton 0 (World 0 (Set.fromList world))
+  worlds = Map.singleton 0 (World 0 (Set.fromList world) impls)
 }
 
-addWorld :: Ord a => CounterModel_ a -> Int -> [Annotated_ a Atom_] -> CounterModel_ a
-addWorld counterModel worldId as = 
+addWorld :: Ord a => CounterModel_ a -> Int -> [Annotated_ a Atom_] -> [Impl_ a] -> CounterModel_ a
+addWorld counterModel worldId as impls = 
   counterModel {
     reachableTo = Map.insert newWorldId reachableToNewWorld (reachableTo counterModel),
     reachableFrom = Map.insert newWorldId [] $ List.foldr (Map.update (Just . (:) newWorldId)) (reachableFrom counterModel) reachableToNewWorld,
@@ -38,30 +39,46 @@ addWorld counterModel worldId as =
 
   where
     newWorldId = Map.size $ worlds counterModel
-    newWorld = World newWorldId (Set.fromList as)
+    newWorld = World newWorldId (Set.fromList as) impls
     reachableToNewWorld = worldId : (reachableTo counterModel ! worldId)
 
-selectWorld :: Ord a => CounterModel_ a -> Impl_ a -> Maybe (World a)
-selectWorld counterModel impl@(Impl a b c) = selectWorlds' [0..(Map.size (worlds counterModel) - 1)]
+selectWorld :: Ord a => CounterModel_ a -> Maybe (Impl_ a, World a)
+selectWorld counterModel = asum [selectWorld' i | i <- (Map.keys (worlds counterModel))]
   where
-    selectWorlds' [] = Nothing
-    selectWorlds' (worldId:t) =
-      if condition
-        then selectWorlds' t
-        else Just world
+    selectWorld' worldId = asum [checkImpl' i | i <- implsToCheck] 
       where
-        world@(World _ as) = worlds counterModel ! worldId
+        world@(World _ as implsToCheck) = worlds counterModel ! worldId
         reachableFromWorlds = map (worlds counterModel !) (reachableFrom counterModel ! worldId)
-        condition = Set.member a as || 
+
+        checkImpl' impl@(Impl a b c) = if condition then Nothing else Just (impl, world)
+          where
+            condition = Set.member a as || 
                     Set.member b as || 
                     Set.member c as || 
                     any (reachableFromPred impl) reachableFromWorlds
+            reachableFromPred (Impl a b _) (World _ as _) =
+              Set.member a as && not (Set.member b as)
 
-        reachableFromPred (Impl a b _) (World _ as) =
-          Set.member a as && not (Set.member b as)
+   
+
+    -- selectWorlds' [] = Nothing
+    -- selectWorlds' (worldId:t) =
+    --   if condition
+    --     then selectWorlds' t
+    --     else Just world
+    --   where
+    --     world@(World _ as _) = worlds counterModel ! worldId
+    --     reachableFromWorlds = map (worlds counterModel !) (reachableFrom counterModel ! worldId)
+    --     condition = Set.member a as || 
+    --                 Set.member b as || 
+    --                 Set.member c as || 
+    --                 any (reachableFromPred impl) reachableFromWorlds
+
+    --     reachableFromPred (Impl a b _) (World _ as _) =
+    --       Set.member a as && not (Set.member b as)
 
 instance Buildable (World a) where
-  build (World i as) =  i |+
+  build (World i as _) =  i |+
     " [label=\"{<name>" +| i |+ 
     "|<atoms>" <> unwordsF (annotated <$> Set.toAscList as) <> "}\"]"
 

@@ -27,6 +27,7 @@ import qualified Z3.Base as Z3
 import Fmt
 import Refactoring.Sequent.Classic (Classic_(Classic))
 import Refactoring.Lambda.Lambda (reduce)
+import Control.Monad (foldM)
 
 getSequent :: ClausificationRuleII -> Intuit_ () ()
 getSequent (AsImpl _ rule _ _ _) = getSequent rule
@@ -45,28 +46,33 @@ prove formula = do
   let goalAtom = Variable "$"
   let goal = Atom goalAtom
   let sequent = Unclausified [] [] [Annotated () (implication formula goal)] (Annotated ((), ()) goalAtom)
-  let (clausified, st) = runState (clausify sequent) (ClausificationState 0)
+  let (clausified, (ClausificationState _ c1 c2)) = runState (clausify sequent) (ClausificationState 0 Map.empty Map.empty)
+  print c1
+  print c2
 
   let (Intuit flats impls goal) = getSequent clausified
+  putStrLn $ "Flats created: " ++ (show $ length flats)
+  putStrLn $ "Impls created: " ++ (show $ length impls)
 
   s@(Solver context solver _) <- newSolver
 
   let universe = Set.toList $ Set.fromList $ annotated goal :
         (atoms =<< (map (toFormula . annotated) flats ++ map (toFormula . annotated) impls))
 
+  putStrLn "Unique atoms"
+  print $ length universe
+
   universeAsts <- mapM (mkFreshAtom context) universe
   let atomToAst = Map.fromList $ zip universe universeAsts
 
-  let s = Solver context solver [Annotated (atomToAst ! a) a | a <- universe] 
-
   let reannotatedFlats = Annotated () <$> reannotateFlat (atomToAst !) <$> annotated <$> flats
-  mapM_ (addClause s) (annotated <$> reannotatedFlats)
+  initedSolver <- foldM addClause s (annotated <$> reannotatedFlats)
 
   let reannotatedImpls = Annotated () <$> reannotateImpl (atomToAst !) <$> annotated <$> impls
   let reannotatedGoal = reannotate (((), ) . (atomToAst !)) goal
   let reannotatedIntuit = Intuit reannotatedFlats reannotatedImpls reannotatedGoal
 
-  result <- carrow reannotatedIntuit s
+  result <- carrow reannotatedIntuit initedSolver
   case result of  
     Left counterModel -> fmtLn $ counterModel |+ ""
     Right proof -> do
@@ -74,23 +80,25 @@ prove formula = do
       let nonAnnotatedProof = second (const ()) proof
       let extended = extendProof nonAnnotatedProof
       let concated = concatTrees clausified (second (const ()) extended)
-      let (annotatedProof, _) = runState (annotateClausification concated) (Environment 0 Map.empty)
-      let reducedAnnotatedProof = first Lambda.reduce annotatedProof
+      let (annotatedProof, env) = runState (annotateClausification concated) (Lambda.Environment 0 Map.empty)
       let term (Unclausified _ _ _ (Annotated (t, ()) _)) = t 
-      fmtLn $ term (rootClausification reducedAnnotatedProof) |+ ""
+      let reduced = reduce $ term (rootClausification annotatedProof)
+      let (extendedTerm, _) = runState (Lambda.extendLambda reduced) env
+      -- fmtLn $ extendedTerm |+ ""
+      -- fmtLn $ reduced |+ ""
       --   "digraph {\n" <>
       --   "  graph [rankdir=BT]\n" <>
       --   "  node [shape=record;fontname=Arial]\n" <>
       --   indentF 2 (buildDotClausify 0 annotatedProof) <>
       --   "}\n"
 
---      let reducedAnnotatedProof = first Lambda.reduce annotatedProof
---      fmtLn $ 
---        "digraph {\n" <>
---        "  graph [rankdir=BT]\n" <>
---        "  node [shape=record;fontname=Arial]\n" <>
---        indentF 2 (buildDotClausify 0 reducedAnnotatedProof) <>
---        "}\n"
+      let reducedAnnotatedProof = first Lambda.reduce annotatedProof
+      fmtLn $ 
+        "digraph {\n" <>
+        "  graph [rankdir=BT]\n" <>
+        "  node [shape=record;fontname=Arial]\n" <>
+        indentF 2 (buildDotCArrow 0 nonAnnotatedProof) <>
+        "}\n"
 
   return ()
 

@@ -1,14 +1,12 @@
 # Fdb version 4
-["biber blank_vkr"] 1782323385.27571 "blank_vkr.bcf" "blank_vkr.bbl" "blank_vkr" 1782328041.22254 0
+["biber blank_vkr"] 1782422713.83187 "blank_vkr.bcf" "blank_vkr.bbl" "blank_vkr" 1782427655.65772 0
   "biblio.bib" 1782039261.48 4450 8e247bcf6ae7b53f0aa0e54e74519882 ""
-  "blank_vkr.bcf" 1782328040.84 156365 38ec639b15659e050796ec479b35e5b7 "pdflatex"
+  "blank_vkr.bcf" 1782427654.74801 156292 bb13cb4b932bbb08523888d0ca2f5549 "pdflatex"
   (generated)
   "blank_vkr.bbl"
   "blank_vkr.blg"
   (rewritten before read)
-["pdflatex"] 1782328031.97558 "blank_vkr.tex" "blank_vkr.pdf" "blank_vkr" 1782328041.22321 0
-  "../benchmarks/syj201/syj201-comparison.png" 1782326497.424 36369 e5c2aceedf25ac2bc64c65d90d40d7cb ""
-  "../benchmarks/syj201/syj201-n1-10.png" 1782326452.66 41379 fee16c6e5e9b91fd0eb3f60f8324d76a ""
+["pdflatex"] 1782427634.141 "blank_vkr.tex" "blank_vkr.pdf" "blank_vkr" 1782427655.65901 0
   "../examples/terms/invalid-excluded-middle.png" 1781973138.11601 6392 0beb5b57acc37bebece97b555b2cd847 ""
   "../examples/terms/invalid-peirce.png" 1781973213.27201 21782 b084858c70c7f28c922d032e77d2d670 ""
   "/etc/texmf/web2c/texmf.cnf" 1770917098.684 475 c0e671620eb5563b2130f56340a5fde8 ""
@@ -445,14 +443,19 @@
   "_minted/FB964100EC4A9A368A383ACD8B1644C2.highlight.minted" 1782323384.54801 248 c13d8cbe0a6dd22883baea906a4a450c ""
   "_minted/_F4AFD8575DC1536CFBB6531F87FBB3FF.index.minted" 1782323385.05201 2946 f4a037684bbb94d219c8f82c682b9849 ""
   "_minted/default.style.minted" 1774197019.45601 6426 e1fb43a91491f41b33310478eee48cdb ""
-  "blank_vkr.aux" 1782328040.816 75381 8ddd6380d349b78bb00edf77b60681ec "pdflatex"
-  "blank_vkr.bbl" 1782323385.90001 13788 44d65e65b79d4d47b9867c640357b867 "biber blank_vkr"
-  "blank_vkr.out" 1782328035.528 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
-  "blank_vkr.run.xml" 1782328040.844 2594 30719f72852b1db4656ca79417fa04b8 "pdflatex"
-  "blank_vkr.tex" 1782328018.984 210283 97be10819c64f755849bcf8aae2f3bb4 ""
-  "blank_vkr.toc" 1782328040.844 6123 e24091e8cc2c0da519821225178040a1 "pdflatex"
+  "blank_vkr.aux" 1782427654.68801 78868 00cfe5e9fa00dacac1609c8e27a69ec3 "pdflatex"
+  "blank_vkr.bbl" 1782422714.828 13788 44d65e65b79d4d47b9867c640357b867 "biber blank_vkr"
+  "blank_vkr.out" 1782427641.34801 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
+  "blank_vkr.run.xml" 1782427654.75201 2594 30719f72852b1db4656ca79417fa04b8 "pdflatex"
+  "blank_vkr.tex" 1782427609.22401 216758 43175164604a73eb5aeff7660bfddf84 ""
+  "blank_vkr.toc" 1782427654.75201 6345 2c72929f30a424ac93c7ea74df1880eb "pdflatex"
+  "fresh-tail-n1-100.png" 1782427582.88801 74884 f800c4d9ac96366f2ed3dff3943aadfe ""
   "header.tex" 1782327350.824 27013 989140aa97fd8e6ae5412fe3f900ed16 ""
   "proveR.png" 1781969928.352 159053 e670a885d04583277a991ef093949cb3 ""
+  "syj201-comparison.png" 1782422716.356 38854 06085855234170be7a0e57f9a14d694a ""
+  "syj201-n1-10.png" 1782423284.76 46661 56ac7fd088af97bb3bfd167bfb54a1e4 ""
+  "syj207-comparison.png" 1782427582.88801 174471 59a1c7f5b9c8f311984f8e5524182201 ""
+  "syj207-n1-5.png" 1782427582.88801 143060 b3d27ff10516601206bb42cbc6c014d5 ""
   (generated)
   "blank_vkr.aux"
   "blank_vkr.bcf"

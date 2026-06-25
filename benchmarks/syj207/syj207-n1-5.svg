@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="580" viewBox="0 0 980 580">
+<rect width="100%" height="100%" fill="white"/>
+<text x="490.0" y="28" text-anchor="middle" font-family="Arial,sans-serif" font-size="20" font-weight="bold">Время фаз для семейства syj207, N=1..5</text>
+<line x1="90" y1="475.0" x2="940" y2="475.0" stroke="#ddd" stroke-width="1"/>
+<text x="78" y="480.0" text-anchor="end" font-family="Arial,sans-serif" font-size="14">0.1</text>
+<line x1="90" y1="407.6" x2="940" y2="407.6" stroke="#ddd" stroke-width="1"/>
+<text x="78" y="412.6" text-anchor="end" font-family="Arial,sans-serif" font-size="14">1</text>
+<line x1="90" y1="340.3" x2="940" y2="340.3" stroke="#ddd" stroke-width="1"/>
+<text x="78" y="345.3" text-anchor="end" font-family="Arial,sans-serif" font-size="14">10</text>
+<line x1="90" y1="272.9" x2="940" y2="272.9" stroke="#ddd" stroke-width="1"/>
+<text x="78" y="277.9" text-anchor="end" font-family="Arial,sans-serif" font-size="14">100</text>
+<line x1="90" y1="205.6" x2="940" y2="205.6" stroke="#ddd" stroke-width="1"/>
+<text x="78" y="210.6" text-anchor="end" font-family="Arial,sans-serif" font-size="14">1000</text>
+<line x1="90" y1="138.2" x2="940" y2="138.2" stroke="#ddd" stroke-width="1"/>
+<text x="78" y="143.2" text-anchor="end" font-family="Arial,sans-serif" font-size="14">10000</text>
+<line x1="90" y1="70.9" x2="940" y2="70.9" stroke="#ddd" stroke-width="1"/>
+<text x="78" y="75.9" text-anchor="end" font-family="Arial,sans-serif" font-size="14">100000</text>
+<line x1="90" y1="55" x2="90" y2="475" stroke="#333" stroke-width="1.2"/>
+<line x1="90" y1="475" x2="940" y2="475" stroke="#333" stroke-width="1.2"/>
+<line x1="90.0" y1="475" x2="90.0" y2="480" stroke="#333" stroke-width="1.2"/>
+<text x="90.0" y="499" text-anchor="middle" font-family="Arial,sans-serif" font-size="14">1</text>
+<line x1="302.5" y1="475" x2="302.5" y2="480" stroke="#333" stroke-width="1.2"/>
+<text x="302.5" y="499" text-anchor="middle" font-family="Arial,sans-serif" font-size="14">2</text>
+<line x1="515.0" y1="475" x2="515.0" y2="480" stroke="#333" stroke-width="1.2"/>
+<text x="515.0" y="499" text-anchor="middle" font-family="Arial,sans-serif" font-size="14">3</text>
+<line x1="727.5" y1="475" x2="727.5" y2="480" stroke="#333" stroke-width="1.2"/>
+<text x="727.5" y="499" text-anchor="middle" font-family="Arial,sans-serif" font-size="14">4</text>
+<line x1="940.0" y1="475" x2="940.0" y2="480" stroke="#333" stroke-width="1.2"/>
+<text x="940.0" y="499" text-anchor="middle" font-family="Arial,sans-serif" font-size="14">5</text>
+<text x="490.0" y="525" text-anchor="middle" font-family="Arial,sans-serif" font-size="14">N</text>
+<text transform="translate(25,265.0) rotate(-90)" text-anchor="middle" font-family="Arial,sans-serif" font-size="14">Время, мс (логарифмическая шкала)</text>
+<polyline fill="none" stroke="#1f77b4" stroke-width="2.5" points="90.0,401.5 302.5,387.0 515.0,372.8 727.5,359.2 940.0,350.7"/>
+<circle cx="90.0" cy="401.5" r="4" fill="#1f77b4" stroke="white" stroke-width="1"/>
+<circle cx="302.5" cy="387.0" r="4" fill="#1f77b4" stroke="white" stroke-width="1"/>
+<circle cx="515.0" cy="372.8" r="4" fill="#1f77b4" stroke="white" stroke-width="1"/>
+<circle cx="727.5" cy="359.2" r="4" fill="#1f77b4" stroke="white" stroke-width="1"/>
+<circle cx="940.0" cy="350.7" r="4" fill="#1f77b4" stroke="white" stroke-width="1"/>
+<polyline fill="none" stroke="#d62728" stroke-width="2.5" points="90.0,302.3 302.5,283.8 515.0,237.3 727.5,62.7 940.0,142.5"/>
+<circle cx="90.0" cy="302.3" r="4" fill="#d62728" stroke="white" stroke-width="1"/>
+<circle cx="302.5" cy="283.8" r="4" fill="#d62728" stroke="white" stroke-width="1"/>
+<circle cx="515.0" cy="237.3" r="4" fill="#d62728" stroke="white" stroke-width="1"/>
+<circle cx="727.5" cy="62.7" r="4" fill="#d62728" stroke="white" stroke-width="1"/>
+<circle cx="940.0" cy="142.5" r="4" fill="#d62728" stroke="white" stroke-width="1"/>
+<polyline fill="none" stroke="#2ca02c" stroke-width="2.5" points="90.0,475.0 302.5,475.0 515.0,475.0 727.5,475.0 940.0,475.0"/>
+<circle cx="90.0" cy="475.0" r="4" fill="#2ca02c" stroke="white" stroke-width="1"/>
+<circle cx="302.5" cy="475.0" r="4" fill="#2ca02c" stroke="white" stroke-width="1"/>
+<circle cx="515.0" cy="475.0" r="4" fill="#2ca02c" stroke="white" stroke-width="1"/>
+<circle cx="727.5" cy="475.0" r="4" fill="#2ca02c" stroke="white" stroke-width="1"/>
+<circle cx="940.0" cy="475.0" r="4" fill="#2ca02c" stroke="white" stroke-width="1"/>
+<line x1="110" y1="502" x2="138" y2="502" stroke="#1f77b4" stroke-width="3"/>
+<text x="148" y="507" font-family="Arial,sans-serif" font-size="14">Клаузификация</text>
+<line x1="110" y1="524" x2="138" y2="524" stroke="#d62728" stroke-width="3"/>
+<text x="148" y="529" font-family="Arial,sans-serif" font-size="14">Доказательство</text>
+<line x1="110" y1="546" x2="138" y2="546" stroke="#2ca02c" stroke-width="3"/>
+<text x="148" y="551" font-family="Arial,sans-serif" font-size="14">Аннотирование</text>
+<text x="90" y="568" font-family="Arial,sans-serif" font-size="13" fill="#555">CSV: benchmarks/syj207/syj207-n1-5.csv</text>
+</svg>

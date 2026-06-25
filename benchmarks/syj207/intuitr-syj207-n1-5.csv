@@ -1,0 +1,6 @@
+name,result,intuitr_clausification_ms,intuitr_proving_ms,intuitr_reported_total_ms,intuitr_wall_ms
+syj207-n01.p,invalid,0.000,0.000,0.000,15.124
+syj207-n02.p,invalid,1.000,0.000,1.000,15.345
+syj207-n03.p,invalid,2.000,0.000,2.000,14.953
+syj207-n04.p,invalid,1.000,1.000,2.000,15.538
+syj207-n05.p,invalid,4.000,1.000,5.000,25.558
