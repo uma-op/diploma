@@ -257,24 +257,7 @@ BHK-интерпретация придала интуиционистской �
 
 \textbf{Пример 1.} Рассмотрим цепочку из двух миров $w_0 \prec w_1$ и одну
 переменную $p$, положив $V(p) = \{w_1\}$ (наследуемость соблюдена).
-
-Двухмировая модель Крипке для переменной $p$ представлена на рисунке~\ref{fig:kripke-chain-p}.
-
-\begin{figure}[!htb]
-\centering
-\begin{tikzpicture}[
-    world/.style={circle, draw, minimum size=8mm, inner sep=0pt},
-    >=stealth
-  ]
-  \node[world] (w0) at (0,0)   {$w_0$};
-  \node[world] (w1) at (0,1.5) {$w_1$};
-  \draw[->] (w0) -- (w1);
-  \node[right=4mm] at (w0.east) {$V(w_0) = \varnothing$};
-  \node[right=4mm] at (w1.east) {$V(w_1) = \{p\}$};
-\end{tikzpicture}
-\caption{Двухмировая модель Крипке для переменной $p$}
-\label{fig:kripke-chain-p}
-\end{figure}
+Двухмировая контрмодель показана на рисунке~\ref{fig:kripke-countermodels}~\subref{fig:kripke-chain}.
 
 Тогда $w_1 \Vdash p$, а $w_0 \not\Vdash p$.
 
@@ -293,26 +276,8 @@ $v \not\Vdash \neg p$ для всех $v \succeq w_0$, откуда $w_0 \Vdash 
 $w_0 \not\Vdash \neg\neg p \rightarrow p$.
 
 \textbf{Пример 2. Закон Пирса} $((p \rightarrow q) \rightarrow p) \rightarrow p$.
-Возьмём ту же цепочку $w_0 \prec w_1$, но с двумя переменными: $V(p) = \{w_1\}$,
-$V(q) = \varnothing$.
-
-Двухмировая модель Крипке для схемы Пирса представлена на рисунке~\ref{fig:kripke-chain-peirce}.
-
-\begin{figure}[!htb]
-\centering
-\begin{tikzpicture}[
-    world/.style={circle, draw, minimum size=8mm, inner sep=0pt},
-    >=stealth
-  ]
-  \node[world] (w0) at (0,0)   {$w_0$};
-  \node[world] (w1) at (0,1.5) {$w_1$};
-  \draw[->] (w0) -- (w1);
-  \node[right=4mm] at (w0.east) {$V(w_0) = \varnothing$};
-  \node[right=4mm] at (w1.east) {$V(w_1) = \{p\}$};
-\end{tikzpicture}
-\caption{Двухмировая модель Крипке для схемы Пирса}
-\label{fig:kripke-chain-peirce}
-\end{figure}
+Возьмём ту же цепочку $w_0 \prec w_1$ рисунок~\ref{fig:kripke-countermodels}~\subref{fig:kripke-chain}, но с двумя
+переменными: $V(p) = \{w_1\}$, $V(q) = \varnothing$.
 
 Тогда $w_1 \not\Vdash q$, откуда $w_0 \not\Vdash p \rightarrow q$: для
 $v = w_1$ имеем $v \Vdash p$, но $v \not\Vdash q$. Проверим
@@ -327,12 +292,29 @@ $w_0 \not\Vdash p$, поэтому
 $w_0 \not\Vdash ((p \rightarrow q) \rightarrow p) \rightarrow p$.
 
 \textbf{Пример 3.} Не всякая контрмодель является цепочкой. Рассмотрим формулу
-$(p \rightarrow q) \lor (q \rightarrow p)$ и модель с ветвлением:
+$(p \rightarrow q) \lor (q \rightarrow p)$ и модель с ветвлением
+рисунок~\ref{fig:kripke-countermodels}~\subref{fig:kripke-branching}.
 
-Ветвящаяся контрмодель Крипке представлена на рисунке~\ref{fig:kripke-branching}.
+Здесь $w_0 \not\Vdash p \rightarrow q$, поскольку $w_1 \Vdash p$, но
+$w_1 \not\Vdash q$. Аналогично $w_0 \not\Vdash q \rightarrow p$, так как
+$w_2 \Vdash q$, но $w_2 \not\Vdash p$. Следовательно,
+$w_0 \not\Vdash (p \rightarrow q) \lor (q \rightarrow p)$.
 
 \begin{figure}[!htb]
 \centering
+\subfloat[\label{fig:kripke-chain}]{%
+\begin{tikzpicture}[
+    world/.style={circle, draw, minimum size=8mm, inner sep=0pt},
+    >=stealth
+  ]
+  \node[world] (w0) at (0,0)   {$w_0$};
+  \node[world] (w1) at (0,1.5) {$w_1$};
+  \draw[->] (w0) -- (w1);
+  \node[right=4mm] at (w0.east) {$V(w_0) = \varnothing$};
+  \node[right=4mm] at (w1.east) {$V(w_1) = \{p\}$};
+\end{tikzpicture}%
+}\hfill
+\subfloat[\label{fig:kripke-branching}]{%
 \begin{tikzpicture}[
     world/.style={circle, draw, minimum size=8mm, inner sep=0pt},
     >=stealth
@@ -345,15 +327,11 @@ $(p \rightarrow q) \lor (q \rightarrow p)$ и модель с ветвление
   \node[left=4mm]  at (w1.west) {$V(w_1) = \{p\}$};
   \node[right=4mm] at (w2.east) {$V(w_2) = \{q\}$};
   \node[below=2mm] at (w0.south) {$V(w_0) = \varnothing$};
-\end{tikzpicture}
-\caption{Ветвящаяся модель Крипке}
-\label{fig:kripke-branching}
+\end{tikzpicture}%
+}
+\caption{Контрмодели Крипке}
+\label{fig:kripke-countermodels}
 \end{figure}
-
-Здесь $w_0 \not\Vdash p \rightarrow q$, поскольку $w_1 \Vdash p$, но
-$w_1 \not\Vdash q$. Аналогично $w_0 \not\Vdash q \rightarrow p$, так как
-$w_2 \Vdash q$, но $w_2 \not\Vdash p$. Следовательно,
-$w_0 \not\Vdash (p \rightarrow q) \lor (q \rightarrow p)$.
 
 \subsection{Системы вывода}
 
@@ -484,125 +462,10 @@ $\bot$. \emph{Секвенцией} называется пара $(\Gamma, \Del
 выводимость; секвенция с пустым сукцедентом ($\Gamma \vdash$) означает
 противоречивость $\Gamma$.
 
-Полный набор правил классического секвенциального исчисления LK в стиле Генцена представлен на рисунке~\ref{fig:lk-rules}.
+Полный набор правил классического секвенциального исчисления LK в стиле Генцена
+приведён в приложении~\ref{app:lk-lj-rules} (рисунок~\ref{fig:lk-rules}).
 
-\begin{figure}[!htb]
-\textbf{Аксиомы}
-
-\begin{center}
-\AxiomC{}
-\RightLabel{\scriptsize$Ax$}
-\UnaryInfC{$A \vdash A$}
-\DisplayProof\hskip 2em
-\AxiomC{}
-\RightLabel{\scriptsize$\bot L$}
-\UnaryInfC{$\Gamma, \bot \vdash \Delta$}
-\DisplayProof
-\end{center}
-
-\textbf{Структурные правила}
-
-\begin{center}
-\AxiomC{$\Gamma \vdash \Delta$}
-\RightLabel{\scriptsize$LW$}
-\UnaryInfC{$\Gamma, A \vdash \Delta$}
-\DisplayProof\hskip 2em
-\AxiomC{$\Gamma \vdash \Delta$}
-\RightLabel{\scriptsize$RW$}
-\UnaryInfC{$\Gamma \vdash \Delta, A$}
-\DisplayProof
-\end{center}
-
-\begin{center}
-\AxiomC{$\Gamma, A, A \vdash \Delta$}
-\RightLabel{\scriptsize$LC$}
-\UnaryInfC{$\Gamma, A \vdash \Delta$}
-\DisplayProof\hskip 2em
-\AxiomC{$\Gamma \vdash \Delta, A, A$}
-\RightLabel{\scriptsize$RC$}
-\UnaryInfC{$\Gamma \vdash \Delta, A$}
-\DisplayProof
-\end{center}
-
-\begin{center}
-\AxiomC{$\Gamma, A, B, \Pi \vdash \Delta$}
-\RightLabel{\scriptsize$LX$}
-\UnaryInfC{$\Gamma, B, A, \Pi \vdash \Delta$}
-\DisplayProof\hskip 2em
-\AxiomC{$\Gamma \vdash \Delta, A, B, \Pi$}
-\RightLabel{\scriptsize$RX$}
-\UnaryInfC{$\Gamma \vdash \Delta, B, A, \Pi$}
-\DisplayProof
-\end{center}
-
-\textbf{Логические правила}
-
-\begin{center}
-\AxiomC{$\Gamma \vdash A, \Phi$}
-\AxiomC{$\Pi, B \vdash \Psi$}
-\RightLabel{\scriptsize$\rightarrow L$}
-\BinaryInfC{$\Gamma, \Pi, A \rightarrow B \vdash \Phi, \Psi$}
-\DisplayProof\hskip 2em
-\AxiomC{$\Gamma, A \vdash B, \Delta$}
-\RightLabel{\scriptsize$\rightarrow R$}
-\UnaryInfC{$\Gamma \vdash A \rightarrow B, \Delta$}
-\DisplayProof
-\end{center}
-
-\begin{center}
-\AxiomC{$\Gamma \vdash A, \Delta$}
-\AxiomC{$\Gamma \vdash B, \Delta$}
-\RightLabel{\scriptsize$\land R$}
-\BinaryInfC{$\Gamma \vdash A \land B, \Delta$}
-\DisplayProof
-\end{center}
-
-\begin{center}
-\AxiomC{$\Gamma, A \vdash \Delta$}
-\RightLabel{\scriptsize$\land L_1$}
-\UnaryInfC{$\Gamma, A \land B \vdash \Delta$}
-\DisplayProof\hskip 2em
-\AxiomC{$\Gamma, B \vdash \Delta$}
-\RightLabel{\scriptsize$\land L_2$}
-\UnaryInfC{$\Gamma, A \land B \vdash \Delta$}
-\DisplayProof
-\end{center}
-
-\begin{center}
-\AxiomC{$\Gamma, A \vdash \Delta$}
-\AxiomC{$\Gamma, B \vdash \Delta$}
-\RightLabel{\scriptsize$\lor L$}
-\BinaryInfC{$\Gamma, A \lor B \vdash \Delta$}
-\DisplayProof
-\end{center}
-
-\begin{center}
-\AxiomC{$\Gamma \vdash A, \Delta$}
-\RightLabel{\scriptsize$\lor R_1$}
-\UnaryInfC{$\Gamma \vdash A \lor B, \Delta$}
-\DisplayProof\hskip 2em
-\AxiomC{$\Gamma \vdash B, \Delta$}
-\RightLabel{\scriptsize$\lor R_2$}
-\UnaryInfC{$\Gamma \vdash A \lor B, \Delta$}
-\DisplayProof
-\end{center}
-
-\textbf{Правило сечения}
-
-\begin{center}
-\AxiomC{$\Gamma \vdash A, \Delta$}
-\AxiomC{$\Gamma, A \vdash \Sigma$}
-\RightLabel{\scriptsize$cut$}
-\BinaryInfC{$\Gamma \vdash \Delta, \Sigma$}
-\DisplayProof
-\end{center}
-\caption{Правила классического секвенциального исчисления LK}
-\label{fig:lk-rules}
-\end{figure}
-
-Секвенция $\vdash A \rightarrow A$ выводится без сечения и структурных правил:
-
-Вывод секвенции $\vdash A \rightarrow A$ в LK представлен на рисунке~\ref{fig:lk-a-implies-a}.
+Секвенция $\vdash A \rightarrow A$ выводится без сечения и структурных правил. Вывод секвенции $\vdash A \rightarrow A$ в LK представлен на рисунке~\ref{fig:lk-a-implies-a}.
 
 \begin{figure}[!htb]
 \centering
@@ -619,103 +482,9 @@ $\bot$. \emph{Секвенцией} называется пара $(\Gamma, \Del
 Интуиционистская версия секвенциального исчисления получается ограничением на
 форму секвенций: \emph{интуиционистскими} называются те секвенции, в которых
 справа находится не более одной формулы (то есть выводы строятся в подсистеме,
-где $\Delta$ либо пусто, либо состоит ровно из одной формулы). Правила интуиционистского секвенциального исчисления LJ представлены на рисунке~\ref{fig:lj-rules}.
-
-\begin{figure}[!htb]
-\textbf{Аксиомы}
-
-\begin{center}
-\AxiomC{}
-\RightLabel{\scriptsize$Ax$}
-\UnaryInfC{$A \vdash A$}
-\DisplayProof\hskip 2em
-\AxiomC{}
-\RightLabel{\scriptsize$\bot L$}
-\UnaryInfC{$\Gamma, \bot \vdash \Delta$}
-\DisplayProof
-\end{center}
-
-\textbf{Структурные правила}
-
-\begin{center}
-\AxiomC{$\Gamma \vdash \Delta$}
-\RightLabel{\scriptsize$LW$}
-\UnaryInfC{$\Gamma, A \vdash \Delta$}
-\DisplayProof\hskip 2em
-\AxiomC{$\Gamma, A, A \vdash \Delta$}
-\RightLabel{\scriptsize$LC$}
-\UnaryInfC{$\Gamma, A \vdash \Delta$}
-\DisplayProof\hskip 2em
-\AxiomC{$\Gamma, A, B, \Gamma' \vdash \Delta$}
-\RightLabel{\scriptsize$LX$}
-\UnaryInfC{$\Gamma, B, A, \Gamma' \vdash \Delta$}
-\DisplayProof
-\end{center}
-
-\textbf{Логические правила}
-
-\begin{center}
-\AxiomC{$\Gamma \vdash A$}
-\AxiomC{$\Gamma, B \vdash \Delta$}
-\RightLabel{\scriptsize$\rightarrow L$}
-\BinaryInfC{$\Gamma, A \rightarrow B \vdash \Delta$}
-\DisplayProof\hskip 2em
-\AxiomC{$\Gamma, A \vdash B$}
-\RightLabel{\scriptsize$\rightarrow R$}
-\UnaryInfC{$\Gamma \vdash A \rightarrow B$}
-\DisplayProof
-\end{center}
-
-\begin{center}
-\AxiomC{$\Gamma \vdash A$}
-\AxiomC{$\Gamma \vdash B$}
-\RightLabel{\scriptsize$\land R$}
-\BinaryInfC{$\Gamma \vdash A \land B$}
-\DisplayProof
-\end{center}
-
-\begin{center}
-\AxiomC{$\Gamma, A \vdash \Delta$}
-\RightLabel{\scriptsize$\land L_1$}
-\UnaryInfC{$\Gamma, A \land B \vdash \Delta$}
-\DisplayProof\hskip 2em
-\AxiomC{$\Gamma, B \vdash \Delta$}
-\RightLabel{\scriptsize$\land L_2$}
-\UnaryInfC{$\Gamma, A \land B \vdash \Delta$}
-\DisplayProof
-\end{center}
-
-\begin{center}
-\AxiomC{$\Gamma, A \vdash \Delta$}
-\AxiomC{$\Gamma, B \vdash \Delta$}
-\RightLabel{\scriptsize$\lor L$}
-\BinaryInfC{$\Gamma, A \lor B \vdash \Delta$}
-\DisplayProof
-\end{center}
-
-\begin{center}
-\AxiomC{$\Gamma \vdash A$}
-\RightLabel{\scriptsize$\lor R_1$}
-\UnaryInfC{$\Gamma \vdash A \lor B$}
-\DisplayProof\hskip 2em
-\AxiomC{$\Gamma \vdash B$}
-\RightLabel{\scriptsize$\lor R_2$}
-\UnaryInfC{$\Gamma \vdash A \lor B$}
-\DisplayProof
-\end{center}
-
-\textbf{Правило сечения}
-
-\begin{center}
-\AxiomC{$\Gamma \vdash A$}
-\AxiomC{$\Gamma, A \vdash \Delta$}
-\RightLabel{\scriptsize$cut$}
-\BinaryInfC{$\Gamma \vdash \Delta$}
-\DisplayProof
-\end{center}
-\caption{Правила интуиционистского секвенциального исчисления LJ}
-\label{fig:lj-rules}
-\end{figure}
+где $\Delta$ либо пусто, либо состоит ровно из одной формулы). Правила
+интуиционистского секвенциального исчисления LJ приведены в
+приложении~\ref{app:lk-lj-rules} (рисунок~\ref{fig:lj-rules}).
 
 Ключевое отличие от LK --- отсутствие правых структурных правил (ослабления,
 сокращения и перестановки справа), поскольку в сукцеденте находится не более
@@ -2239,12 +2008,33 @@ $R, X \Rightarrow g$, где $R$ --- множество плоских клау�
 дополняется LJT-поддеревьями, аннотируется $\lambda$-термами, редуцируется и
 выводится в формате DOT.
 
-Полный конвейер функции \texttt{prove} состоит из четырёх последовательных
-стадий: предобработки формулы (рисунок~\ref{fig:pipeline-pre}), SAT-поиска
-вывода \texttt{carrow} (рисунок~\ref{fig:pipeline-carrow}) и постобработки
-результата --- либо успешного доказательства
-(рисунок~\ref{fig:pipeline-valid-post}), либо найденной контрмодели
-(рисунок~\ref{fig:pipeline-invalid-post}).
+Полный конвейер функции \texttt{prove} представлен на
+рисунке~\ref{fig:pipeline-full}. На верхнем уровне выделяются шесть стадий
+S0--S5; детальные схемы отдельных блоков (предобработка, \texttt{carrow},
+постобработка) приведены на рисунках~\ref{fig:pipeline-pre}--\ref{fig:pipeline-invalid-post}.
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=0.42\textwidth]{full.png}
+\caption{Общая схема конвейера доказательства}
+\label{fig:pipeline-full}
+\end{figure}
+
+Стадии конвейера на рисунке~\ref{fig:pipeline-full} имеют следующий смысл:
+\begin{itemize}
+\item \textbf{S0} --- предобработка формулы: парсинг и клаузификация
+  (\texttt{parseFormula}, \texttt{clausify});
+\item \textbf{S1} --- построение дерева доказательства процедурой \texttt{carrow}
+  (\texttt{proveR});
+\item \textbf{S2} --- если формула валидна, на стадии~S1 возвращается дерево
+  вывода $\mathrm{Proof}$;
+\item \textbf{S3} --- если формула невалидна, на стадии~S1 возвращается
+  контрмодель $K$;
+\item \textbf{S4} --- для валидного исхода дерево вывода аннотируется
+  $\lambda$-термами;
+\item \textbf{S5} --- результат (аннотированное дерево или контрмодель)
+  преобразуется в формат DOT.
+\end{itemize}
 
 \subsubsection{Предобработка формулы}
 
@@ -2255,15 +2045,15 @@ $R, X \Rightarrow g$, где $R$ --- множество плоских клау�
 \label{fig:pipeline-pre}
 \end{figure}
 
-На рисунке~\ref{fig:pipeline-pre} показана первая стадия конвейера: на вход
+На рисунке~\ref{fig:pipeline-pre} показана стадия~S0 общей схемы: на вход
 подаётся текст формулы, который последовательно преобразуется в r-секвенцию.
-Шаги имеют следующий смысл:
+Шаги предобработки имеют следующий смысл:
 \begin{itemize}
-\item \textbf{S0} --- исходный текст разбирается функцией
+\item \textbf{парсинг} --- исходный текст разбирается функцией
   \texttt{parseFormula}: $F := \mathrm{parseFormula}$;
-\item \textbf{S1} --- процедура \texttt{clausify} строит начальную секвенцию и
-  выделяет множество плоских клауз $R$, множество импликационных клауз $X$ и
-  атомарную цель $g$: $\{R, X, g\} := \mathrm{clausify}\, F$.
+\item \textbf{клаузификация} --- процедура \texttt{clausify} строит начальную
+  секвенцию и выделяет множество плоских клауз $R$, множество импликационных
+  клауз $X$ и атомарную цель $g$: $\{R, X, g\} := \mathrm{clausify}\, F$.
 \end{itemize}
 Результатом предобработки становится тройка $\{R, X, g\}$, передаваемая на
 следующую стадию.
@@ -2277,12 +2067,14 @@ $R, X \Rightarrow g$, где $R$ --- множество плоских клау�
 \label{fig:pipeline-carrow}
 \end{figure}
 
-На рисунке~\ref{fig:pipeline-carrow} представлен SAT-ориентированный алгоритм
-\texttt{carrow}, реализующий поиск вывода в $C^{\rightarrow}$ по схеме
-Фиорентини~\cite{Fiorentini2021}. Алгоритм использует один инкрементальный
-SAT-решатель $s$, множество миров $W$ контрмодели и выученные плоские клаузы.
-Построение контрмодели выполняется во внутреннем цикле \texttt{innerLoop}.
-Шаги алгоритма имеют следующий смысл:
+На рисунке~\ref{fig:pipeline-carrow} представлена стадия~S1 общей схемы:
+SAT-ориентированный алгоритм \texttt{carrow}, реализующий поиск вывода в
+$C^{\rightarrow}$ по схеме Фиорентини~\cite{Fiorentini2021}. Нумерация S0--S6
+на этом рисунке относится к внутренним шагам \texttt{carrow}, а не к стадиям
+конвейера на рисунке~\ref{fig:pipeline-full}. Алгоритм использует один
+инкрементальный SAT-решатель $s$, множество миров $W$ контрмодели и выученные
+плоские клаузы. Построение контрмодели выполняется во внутреннем цикле
+\texttt{innerLoop}. Шаги алгоритма имеют следующий смысл:
 \begin{itemize}
 \item \textbf{S0} --- создаётся SAT-решатель и в него добавляются все плоские
   клаузы из $R$: $s := \mathrm{newSolver}$, $s := \mathrm{addClause}\, s\, R$;
@@ -2316,9 +2108,12 @@ SAT-решатель $s$, множество миров $W$ контрмодел
 \label{fig:pipeline-valid-post}
 \end{figure}
 
-Если \texttt{carrow} возвращает $\{\mathrm{valid}, \mathrm{Proof}\}$, дерево
-вывода проходит через цепочку преобразований, показанную на
-рисунке~\ref{fig:pipeline-valid-post}:
+Если \texttt{carrow} возвращает $\{\mathrm{valid}, \mathrm{Proof}\}$ (стадия~S2
+общей схемы), дерево вывода проходит через стадию~S4; детальная цепочка
+преобразований показана на рисунке~\ref{fig:pipeline-valid-post}. Нумерация
+S0--S3 на этом рисунке относится к внутренним шагам постобработки; стадии
+S4 и~S5 общей схемы соответствуют блокам \texttt{annotating} и \texttt{formatting}
+на рисунке~\ref{fig:pipeline-full}. Шаги постобработки имеют следующий смысл:
 \begin{itemize}
 \item \textbf{S0} --- дерево $\mathrm{Proof}$ дополняется выводом в исчислении
   LJT функцией \texttt{extendProof};
@@ -2338,12 +2133,17 @@ SAT-решатель $s$, множество миров $W$ контрмодел
 \label{fig:pipeline-invalid-post}
 \end{figure}
 
-Если \texttt{carrow} возвращает $\{\mathrm{invalid}, W\}$, контрмодель
-форматируется для визуализации (рисунок~\ref{fig:pipeline-invalid-post}):
+Если \texttt{carrow} возвращает $\{\mathrm{invalid}, K\}$ (стадия~S3 общей
+схемы), контрмодель форматируется на стадии~S5; детали приведены на
+рисунке~\ref{fig:pipeline-invalid-post}. Внутренний шаг~S0 на этом рисунке
+совпадает со стадией~S5 общей схемы:
 \begin{itemize}
-\item \textbf{S0} --- структура $W$ преобразуется в граф DOT:
-  $\mathrm{format}\, W$.
+\item \textbf{S0} --- структура $K$ преобразуется в граф DOT:
+  $\mathrm{format}\, K$.
 \end{itemize}
+
+На стадии~S5 общей схемы обе ветви сходятся: аннотированное дерево вывода или
+контрмодель переводятся в формат DOT для визуализации.
 
 Центральная функция \texttt{prove} связывает эти фазы в единый конвейер:
 строит начальную секвенцию, запускает клаузификацию, подготавливает Z3,
@@ -3375,13 +3175,13 @@ $p_0 \lor c(N) \lor \lnot p_0$. Ожидается контрмодель. Ге�
 \small
 \begin{tabular}{|r|l|r|r|r|r|}
 \hline
-$N$ & Результат & Клауз., мс & Доказ., мс & Аннот., мс & Всего, мс \\
+$N$ & Результат & Клауз., мс & Доказ., мс & Всего, мс \\
 \hline
-1 & invalid & 1.232 & 36.711 & 0.000 & 37.943 \\
-2 & invalid & 2.024 & 68.896 & 0.000 & 70.920 \\
-3 & invalid & 3.293 & 338.073 & 0.000 & 341.367 \\
-4 & invalid & 5.238 & 132440.380 & 0.000 & 132445.618 \\
-5 & invalid & 7.008 & 8631.909 & 0.000 & 8638.917 \\
+1 & invalid & 1.232 & 36.711 & 37.943 \\
+2 & invalid & 2.024 & 68.896 & 70.920 \\
+3 & invalid & 3.293 & 338.073 & 341.367 \\
+4 & invalid & 5.238 & 132440.380 & 132445.618 \\
+5 & invalid & 7.008 & 8631.909 & 8638.917 \\
 \hline
 \end{tabular}
 \end{table}
@@ -3519,8 +3319,7 @@ TPTP-представления, пригодного для \texttt{intuitR}. �
 росте времени (до $7{,}4$~с) прототип справляется с глубокой вложенностью
 импликаций без участия \texttt{intuitR}. Ниже выделены ключевые факторы расхождения.
 
-\begin{itemize}
-\item \textbf{Асимптотика клаузификации.} Текущая процедура клаузификации на
+\textbf{Асимптотика клаузификации.} Текущая процедура клаузификации на
   семействе \texttt{syj201} порождает слишком большое число плоских и
   импликационных клауз относительно параметра $N$. Это увеличивает размер
   r-секвенции, число итераций CEGAR и SAT-запросов к Z3. Рост времени
@@ -3530,7 +3329,7 @@ TPTP-представления, пригодного для \texttt{intuitR}. �
   накладные расходы одного вызова решателя. Сокращение числа порождаемых клауз
   --- направление, над которым следует работать в первую очередь.
 
-\item \textbf{Сохранение истории доказательства.} В отличие от \texttt{proveR}
+\textbf{Сохранение истории доказательства.} В отличие от \texttt{proveR}
   с перезапуском, прототип накапливает дерево клаузификации и цепочку узлов
   \texttt{CPL0}/\texttt{CPL1} в $C^{\rightarrow}$, а затем объединяет их для
   аннотирования и визуализации. \texttt{intuitR} после добавления выученной
@@ -3540,12 +3339,11 @@ TPTP-представления, пригодного для \texttt{intuitR}. �
   работы на каждой итерации CEGAR и объясняет часть отставания от эталона,
   оптимизированного только под ответ <<доказуемо/нет>>.
 
-\item \textbf{Дополнительные инженерные факторы.} Классические подзапросы
+\textbf{Дополнительные инженерные факторы.} Классические подзапросы
   выполняются через Haskell-обёртку Z3 с извлечением unsat core; wall-clock
   \texttt{intuitR} ($\approx 12$~мс) включает старт процесса, а внутренние
   таймеры округляются до $0{,}001$~с. Эти эффекты не снимают основного разрыва,
   но могут вносить вклад при малых $N$.
-\end{itemize}
 
 Таким образом, отставание прототипа от \texttt{intuitR} интерпретируется как
 сочетание плохой асимптотики клаузификации (проблема, требующая алгоритмической
@@ -3920,6 +3718,222 @@ $R, X \Rightarrow g$ и возвращает один из двух резуль
 $R(s), w, a \vdash_{\mathit{cpl}} b$ завершается успехом, процедура извлекает
 множество допущений $A$, строит выученную клаузу $\varphi$ и перезапускает
 главный цикл.
+
+\anonappendix
+\label{app:lk-lj-rules}
+
+Ниже приведены полные наборы правил классического исчисления LK и
+интуиционистского исчисления LJ в формулировке Генцена.
+
+\begin{figure}[!htb]
+\textbf{Аксиомы}
+
+\begin{center}
+\AxiomC{}
+\RightLabel{\scriptsize$Ax$}
+\UnaryInfC{$A \vdash A$}
+\DisplayProof\hskip 2em
+\AxiomC{}
+\RightLabel{\scriptsize$\bot L$}
+\UnaryInfC{$\Gamma, \bot \vdash \Delta$}
+\DisplayProof
+\end{center}
+
+\textbf{Структурные правила}
+
+\begin{center}
+\AxiomC{$\Gamma \vdash \Delta$}
+\RightLabel{\scriptsize$LW$}
+\UnaryInfC{$\Gamma, A \vdash \Delta$}
+\DisplayProof\hskip 2em
+\AxiomC{$\Gamma \vdash \Delta$}
+\RightLabel{\scriptsize$RW$}
+\UnaryInfC{$\Gamma \vdash \Delta, A$}
+\DisplayProof
+\end{center}
+
+\begin{center}
+\AxiomC{$\Gamma, A, A \vdash \Delta$}
+\RightLabel{\scriptsize$LC$}
+\UnaryInfC{$\Gamma, A \vdash \Delta$}
+\DisplayProof\hskip 2em
+\AxiomC{$\Gamma \vdash \Delta, A, A$}
+\RightLabel{\scriptsize$RC$}
+\UnaryInfC{$\Gamma \vdash \Delta, A$}
+\DisplayProof
+\end{center}
+
+\begin{center}
+\AxiomC{$\Gamma, A, B, \Pi \vdash \Delta$}
+\RightLabel{\scriptsize$LX$}
+\UnaryInfC{$\Gamma, B, A, \Pi \vdash \Delta$}
+\DisplayProof\hskip 2em
+\AxiomC{$\Gamma \vdash \Delta, A, B, \Pi$}
+\RightLabel{\scriptsize$RX$}
+\UnaryInfC{$\Gamma \vdash \Delta, B, A, \Pi$}
+\DisplayProof
+\end{center}
+
+\textbf{Логические правила}
+
+\begin{center}
+\AxiomC{$\Gamma \vdash A, \Phi$}
+\AxiomC{$\Pi, B \vdash \Psi$}
+\RightLabel{\scriptsize$\rightarrow L$}
+\BinaryInfC{$\Gamma, \Pi, A \rightarrow B \vdash \Phi, \Psi$}
+\DisplayProof\hskip 2em
+\AxiomC{$\Gamma, A \vdash B, \Delta$}
+\RightLabel{\scriptsize$\rightarrow R$}
+\UnaryInfC{$\Gamma \vdash A \rightarrow B, \Delta$}
+\DisplayProof
+\end{center}
+
+\begin{center}
+\AxiomC{$\Gamma \vdash A, \Delta$}
+\AxiomC{$\Gamma \vdash B, \Delta$}
+\RightLabel{\scriptsize$\land R$}
+\BinaryInfC{$\Gamma \vdash A \land B, \Delta$}
+\DisplayProof
+\end{center}
+
+\begin{center}
+\AxiomC{$\Gamma, A \vdash \Delta$}
+\RightLabel{\scriptsize$\land L_1$}
+\UnaryInfC{$\Gamma, A \land B \vdash \Delta$}
+\DisplayProof\hskip 2em
+\AxiomC{$\Gamma, B \vdash \Delta$}
+\RightLabel{\scriptsize$\land L_2$}
+\UnaryInfC{$\Gamma, A \land B \vdash \Delta$}
+\DisplayProof
+\end{center}
+
+\begin{center}
+\AxiomC{$\Gamma, A \vdash \Delta$}
+\AxiomC{$\Gamma, B \vdash \Delta$}
+\RightLabel{\scriptsize$\lor L$}
+\BinaryInfC{$\Gamma, A \lor B \vdash \Delta$}
+\DisplayProof
+\end{center}
+
+\begin{center}
+\AxiomC{$\Gamma \vdash A, \Delta$}
+\RightLabel{\scriptsize$\lor R_1$}
+\UnaryInfC{$\Gamma \vdash A \lor B, \Delta$}
+\DisplayProof\hskip 2em
+\AxiomC{$\Gamma \vdash B, \Delta$}
+\RightLabel{\scriptsize$\lor R_2$}
+\UnaryInfC{$\Gamma \vdash A \lor B, \Delta$}
+\DisplayProof
+\end{center}
+
+\textbf{Правило сечения}
+
+\begin{center}
+\AxiomC{$\Gamma \vdash A, \Delta$}
+\AxiomC{$\Gamma, A \vdash \Sigma$}
+\RightLabel{\scriptsize$cut$}
+\BinaryInfC{$\Gamma \vdash \Delta, \Sigma$}
+\DisplayProof
+\end{center}
+\caption{Правила классического секвенциального исчисления LK}
+\label{fig:lk-rules}
+\end{figure}
+
+\begin{figure}[!htb]
+\textbf{Аксиомы}
+
+\begin{center}
+\AxiomC{}
+\RightLabel{\scriptsize$Ax$}
+\UnaryInfC{$A \vdash A$}
+\DisplayProof\hskip 2em
+\AxiomC{}
+\RightLabel{\scriptsize$\bot L$}
+\UnaryInfC{$\Gamma, \bot \vdash \Delta$}
+\DisplayProof
+\end{center}
+
+\textbf{Структурные правила}
+
+\begin{center}
+\AxiomC{$\Gamma \vdash \Delta$}
+\RightLabel{\scriptsize$LW$}
+\UnaryInfC{$\Gamma, A \vdash \Delta$}
+\DisplayProof\hskip 2em
+\AxiomC{$\Gamma, A, A \vdash \Delta$}
+\RightLabel{\scriptsize$LC$}
+\UnaryInfC{$\Gamma, A \vdash \Delta$}
+\DisplayProof\hskip 2em
+\AxiomC{$\Gamma, A, B, \Gamma' \vdash \Delta$}
+\RightLabel{\scriptsize$LX$}
+\UnaryInfC{$\Gamma, B, A, \Gamma' \vdash \Delta$}
+\DisplayProof
+\end{center}
+
+\textbf{Логические правила}
+
+\begin{center}
+\AxiomC{$\Gamma \vdash A$}
+\AxiomC{$\Gamma, B \vdash \Delta$}
+\RightLabel{\scriptsize$\rightarrow L$}
+\BinaryInfC{$\Gamma, A \rightarrow B \vdash \Delta$}
+\DisplayProof\hskip 2em
+\AxiomC{$\Gamma, A \vdash B$}
+\RightLabel{\scriptsize$\rightarrow R$}
+\UnaryInfC{$\Gamma \vdash A \rightarrow B$}
+\DisplayProof
+\end{center}
+
+\begin{center}
+\AxiomC{$\Gamma \vdash A$}
+\AxiomC{$\Gamma \vdash B$}
+\RightLabel{\scriptsize$\land R$}
+\BinaryInfC{$\Gamma \vdash A \land B$}
+\DisplayProof
+\end{center}
+
+\begin{center}
+\AxiomC{$\Gamma, A \vdash \Delta$}
+\RightLabel{\scriptsize$\land L_1$}
+\UnaryInfC{$\Gamma, A \land B \vdash \Delta$}
+\DisplayProof\hskip 2em
+\AxiomC{$\Gamma, B \vdash \Delta$}
+\RightLabel{\scriptsize$\land L_2$}
+\UnaryInfC{$\Gamma, A \land B \vdash \Delta$}
+\DisplayProof
+\end{center}
+
+\begin{center}
+\AxiomC{$\Gamma, A \vdash \Delta$}
+\AxiomC{$\Gamma, B \vdash \Delta$}
+\RightLabel{\scriptsize$\lor L$}
+\BinaryInfC{$\Gamma, A \lor B \vdash \Delta$}
+\DisplayProof
+\end{center}
+
+\begin{center}
+\AxiomC{$\Gamma \vdash A$}
+\RightLabel{\scriptsize$\lor R_1$}
+\UnaryInfC{$\Gamma \vdash A \lor B$}
+\DisplayProof\hskip 2em
+\AxiomC{$\Gamma \vdash B$}
+\RightLabel{\scriptsize$\lor R_2$}
+\UnaryInfC{$\Gamma \vdash A \lor B$}
+\DisplayProof
+\end{center}
+
+\textbf{Правило сечения}
+
+\begin{center}
+\AxiomC{$\Gamma \vdash A$}
+\AxiomC{$\Gamma, A \vdash \Delta$}
+\RightLabel{\scriptsize$cut$}
+\BinaryInfC{$\Gamma \vdash \Delta$}
+\DisplayProof
+\end{center}
+\caption{Правила интуиционистского секвенциального исчисления LJ}
+\label{fig:lj-rules}
+\end{figure}
 
 \anonappendix
 \label{app:hilbert-axioms}
