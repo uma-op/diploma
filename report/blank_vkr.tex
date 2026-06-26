@@ -3,6 +3,7 @@
 \include{header.tex}
 \addbibresource{biblio.bib}
 \usepackage{tikz}
+\usetikzlibrary{shapes.geometric,calc,fit,backgrounds}
 \usepackage{bussproofs}
     
 \begin{document}
@@ -148,7 +149,7 @@ $\leftrightarrow$ типы>> создает высокий порог входа
 
 \subsection{Интуиционистская логика}
 
-Интуиционистская логика возникла в контексте кризиса оснований математики ---
+Интуиционистская логика (IPL) возникла в контексте кризиса оснований математики ---
 масштабного пересмотра фундаментальных допущений, на которых строилось
 математическое знание. Во второй половине XIX века Георг Кантор заложил основы
 теории множеств, предложив рассматривать бесконечные совокупности как
@@ -223,7 +224,7 @@ BHK-интерпретация придала интуиционистской �
 
 \subsubsection{Семантика Крипке}
 \emph{Семантика Крипке}~\cite{Kripke1965} задаёт класс моделей, в которых истинность формулы
-определяется относительно \emph{миров}, связанных отношением частичного порядка.
+определяется относительно \emph{миров}, связанных отношением частичного порядка с наименьшим элементом.
 Формула называется \emph{общезначимой}, если она истинна в корне любой модели.
 \emph{Контрмодель} --- модель, в корне которой некоторая формула не вынуждена;
 существование контрмодели показывает, что формула не является теоремой
@@ -256,6 +257,8 @@ BHK-интерпретация придала интуиционистской �
 
 \textbf{Пример 1.} Рассмотрим цепочку из двух миров $w_0 \prec w_1$ и одну
 переменную $p$, положив $V(p) = \{w_1\}$ (наследуемость соблюдена).
+
+Двухмировая модель Крипке для переменной $p$ представлена на рисунке~\ref{fig:kripke-chain-p}.
 
 \begin{figure}[!htb]
 \centering
@@ -293,6 +296,8 @@ $w_0 \not\Vdash \neg\neg p \rightarrow p$.
 Возьмём ту же цепочку $w_0 \prec w_1$, но с двумя переменными: $V(p) = \{w_1\}$,
 $V(q) = \varnothing$.
 
+Двухмировая модель Крипке для схемы Пирса представлена на рисунке~\ref{fig:kripke-chain-peirce}.
+
 \begin{figure}[!htb]
 \centering
 \begin{tikzpicture}[
@@ -323,6 +328,8 @@ $w_0 \not\Vdash ((p \rightarrow q) \rightarrow p) \rightarrow p$.
 
 \textbf{Пример 3.} Не всякая контрмодель является цепочкой. Рассмотрим формулу
 $(p \rightarrow q) \lor (q \rightarrow p)$ и модель с ветвлением:
+
+Ветвящаяся контрмодель Крипке представлена на рисунке~\ref{fig:kripke-branching}.
 
 \begin{figure}[!htb]
 \centering
@@ -377,6 +384,8 @@ $A \rightarrow A$ требует длинной цепочки подстано�
 
 Натуральный вывод~\cite{Gentzen1935} представляет собой систему, в которой доказательства строятся
 с использованием правил введения и устранения для каждой логической связки.
+
+Основные правила натурального вывода представлены на рисунке~\ref{fig:natural-deduction-rules}.
 
 \begin{figure}[!htb]
 \begin{center}
@@ -444,7 +453,8 @@ $A \rightarrow A$ требует длинной цепочки подстано�
 \label{fig:natural-deduction-rules}
 \end{figure}
 
-Пример. Формула $A \rightarrow (B \rightarrow A)$ выводится так:
+Пример. Вывод формулы $A \rightarrow (B \rightarrow A)$ в натуральном выводе представлен на рисунке~\ref{fig:natural-deduction-example}.
+
 \begin{figure}[!htb]
 \centering
 \AxiomC{}
@@ -471,7 +481,7 @@ $A \rightarrow A$ требует длинной цепочки подстано�
 Секвенциальное исчисление~\cite{Gentzen1935} основано на понятии \emph{секвенции}.
 Пусть $\mathcal{L}$ --- множество формул пропозициональной логики, построенных из
 пропозициональных переменных, связок $\land$, $\lor$, $\rightarrow$ и константы
-$\bot$. \emph{Секвенцией} называется пара $(\Gamma, \Delta)$, записываемая
+$\bot$. \emph{Секвенцией} называется пара $(\Gamma, \Delta)$, записываемая как
 \[
 \Gamma \vdash \Delta,
 \]
@@ -482,8 +492,7 @@ $\bot$. \emph{Секвенцией} называется пара $(\Gamma, \Del
 выводимость; секвенция с пустым сукцедентом ($\Gamma \vdash$) означает
 противоречивость $\Gamma$.
 
-Ниже приведена система правил классического секвенциального исчисления
-высказываний (исчисление LK в стиле Генцена).
+Полный набор правил классического секвенциального исчисления LK в стиле Генцена представлен на рисунке~\ref{fig:lk-rules}.
 
 \begin{figure}[!htb]
 \textbf{Аксиомы}
@@ -601,6 +610,8 @@ $\bot$. \emph{Секвенцией} называется пара $(\Gamma, \Del
 
 Секвенция $\vdash A \rightarrow A$ выводится без сечения и структурных правил:
 
+Вывод секвенции $\vdash A \rightarrow A$ в LK представлен на рисунке~\ref{fig:lk-a-implies-a}.
+
 \begin{figure}[!htb]
 \centering
 \AxiomC{}
@@ -616,8 +627,7 @@ $\bot$. \emph{Секвенцией} называется пара $(\Gamma, \Del
 Интуиционистская версия секвенциального исчисления получается ограничением на
 форму секвенций: \emph{интуиционистскими} называются те секвенции, в которых
 справа находится не более одной формулы (то есть выводы строятся в подсистеме,
-где $\Delta$ либо пусто, либо состоит ровно из одной формулы). Ниже приведены
-правила интуиционистского секвенциального исчисления LJ.
+где $\Delta$ либо пусто, либо состоит ровно из одной формулы). Правила интуиционистского секвенциального исчисления LJ представлены на рисунке~\ref{fig:lj-rules}.
 
 \begin{figure}[!htb]
 \textbf{Аксиомы}
@@ -742,8 +752,8 @@ $M : \psi$ означает, что $M$ --- доказательство $\psi$,
 $\Gamma$ используют суждение $\Gamma \vdash M : \psi$.
 
 Правило устранения импликации в натуральном выводе с аннотациями: если
-$\Gamma \vdash M : A \rightarrow B$ и $\Gamma \vdash N : A$, то доказательством
-$B$ задаётся применение $M\,N$:
+$\Gamma \vdash M : A \rightarrow B$ и $\Gamma \vdash N : A$, то доказательством $B$ задаётся применение $M\,N$; правило применения для импликации представлено на рисунке~\ref{fig:lambda-application}.
+
 \begin{figure}[!htb]
 \centering
 \AxiomC{$\Gamma \vdash M : A \rightarrow B$}
@@ -756,7 +766,7 @@ $B$ задаётся применение $M\,N$:
 \end{figure}
 
 Аксиома гипотезы: переменная, помеченная формулой $A$, служит доказательством
-$A$ в расширенном контексте:
+$A$ в расширенном контексте; аксиома гипотезы представлена на рисунке~\ref{fig:lambda-variable}.
 
 \begin{figure}[!htb]
 \centering
@@ -769,7 +779,7 @@ $A$ в расширенном контексте:
 \end{figure}
 
 Введение импликации: доказательство $A \rightarrow B$ из подвывода с гипотезой
-$x : A$ записывают как $\lambda$-абстракцию по $x$:
+$x : A$ записывают как $\lambda$-абстракцию по $x$; правило абстракции для импликации представлено на рисунке~\ref{fig:lambda-abstraction}.
 
 \begin{figure}[!htb]
 \centering
@@ -789,7 +799,7 @@ $A \rightarrow B$ --- это функция, сопоставляющая кон
 \subsubsection{Аннотирование правил LJ (импликативный фрагмент)}
 
 Подход с аннотированном термами к формулам можно распространить и на
-секвенциальное исчисление:
+секвенциальное исчисление; аннотированные правила $Ax$ и $(\rightarrow R)$ представлены на рисунке~\ref{fig:annotated-lj-imp-right}.
 
 \begin{figure}[!htb]
 \centering
@@ -804,6 +814,8 @@ $A \rightarrow B$ --- это функция, сопоставляющая кон
 \caption{Аннотированные правила $Ax$ и $(\rightarrow R)$}
 \label{fig:annotated-lj-imp-right}
 \end{figure}
+
+Аннотированное правило $(\rightarrow L)$ представлено на рисунке~\ref{fig:annotated-lj-imp-left}.
 
 \begin{figure}[!htb]
 \centering
@@ -834,13 +846,14 @@ $(\rightarrow L)$. В нем мы в результате справа полу�
 \subsubsection{Суперскрипты для произведения и суммы}
 Аннотировать можно также и остальные правила секвенциального исчисления, но для
 этого требуется ввести лямбда-термы для произведения и суммы типов. Для произведения
-подойдет терм пары следующего вида:
+подойдет терм пары; термы для произведения типов представлены на рисунке~\ref{fig:product-terms}.
+
 \begin{figure}[!htb]
 \centering
 \begin{gather*}
 \langle M, N \rangle = \lambda x.xMN \\
-\pi_1 = \lambda p.p(\lambda xy.x) \\
-\pi_2 = \lambda p.p(\lambda xy.y)
+\pi_1 = \lambda p.p\,(\lambda xy.x) \\
+\pi_2 = \lambda p.p\,(\lambda xy.y)
 \end{gather*}
 \caption{Термы для произведения типов}
 \label{fig:product-terms}
@@ -850,26 +863,29 @@ $(\rightarrow L)$. В нем мы в результате справа полу�
 $ \pi_1 \langle M, N \rangle \rightarrow_\beta M$ и $\pi_2 \langle M, N \rangle
 \rightarrow_\beta N$.
 
-Для суммы типов можно использовать следующие термы:
+Для суммы типов используются термы, представленные на рисунке~\ref{fig:sum-terms}.
+
 \begin{figure}[!htb]
 \centering
 \begin{gather*}
 L = \lambda e c_1 c_2. c_1 e \\
 R = \lambda e c_1 c_2. c_2 e \\
-case\, M\, of\, [x]P\, or\, [y]Q = M(\lambda x.P)(\lambda y.Q)
+\caseof{M}{[x]P}{[y]Q} = M(\lambda x.P)(\lambda y.Q)
 \end{gather*}
 \caption{Термы для суммы типов}
 \label{fig:sum-terms}
 \end{figure}
 
-Тут $L$ и $R$ --- конструкторы суммы, а $case$ --- элиминатор. В выражении
-$case$ $M$ может быть вида $LV$ либо $RV$, где $V$ какой либо терм. Таким
-образом
+Тут $L$ и $R$ --- конструкторы суммы, а $\mathrm{case}$ --- элиминатор. В выражении
+$\caseof{M}{\ldots}{\ldots}$ первый аргумент $M$ может быть вида $LV$ либо $RV$,
+где $V$ какой-либо терм. Таким образом правила $\beta$-редукции для
+$\mathrm{case}$ представлены на рисунке~\ref{fig:case-reduction}.
+
 \begin{figure}[!htb]
 \centering
 \begin{gather*}
-case\, LM\, of\, [x]P\, or\, [y]Q\, \rightarrow_\beta P[x := M] \\
-case\, RM\, of\, [x]P\, or\, [y]Q\, \rightarrow_\beta Q[y := M]
+\caseof{LM}{[x]P}{[y]Q} \rightarrow_\beta P[x := M] \\
+\caseof{RM}{[x]P}{[y]Q} \rightarrow_\beta Q[y := M]
 \end{gather*}
 \caption{Редукция разбора случаев для суммы}
 \label{fig:case-reduction}
@@ -878,7 +894,9 @@ case\, RM\, of\, [x]P\, or\, [y]Q\, \rightarrow_\beta Q[y := M]
 \subsubsection{Аннотирование правил LJ (полный фрагмент)}
 Теперь благодаря введенным термам для произведения и суммы типов, можно аннотировать
 остальные правила секвенциального исчисления. Для простоты будем аннотировать только
-логические правила, так как в структурные аннотируются естественно.
+логические правила, так как структурные аннотируются естественно.
+
+Аннотированное правило $(\land R)$ представлено на рисунке~\ref{fig:annotated-lj-and-right}.
 
 \begin{figure}[!htb]
 \centering
@@ -890,6 +908,8 @@ case\, RM\, of\, [x]P\, or\, [y]Q\, \rightarrow_\beta Q[y := M]
 \caption{Аннотированное правило $(\land R)$}
 \label{fig:annotated-lj-and-right}
 \end{figure}
+
+Аннотированные правила $(\land L_1)$ и $(\land L_2)$ представлены на рисунке~\ref{fig:annotated-lj-and-left}.
 
 \begin{figure}[!htb]
 \centering
@@ -905,16 +925,20 @@ case\, RM\, of\, [x]P\, or\, [y]Q\, \rightarrow_\beta Q[y := M]
 \label{fig:annotated-lj-and-left}
 \end{figure}
 
+Аннотированное правило $(\lor L)$ представлено на рисунке~\ref{fig:annotated-lj-or-left}.
+
 \begin{figure}[!htb]
 \centering
 \AxiomC{$\Gamma, a: A \vdash d_1: C$}
 \AxiomC{$\Gamma, b: B \vdash d_2: C$}
 \RightLabel{\scriptsize$\lor L$}
-\BinaryInfC{$\Gamma, p: A \lor B \vdash case\, p\, of\, [a]d_1\, or\, [b]d_2: C$}
+\BinaryInfC{$\Gamma, p: A \lor B \vdash \caseof{p}{[a]d_1}{[b]d_2}[C]$}
 \DisplayProof
 \caption{Аннотированное правило $(\lor L)$}
 \label{fig:annotated-lj-or-left}
 \end{figure}
+
+Аннотированные правила $(\lor R_1)$ и $(\lor R_2)$ представлены на рисунке~\ref{fig:annotated-lj-or-right}.
 
 \begin{figure}[!htb]
 \centering
@@ -943,9 +967,7 @@ case\, RM\, of\, [x]P\, or\, [y]Q\, \rightarrow_\beta Q[y := M]
 пропозициональных переменных, связок $\land$, $\lor$, $\rightarrow$ и константы
 $\bot$. Константа $\bot$ \emph{не считается} атомом.
 
-Правила исчисления LJ (в формулировке, следующей Дайкхоффу) приведены ниже.
-Выделенная формула в заключении каждого правила называется \emph{главной}
-(principal).
+Правила исчисления LJ в формулировке Дайкхоффа представлены на рисунке~\ref{fig:dyckhoff-lj-rules}. Выделенная формула в заключении каждого правила называется \emph{главной} (principal).
 
 \begin{figure}[!htb]
 \textbf{Аксиома и абсурд}
@@ -1007,14 +1029,16 @@ $\bot$. Константа $\bot$ \emph{не считается} атомом.
 \end{figure}
 
 Ключевая особенность данной формулировки --- правило $(\rightarrow L)$: главная
-формула $A \rightarrow B$ \emph{сохраняется} в левой посылке. Тем самым
-\emph{правило сокращения встроено} в $(\rightarrow L)$, и ни сокращение, ни
-ослабление, ни перестановка не требуются как примитивные правила: все три
-\emph{допустимы}.
+формула $A \rightarrow B$ сохраняется в левой посылке. Тем самым правило
+сокращения встроено в $(\rightarrow L)$, и ни сокращение, ни ослабление, ни
+перестановка не требуются как примитивные правила: все три допустимы как
+производные.
 
 \subsubsection{Проблема завершаемости}
 
 Для формализации завершаемости вводится \emph{вес} формулы $\mathrm{wt}(A)$:
+Определение веса формул LJT представлено на рисунке~\ref{fig:ljt-formula-weights}.
+
 \begin{figure}[!htb]
 \centering
 \begin{align*}
@@ -1050,54 +1074,43 @@ $A \rightarrow B, \Gamma \vdash A$ содержит ту же формулу $A 
 структурой левой части (антецедента) главной импликации $D \rightarrow C$. Все
 остальные правила сохраняются без изменений.
 
-\textbf{Случай 1.} $D = p$ --- пропозициональная переменная:
-
-\begin{figure}[!htb]
-\centering
+\textbf{Случай 1.} $D = p$ --- пропозициональная переменная; правило
+$(\rightarrow L_1)$:
+\begin{center}
 \AxiomC{$B, p, \Gamma \vdash G$}
 \RightLabel{\scriptsize$\rightarrow L_1$}
 \UnaryInfC{$p \rightarrow B, p, \Gamma \vdash G$}
 \DisplayProof
-\caption{Правило $(\rightarrow L_1)$ исчисления LJT}
+\end{center}
 \label{fig:ljt-l1}
-\end{figure}
 
-\textbf{Случай 2.} $D = C_1 \land C_2$:
-
-\begin{figure}[!htb]
-\centering
+\textbf{Случай 2.} $D = C_1 \land C_2$; правило $(\rightarrow L_2)$:
+\begin{center}
 \AxiomC{$C_1 \rightarrow (C_2 \rightarrow B), \Gamma \vdash G$}
 \RightLabel{\scriptsize$\rightarrow L_2$}
 \UnaryInfC{$(C_1 \land C_2) \rightarrow B, \Gamma \vdash G$}
 \DisplayProof
-\caption{Правило $(\rightarrow L_2)$ исчисления LJT}
+\end{center}
 \label{fig:ljt-l2}
-\end{figure}
 
-\textbf{Случай 3.} $D = C_1 \lor C_2$:
-
-\begin{figure}[!htb]
-\centering
+\textbf{Случай 3.} $D = C_1 \lor C_2$; правило $(\rightarrow L_3)$:
+\begin{center}
 \AxiomC{$C_1 \rightarrow B, C_2 \rightarrow B, \Gamma \vdash G$}
 \RightLabel{\scriptsize$\rightarrow L_3$}
 \UnaryInfC{$(C_1 \lor C_2) \rightarrow B, \Gamma \vdash G$}
 \DisplayProof
-\caption{Правило $(\rightarrow L_3)$ исчисления LJT}
+\end{center}
 \label{fig:ljt-l3}
-\end{figure}
 
-\textbf{Случай 4.} $D = C_1 \rightarrow C_2$:
-
-\begin{figure}[!htb]
-\centering
+\textbf{Случай 4.} $D = C_1 \rightarrow C_2$; правило $(\rightarrow L_4)$:
+\begin{center}
 \AxiomC{$C_2 \rightarrow B, \Gamma \vdash C_1 \rightarrow C_2$}
 \AxiomC{$B, \Gamma \vdash G$}
 \RightLabel{\scriptsize$\rightarrow L_4$}
 \BinaryInfC{$(C_1 \rightarrow C_2) \rightarrow B, \Gamma \vdash G$}
 \DisplayProof
-\caption{Правило $(\rightarrow L_4)$ исчисления LJT}
+\end{center}
 \label{fig:ljt-l4}
-\end{figure}
 
 Во всех четырёх правилах главная формула \emph{не сохраняется} ни в одной из
 посылок: она заменяется формулами строго меньшего веса. Действительно:
@@ -1147,6 +1160,8 @@ $(\rightarrow L_4)$ (выбор импликационной клаузы из �
 
 Покажем вывод формулы $((a \lor (a \rightarrow b)) \rightarrow b) \rightarrow b$
 в системе LJT с $\lambda$-термовыми аннотациями.
+
+Полный вывод с аннотациями для примера LJT представлен на рисунке~\ref{fig:ljt-annotated-example}.
 
 \begin{figure}[!htb]
 \centering
@@ -1215,7 +1230,8 @@ $R, X \Rightarrow q$, где:
 \[
 A \;\leadsto\; \top \rightarrow A.
 \]
-Далее применяются структурные правила, упрощающие вид импликации:
+Структурные правила клаузификации, упрощающие вид импликации, представлены на рисунке~\ref{fig:clausification-structural-rules}.
+
 \begin{figure}[!htb]
 \centering
 \begin{align*}
@@ -1228,7 +1244,8 @@ A \rightarrow (B \rightarrow C) &\;\leadsto\; (A \land B) \rightarrow C,
 \end{figure}
 где $a$ --- атом или константа $\bot$, $\top$. Для введения атомов на нужных
 позициях используются правила с введением свежих переменных (обозначены строчными
-буквами справа):
+буквами справа); правила клаузификации с введением свежих атомов представлены на рисунке~\ref{fig:clausification-aliasing-rules}.
+
 \begin{figure}[!htb]
 \centering
 \begin{align*}
@@ -1266,7 +1283,8 @@ q$, что позволяет делегировать работу с ними 
 Исчисление $LJT_{SAT}$ состоит из трёх правил.
 
 \textbf{Правило $(cpl)$.} Если множество плоских клауз $R$ классически влечёт
-$q$ (что проверяется SAT-решателем), секвенция выводима:
+$q$ (что проверяется SAT-решателем), секвенция выводима; правило $(cpl)$ представлено на рисунке~\ref{fig:ljtsat-cpl}.
+
 \begin{figure}[!htb]
 \centering
 \AxiomC{$R \vdash_{\mathit{cpl}} q$}
@@ -1279,7 +1297,7 @@ $q$ (что проверяется SAT-решателем), секвенция �
 
 \textbf{Правило $(cut_{\mathit{ipl}})$.} Интуиционистское сечение: если левая
 посылка является интуиционистской теоремой и плоская клауза $\varphi$ позволяет
-вывести правую посылку, то заключение выводимо:
+вывести правую посылку, то заключение выводимо; правило $(cut_{\mathit{ipl}})$ представлено на рисунке~\ref{fig:ljtsat-cut}.
 
 \begin{figure}[!htb]
 \centering
@@ -1295,7 +1313,7 @@ $q$ (что проверяется SAT-решателем), секвенция �
 \textbf{Правило $(ljt)$.} Обобщённое правило левого введения импликации,
 соответствующее $(\rightarrow L_4)$ из LJT, адаптированное к клаузальной форме.
 Пусть $\iota = (a \rightarrow b) \rightarrow c \in X$, $X_\iota = X \setminus
-\{\iota\}$ и $A_1$ --- множество атомов. Тогда:
+\{\iota\}$ и $A_1$ --- множество атомов. Правило $(ljt)$ представлено на рисунке~\ref{fig:ljtsat-ljt}:
 
 \begin{figure}[!htb]
 \centering
@@ -1450,7 +1468,8 @@ $\lor R$, $\rightarrow R$), аннотируются так же, как в LJ. 
 состоит в четырёх правилах левого введения импликации.
 
 \textbf{Правило $(\rightarrow L_1)$.} Атом $p$ присутствует в антецеденте,
-поэтому терм для $B$ получается применением $f$ к $x$:
+поэтому терм для $B$ получается применением $f$ к $x$; аннотированное правило $(\rightarrow L_1)$ представлено на рисунке~\ref{fig:annotated-ljt-l1}.
+
 \begin{figure}[!htb]
 \centering
 \AxiomC{$\Gamma,\, x : p,\, y : B \vdash t : G$}
@@ -1462,7 +1481,8 @@ $\lor R$, $\rightarrow R$), аннотируются так же, как в LJ. 
 \end{figure}
 
 \textbf{Правило $(\rightarrow L_2)$.} Импликация $(A \land B) \rightarrow C$
-заменяется на $A \rightarrow (B \rightarrow C)$:
+заменяется на $A \rightarrow (B \rightarrow C)$; аннотированное правило $(\rightarrow L_2)$ представлено на рисунке~\ref{fig:annotated-ljt-l2}.
+
 \begin{figure}[!htb]
 \centering
 \AxiomC{$\Gamma,\, g : A \rightarrow (B \rightarrow C) \vdash t : G$}
@@ -1474,7 +1494,8 @@ $\lor R$, $\rightarrow R$), аннотируются так же, как в LJ. 
 \end{figure}
 
 \textbf{Правило $(\rightarrow L_3)$.} Импликация $(A \lor B) \rightarrow C$
-заменяется парой $A \rightarrow C$ и $B \rightarrow C$:
+заменяется парой $A \rightarrow C$ и $B \rightarrow C$; аннотированное правило $(\rightarrow L_3)$ представлено на рисунке~\ref{fig:annotated-ljt-l3}.
+
 \begin{figure}[!htb]
 \centering
 \AxiomC{$\Gamma,\, g_1 : A \rightarrow C,\, g_2 : B \rightarrow C \vdash t : G$}
@@ -1487,7 +1508,8 @@ $\lor R$, $\rightarrow R$), аннотируются так же, как в LJ. 
 
 \textbf{Правило $(\rightarrow L_4)$.} Единственное правило с двумя посылками.
 В левой посылке формула $(C_1 \rightarrow C_2) \rightarrow B$ заменяется на
-$C_2 \rightarrow B$:
+$C_2 \rightarrow B$; аннотированное правило $(\rightarrow L_4)$ представлено на рисунке~\ref{fig:annotated-ljt-l4}.
+
 \begin{figure}[!htb]
 \centering
 \AxiomC{$\Gamma,\, g : C_2 \rightarrow B \vdash s : C_1 \rightarrow C_2$}
@@ -1522,7 +1544,8 @@ $\lambda$-термами: каждому шагу перезаписи соот�
 секвенция с допущением $A$. Аннотирование состоит в указании терма,
 реализующего это преобразование.
 
-\textbf{Начальное правило.} Формула, не являющаяся импликацией, оборачивается:
+\textbf{Начальное правило.} Формула, не являющаяся импликацией, оборачивается; аннотированное начальное правило клаузификации представлено на рисунке~\ref{fig:annotated-clausification-start}.
+
 \begin{figure}[!htb]
 \centering
 \AxiomC{$\Gamma,\, f : \top \rightarrow A \vdash t : G$}
@@ -1532,7 +1555,8 @@ $\lambda$-термами: каждому шагу перезаписи соот�
 \label{fig:annotated-clausification-start}
 \end{figure}
 
-\textbf{Дизъюнкция слева от стрелки:}
+\textbf{Дизъюнкция слева от стрелки.} Аннотированное правило клаузификации для дизъюнкции слева представлено на рисунке~\ref{fig:annotated-clausification-left-disjunction}.
+
 \begin{figure}[!htb]
 \centering
 \AxiomC{$\Gamma,\, f_1 : A \rightarrow a,\, f_2 : B \rightarrow a \vdash t : G$}
@@ -1542,7 +1566,8 @@ $\lambda$-термами: каждому шагу перезаписи соот�
 \label{fig:annotated-clausification-left-disjunction}
 \end{figure}
 
-\textbf{Конъюнкция справа от стрелки:}
+\textbf{Конъюнкция справа от стрелки.} Аннотированное правило клаузификации для конъюнкции справа представлено на рисунке~\ref{fig:annotated-clausification-right-conjunction}.
+
 \begin{figure}[!htb]
 \centering
 \AxiomC{$\Gamma,\, f_1 : a \rightarrow A,\, f_2 : a \rightarrow B \vdash t : G$}
@@ -1552,7 +1577,8 @@ $\lambda$-термами: каждому шагу перезаписи соот�
 \label{fig:annotated-clausification-right-conjunction}
 \end{figure}
 
-\textbf{Каррирование:}
+\textbf{Каррирование.} Аннотированное правило клаузификации для каррирования представлено на рисунке~\ref{fig:annotated-clausification-uncurry}.
+
 \begin{figure}[!htb]
 \centering
 \AxiomC{$\Gamma,\, g : (A \land B) \rightarrow C \vdash t : G$}
@@ -1569,7 +1595,8 @@ $b \equiv B$. Поскольку $b$ и $B$ отождествляются на 
 случая.
 
 \textit{Именование в положительной позиции} (например, в сукцеденте дизъюнкции).
-Подформула $B$ заменяется на $b$, добавляется клауза $b \rightarrow B$:
+Подформула $B$ заменяется на $b$, добавляется клауза $b \rightarrow B$; аннотированное правило именования в положительной позиции представлено на рисунке~\ref{fig:annotated-clausification-positive-alias}.
+
 \begin{figure}[!htb]
 \centering
 \AxiomC{$\Gamma,\, f' : A \rightarrow (\ldots \lor b \lor \ldots),\, h : b \rightarrow B \vdash t : G$}
@@ -1580,7 +1607,8 @@ $b \equiv B$. Поскольку $b$ и $B$ отождествляются на 
 \end{figure}
 
 \textit{Именование в отрицательной позиции} (например, в антецеденте дизъюнкции).
-Подформула $B$ заменяется на $b$, добавляется клауза $B \rightarrow b$:
+Подформула $B$ заменяется на $b$, добавляется клауза $B \rightarrow b$; аннотированное правило именования в отрицательной позиции представлено на рисунке~\ref{fig:annotated-clausification-negative-alias}.
+
 \begin{figure}[!htb]
 \centering
 \AxiomC{$\Gamma,\, f' : (\ldots \lor b \lor \ldots) \rightarrow a,\, h : B \rightarrow b \vdash t : G$}
@@ -1643,7 +1671,8 @@ $\lambda$-терма.
 (того же вида, что и в $LJT_{SAT}$) и состоит из двух правил.
 
 \textbf{Правило $(cpl_0)$.} Аксиома: если плоские клаузы $R$ классически
-влекут $g$, секвенция выводима:
+влекут $g$, секвенция выводима; правило $(cpl_0)$ исчисления $C^{\rightarrow}$ представлено на рисунке~\ref{fig:carrow-cpl0}.
+
 \begin{figure}[!htb]
 \centering
 \AxiomC{$R \vdash_{\mathit{cpl}} g$}
@@ -1657,7 +1686,7 @@ $\lambda$-терма.
 \textbf{Правило $(cpl_1)$.} Пусть $(a \rightarrow b) \rightarrow c \in X$ и
 $A \subseteq \mathcal{V}$ --- множество пропозициональных переменных (локальные
 допущения). Если $R, A \vdash_{\mathit{cpl}} b$, формируется выученная клауза
-$\varphi = \bigwedge(A \setminus \{a\}) \rightarrow c$:
+$\varphi = \bigwedge(A \setminus \{a\}) \rightarrow c$; правило $(cpl_1)$ исчисления $C^{\rightarrow}$ представлено на рисунке~\ref{fig:carrow-cpl1}.
 
 \begin{figure}[!htb]
 \centering
@@ -1694,7 +1723,8 @@ $h : (a \rightarrow b) \rightarrow c$, заключению --- терм $t : g$
 
 \textbf{Правило $(cpl_0)$.} Если $R \vdash_{\mathit{cpl}} g$, терм $t : g$
 строится из переменных плоских клауз $R$; множество $X$ в аннотации не
-участвует:
+участвует; аннотированное правило $(cpl_0)$ представлено на рисунке~\ref{fig:annotated-carrow-cpl0}.
+
 \begin{figure}[!htb]
 \centering
 \AxiomC{$R \vdash_{\mathit{cpl}} g$}
@@ -1706,7 +1736,8 @@ $h : (a \rightarrow b) \rightarrow c$, заключению --- терм $t : g$
 \end{figure}
 
 \textbf{Сечение $(cut_{\mathit{ipl}})$.} Правило $(cpl_1)$ реализует сечение
-с синтезированным доказательством выученной клаузы. Общая схема:
+с синтезированным доказательством выученной клаузы; аннотированная схема сечения представлена на рисунке~\ref{fig:annotated-carrow-cut}.
+
 \begin{figure}[!htb]
 \centering
 \AxiomC{$\Gamma \vdash s : \varphi$}
@@ -1731,7 +1762,8 @@ s \;=\; \lambda \vec u.\; h(\lambda x^a.\, p'),
 \]
 где $\vec u$ --- последовательность абстракций по атомам из $A \setminus \{a\}$,
 а $p'$ --- терм $p$ с подстановкой соответствующих $\vec u$ вместо переменных
-из $A'$. Аннотированное правило:
+из $A'$. Аннотированное правило $(cpl_1)$ представлено на рисунке~\ref{fig:annotated-carrow-cpl1}.
+
 \begin{figure}[!htb]
 \centering
 \AxiomC{$R, A \vdash_{\mathit{cpl}} b$}
@@ -2200,55 +2232,122 @@ $\lambda$-термы. Экземпляры \texttt{Buildable} использую
 
 \subsection{Конвейер доказательства}
 
-Доказательство состоит из двух крупных этапов. Сначала исходная формула IPL
-преобразуется процедурой клаузификации в r-секвенцию $R, X \Rightarrow g$, где
-$R$ --- множество плоских клауз, $X$ --- множество импликационных клауз вида
-$(a \rightarrow b) \rightarrow c$, а $g$ --- атомарная цель. Затем к этой
-r-секвенции применяется SAT-ориентированный алгоритм \texttt{proveR}, описанный
-Фиорентини~\cite{Fiorentini2021}. Именно этот алгоритм лежит в основе
-реализованной функции \texttt{carrow}: он либо строит вывод в
-$C^{\rightarrow}$, либо завершает работу конечной контрмоделью Крипке.
+Доказательство состоит из нескольких последовательных фаз. Исходный текст
+формулы разбирается парсером, затем процедура клаузификации строит r-секвенцию
+$R, X \Rightarrow g$, где $R$ --- множество плоских клауз, $X$ --- множество
+импликационных клауз вида $(a \rightarrow b) \rightarrow c$, а $g$ --- атомарная
+цель. К полученной секвенции применяется SAT-ориентированный алгоритм
+\texttt{proveR} (реализация \texttt{carrow}), описанный
+Фиорентини~\cite{Fiorentini2021}: он либо строит вывод в $C^{\rightarrow}$, либо
+завершает работу конечной контрмоделью Крипке. При успешном выводе дерево
+дополняется LJT-поддеревьями, аннотируется $\lambda$-термами, редуцируется и
+выводится в формате DOT.
 
-Схема алгоритма \texttt{proveR} из статьи приведена на
-рисунке~\ref{fig:prover}. В ней используется один инкрементальный
-SAT-решатель $s$, множество интерпретаций $W$ для построения контрмодели и
-выученная плоская клауза $\varphi$.
+Полный конвейер функции \texttt{prove} состоит из четырёх последовательных
+стадий: предобработки формулы (рисунок~\ref{fig:pipeline-pre}), SAT-поиска
+вывода \texttt{carrow} (рисунок~\ref{fig:pipeline-carrow}) и постобработки
+результата --- либо успешного доказательства
+(рисунок~\ref{fig:pipeline-valid-post}), либо найденной контрмодели
+(рисунок~\ref{fig:pipeline-invalid-post}).
+
+\subsubsection{Предобработка формулы}
 
 \begin{figure}[!htb]
 \centering
-\includegraphics[width=0.9\textwidth]{proveR.png}
-\caption{Схема алгоритма \texttt{proveR} с перезапуском}
-\label{fig:prover}
+\includegraphics[width=0.65\textwidth]{pre.png}
+\caption{Предобработка формулы перед доказательством}
+\label{fig:pipeline-pre}
 \end{figure}
 
-Фазы алгоритма на рисунке~\ref{fig:prover} имеют следующий смысл:
+На рисунке~\ref{fig:pipeline-pre} показана первая стадия конвейера: на вход
+подаётся текст формулы, который последовательно преобразуется в r-секвенцию.
+Шаги имеют следующий смысл:
 \begin{itemize}
-\item \textbf{S0} --- создаётся инкрементальный SAT-решатель
-  $s \gets \mathrm{newSolver}(R)$, содержащий все плоские клаузы из $R$;
-\item \textbf{S1} --- начинается новая итерация главного цикла, множество
-  интерпретаций контрмодели очищается: $W \gets \varnothing$;
-\item \textbf{S2} --- проверяется классическая выводимость цели:
-  $\mathrm{satProve}(s, \varnothing, g)$. Ответ $\mathrm{Yes}(\varnothing)$
-  завершает алгоритм результатом \texttt{Valid}, а ответ $\mathrm{No}(M)$
-  запускает построение контрмодели;
-\item \textbf{S3} --- найденная интерпретация добавляется в множество миров:
-  $W \gets W \cup \{M\}$;
-\item \textbf{S4} --- выбирается пара $\langle w, \lambda\rangle$, где
-  $w \in W$, $\lambda = (a \rightarrow b) \rightarrow c \in X$, и мир $w$ не
-  реализует $\lambda$ относительно $W$. Если такой пары нет, алгоритм
-  возвращает \texttt{CountSat};
-\item \textbf{S5} --- проверяется классическая выводимость
-  $R(s), w, a \vdash_{\mathit{cpl}} b$. При ответе $\mathrm{No}(M)$ внутренний
-  цикл продолжается с новым миром, при ответе $\mathrm{Yes}(A)$ найдено
-  множество допущений для обучения;
-\item \textbf{S6} --- строится выученная клауза
+\item \textbf{S0} --- исходный текст разбирается функцией
+  \texttt{parseFormula}: $F := \mathrm{parseFormula}$;
+\item \textbf{S1} --- процедура \texttt{clausify} строит начальную секвенцию и
+  выделяет множество плоских клауз $R$, множество импликационных клауз $X$ и
+  атомарную цель $g$: $\{R, X, g\} := \mathrm{clausify}\, F$.
+\end{itemize}
+Результатом предобработки становится тройка $\{R, X, g\}$, передаваемая на
+следующую стадию.
+
+\subsubsection{Доказательство}
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=0.65\textwidth]{carrow.png}
+\caption{Алгоритм \texttt{carrow} (\texttt{proveR})}
+\label{fig:pipeline-carrow}
+\end{figure}
+
+На рисунке~\ref{fig:pipeline-carrow} представлен SAT-ориентированный алгоритм
+\texttt{carrow}, реализующий поиск вывода в $C^{\rightarrow}$ по схеме
+Фиорентини~\cite{Fiorentini2021}. Алгоритм использует один инкрементальный
+SAT-решатель $s$, множество миров $W$ контрмодели и выученные плоские клаузы.
+Построение контрмодели выполняется во внутреннем цикле \texttt{innerLoop}.
+Шаги алгоритма имеют следующий смысл:
+\begin{itemize}
+\item \textbf{S0} --- создаётся SAT-решатель и в него добавляются все плоские
+  клаузы из $R$: $s := \mathrm{newSolver}$, $s := \mathrm{addClause}\, s\, R$;
+\item \textbf{S1} --- начинается новая итерация главного цикла, контрмодель
+  перезапускается: $K := \varnothing$;
+\item \textbf{S2} --- вызывается $\mathrm{satProve}(s, \varnothing, g)$. Если
+  выполняется $R(s) \vdash g$, формула доказана и возвращается дерево вывода
+  $\{\mathrm{Proof}\}$; иначе начинается построение контрмодели;
+\item \textbf{S3} --- в структуру контрмодели добавляется новый мир $M$ с оценкой составленной из атомов модели полученной от SAT-решателя:
+  $W := \mathrm{addWorld}\, K\, M$ (шаг внутреннего цикла);
+\item \textbf{S4} --- выбирается пара $\langle w, (a \rightarrow b) \rightarrow c\rangle$,
+  где $w \not\Vdash (a \rightarrow b) \rightarrow c$. Если такой пары нет,
+  алгоритм завершается контрмоделью $\{\mathrm{invalid}, K\}$;
+\item \textbf{S5} --- проверяется выводимость $R(s), w \cup \{a\} \vdash b$.
+  При ответе \texttt{sat} атомы, принимающие значение истины, образуют новый
+  мир и добавляются на шаге~S3; при ответе \texttt{unsat} выполняется шаг~S6;
+\item \textbf{S6} --- по unsat core $A$ строится выученная плоская клауза
   $\varphi = \bigwedge(A \setminus \{a\}) \rightarrow c$, она добавляется в
-  решатель командой $\mathrm{addClause}(s, \varphi)$, после чего главный цикл
-  перезапускается.
+  решатель, после чего контрмодель перезапускается с шага~S1.
 \end{itemize}
 
 Псевдокод процедуры \texttt{proveR}, соответствующий этой схеме, приведён в
 приложении~\ref{app:prover}.
+
+\subsubsection{Постобработка при доказанной формуле}
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=0.65\textwidth]{valid-post.png}
+\caption{Постобработка успешного доказательства}
+\label{fig:pipeline-valid-post}
+\end{figure}
+
+Если \texttt{carrow} возвращает $\{\mathrm{valid}, \mathrm{Proof}\}$, дерево
+вывода проходит через цепочку преобразований, показанную на
+рисунке~\ref{fig:pipeline-valid-post}:
+\begin{itemize}
+\item \textbf{S0} --- дерево $\mathrm{Proof}$ дополняется выводом в исчислении
+  LJT функцией \texttt{extendProof};
+\item \textbf{S1} --- к узлам дерева подставляются $\lambda$-термы по истории
+  клаузификации функцией \texttt{annotateClausification};
+\item \textbf{S2} --- термовые аннотации $\beta$-редуцируются функцией
+  \texttt{reduce};
+\item \textbf{S3} --- результат форматируется в граф DOT.
+\end{itemize}
+
+\subsubsection{Постобработка при контрмодели}
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=0.65\textwidth]{invalid-post.png}
+\caption{Постобработка найденной контрмодели}
+\label{fig:pipeline-invalid-post}
+\end{figure}
+
+Если \texttt{carrow} возвращает $\{\mathrm{invalid}, W\}$, контрмодель
+форматируется для визуализации (рисунок~\ref{fig:pipeline-invalid-post}):
+\begin{itemize}
+\item \textbf{S0} --- структура $W$ преобразуется в граф DOT:
+  $\mathrm{format}\, W$.
+\end{itemize}
 
 Центральная функция \texttt{prove} связывает эти фазы в единый конвейер:
 строит начальную секвенцию, запускает клаузификацию, подготавливает Z3,
@@ -2552,8 +2651,9 @@ $C^{\rightarrow}$. В конструкторах правил сохраняют
 выводятся в DOT-представлении рядом с соответствующими узлами доказательства.
 
 Далее приведены локальные функции из блока \texttt{where} функции \texttt{ljt}.
-Аксиома завершает ветвь доказательства. В терминах секвенций она соответствует
-правилу
+Аксиома завершает ветвь доказательства; схема аксиомы LJT-поддерева в реализации
+представлена на рисунке~\ref{fig:tech-ljt-axiom}.
+
 \begin{figure}[!htb]
 \centering
 \AxiomC{}
@@ -2583,7 +2683,8 @@ applyAxiom cseq@(Classic flats assumptions goal) =
 Правило \texttt{SplitDisjunction} применяется к плоской клаузе с пустой левой
 частью. Такая клауза имеет вид $\top \rightarrow d_1 \lor \ldots \lor d_m$,
 то есть в текущем контексте истинна дизъюнкция. Чтобы доказать цель $g$, нужно
-показать её из каждого возможного дизъюнкта:
+показать её из каждого возможного дизъюнкта; разбиение LJT-поддерева по дизъюнкции представлено на рисунке~\ref{fig:tech-ljt-split}.
+
 \begin{figure}[!htb]
 \centering
 \AxiomC{$R,\; A,\; d_1 \vdash g$}
@@ -2625,7 +2726,8 @@ applyDs cseq@(Classic flats assumptions goal) = do
 клаузы есть атом, уже находящийся в списке допущений. Пусть в $R$ есть клауза
 $(a_i \land C) \rightarrow D$, а среди допущений есть $a_i$. Тогда вместо этой
 клаузы можно продолжить доказательство с более простой клаузой
-$C \rightarrow D$:
+$C \rightarrow D$; сокращение левой конъюнкции в LJT-поддереве представлено на рисунке~\ref{fig:tech-ljt-reduce}.
+
 \begin{figure}[!htb]
 \centering
 \AxiomC{$R,\; C \rightarrow D,\; A,\; a_i \vdash g$}
@@ -2914,8 +3016,9 @@ instance Buildable (CounterModel_ a) where
 \end{listing}
 
 Листинг~\ref{lst:refactoring-countermodel-build} показывает интерфейс
-визуализации: контрмодель преобразуется в граф Graphviz. В вершинах выводятся
-миры с наборами истинных атомов, а рёбра строятся по отношению достижимости.
+визуализации: контрмодель преобразуется в граф Graphviz с \texttt{shape=record}.
+Каждая вершина-мир содержит две секции --- номер мира и множество истинных
+атомов; рёбра строятся по отношению достижимости.
 
 \subsection{Примеры использования}
 
@@ -2938,7 +3041,43 @@ stack exec diploma-exe -- examples/formulas/complex-and-impl-chain.txt
 Листинг~\ref{lst:usage-command} показывает общий способ запуска. После чтения
 файла программа разбирает формулу, запускает конвейер доказательства и печатает
 DOT-представление результата. Для валидных формул из этого результата можно
-извлечь редуцированный $\lambda$-терм.
+извлечь редуцированный $\lambda$-терм. В таких термах используются
+\textbf{супертермы} --- компактные обозначения стандартных комбинаторов над
+произведениями и суммами типов. Каждый супертерм раскрывается в обычное
+$\lambda$-выражение; ниже перечислены все конструкции, встречающиеся в
+примерах.
+\begin{itemize}
+\item \texttt{Proj($n$, $i$, $p$)} --- проектор $i$-й компоненты произведения
+  типов длины $n$ от терма произведения $p$. Раскрывается как
+  \[
+    p\,(\lambda x_1 x_2 \ldots x_n.\, x_i).
+  \]
+\item \texttt{Sum($n$, $i$, $e$)} --- конструктор $i$-го варианта суммы типов
+  длины $n$ от терма $e$. Раскрывается как
+  \[
+    \lambda c_1 c_2 \ldots c_n.\, c_i\, e.
+  \]
+\item $\langle T_1, T_2, \ldots, T_n \rangle$ --- терм произведения типов
+  длины $n$. Раскрывается как
+  \[
+    \lambda x.\, x\, T_1 T_2 \ldots T_n.
+  \]
+\item \texttt{Case($e$, $[c_1]b_1$, $[c_2]b_2$, \ldots, $[c_n]b_n$)} --- терм
+  раскрытия (устранения) суммы. Является термом
+  \[
+    e\,(\lambda c_1.\, b_1)\,(\lambda c_2.\, b_2)\,\ldots\,(\lambda c_n.\, b_n).
+  \]
+\item \texttt{K($e$)} --- терм константы. Раскрывается как $\lambda x.\, e$,
+  причём переменная $x$ не входит свободно в $e$.
+\item \texttt{Insert($n$, $i$, $p$, $e$)} --- вставка терма $e$ в произведение
+  $p$ длины $n$ на позицию $i$. Раскрывается как
+  \[
+    \lambda x.\, x\,\mathrm{Proj}(n, 1, p)\,\mathrm{Proj}(n, 2, p)\,\ldots\,
+    \underbrace{e}_{i\text{-я позиция}}\,\ldots\,\mathrm{Proj}(n, n, p),
+  \]
+  то есть на месте $i$-й проекции подставляется $e$, а остальные компоненты
+  извлекаются проекторами \texttt{Proj}.
+\end{itemize}
 
 \begin{listing}[!htb]
 \caption{Входная формула \texttt{complex-and-impl-chain.txt}}
@@ -2962,7 +3101,8 @@ $c$ из конъюнкции.
 
 Листинг~\ref{lst:usage-complex-and-impl-chain-term} показывает результат
 аннотирования и редукции: терм применяет входной аргумент к функции, которая
-проецирует третью компоненту из произведения.
+проецирует третью компоненту из произведения длины~$4$ с помощью супертерма
+\texttt{Proj(4, 3, \_7)} (см.~описание \texttt{Proj} выше).
 
 \begin{listing}[!htb]
 \caption{Входная формула \texttt{complex-impl-disjunction.txt}}
@@ -2985,12 +3125,33 @@ $c$ из конъюнкции.
 \end{listing}
 
 Листинг~\ref{lst:usage-complex-impl-disjunction-term} показывает, что в терме
-используется вложение в сумму: программа передаёт обработчику правый вариант
-дизъюнкции, а внутри него при необходимости строит левый вариант.
+используется вложение в сумму с помощью супертермов \texttt{Sum}: программа
+передаёт обработчику правый вариант дизъюнкции (\texttt{Sum(2, 2, \ldots)}),
+а внутри него при необходимости строит левый вариант (\texttt{Sum(2, 1, \ldots)}).
 
 Если формула не является теоремой IPL, вместо терма строится конечная
-контрмодель Крипке. Для закона исключённого третьего входной файл содержит
-формулу, приведённую в листинге~\ref{lst:usage-invalid-excluded-middle-input}.
+контрмодель Крипке и выводится в формате DOT (аналогично дереву доказательства
+для валидных формул). Полученный граф следует интерпретировать следующим
+образом.
+
+Контрмодель представляет собой \emph{дерево} миров: рёбра задают отношение
+достижимости между мирами (направление рёбер соответствует направлению
+визуализации в Graphviz). Каждый узел разделён на две секции. \textbf{Верхняя
+секция} содержит номер мира. \textbf{Нижняя секция} задаёт \emph{оценку} в
+этом мире --- множество атомов, принимающих истинное значение.
+
+Следует иметь в виду, что контрмодель строится для \emph{клаузифицированного}
+варианта входной формулы, а не для исходного текста файла. В процессе
+клаузификации вводятся служебные атомы (в частности, атом цели \texttt{\$} и
+атомы, появившиеся при правилах \texttt{Aliasing} и разбиении импликаций),
+поэтому в нижней секции узлов можно увидеть имена, которых не было во входной
+формуле.
+
+Ниже приведены два примера невыводимых формул. Для закона исключённого третьего
+входной файл содержит формулу, приведённую в
+листинге~\ref{lst:usage-invalid-excluded-middle-input}. Контрмодель для закона
+исключённого третьего представлена на
+рисунке~\ref{fig:usage-invalid-excluded-middle}.
 
 \begin{listing}[!htb]
 \caption{Входная формула \texttt{invalid-excluded-middle.txt}}
@@ -3007,9 +3168,7 @@ A \/ -A
 \label{fig:usage-invalid-excluded-middle}
 \end{figure}
 
-На рисунке~\ref{fig:usage-invalid-excluded-middle} показана контрмодель, в
-которой корневой мир не вынуждает ни $A$, ни $\neg A$, поэтому дизъюнкция
-$A \lor \neg A$ не является интуиционистски общезначимой.
+В этой контрмодели корневой мир не вынуждает ни $A$, ни $\neg A$, поэтому дизъюнкция $A \lor \neg A$ не является интуиционистски общезначимой.
 
 \begin{listing}[!htb]
 \caption{Входная формула \texttt{invalid-peirce.txt}}
@@ -3020,7 +3179,7 @@ $A \lor \neg A$ не является интуиционистски общез�
 \end{listing}
 
 Листинг~\ref{lst:usage-invalid-peirce-input} задаёт схему Пирса, которая
-выводима в классической логике, но не выводима в IPL.
+выводима в классической логике, но не выводима в IPL; контрмодель для схемы Пирса представлена на рисунке~\ref{fig:usage-invalid-peirce}.
 
 \begin{figure}[!htb]
 \centering
@@ -3029,16 +3188,14 @@ $A \lor \neg A$ не является интуиционистски общез�
 \label{fig:usage-invalid-peirce}
 \end{figure}
 
-Рисунок~\ref{fig:usage-invalid-peirce} показывает соответствующую контрмодель:
-в разных потомках корневого мира реализуются разные атомарные оценки, из-за чего
-формула $((A \rightarrow B) \rightarrow A) \rightarrow A$ не вынуждается в
-корне.
+В этой контрмодели в разных потомках корневого мира реализуются разные атомарные оценки, из-за чего формула $((A \rightarrow B) \rightarrow A) \rightarrow A$ не вынуждается в корне.
 
 \section{Аналитическая часть}
 
-В данном разделе приведены результаты измерения производительности разработанного
-прототипа и сравнение с аналогом \texttt{intuitR}~\cite{ClaessenRosen2015} на
-семействах бенчмарков \texttt{syj201}, \texttt{syj207} и \texttt{fresh-tail}.
+В данном разделе для каждого семейства бенчмарков приведены описание схемы,
+результаты прототипа и (где применимо) сравнение с аналогом
+\texttt{intuitR}~\cite{ClaessenRosen2015}; в конце сформулирован общий анализ
+производительности.
 
 \subsection{Методика измерений}
 
@@ -3070,10 +3227,26 @@ stack exec diploma-bench -- benchmarks/syj201/formulas
 \end{listing}
 
 Для сравнения с \texttt{intuitR} использовался внешний исполняемый файл
-\texttt{intuitR}, принимающий формулы в формате TPTP. Для каждого значения
-параметра $N$ генерировался файл \texttt{syj201-nXX.p}; \texttt{intuitR}
-самостоятельно выполняет клаузификацию и доказательство, печатая время двух
-фаз в секундах с точностью до миллисекунды.
+\texttt{intuitR}, принимающий формулы в формате TPTP. Для семейств
+\texttt{syj201} и \texttt{syj207} генераторы \texttt{syj201-gen} и
+\texttt{syj207-gen} (флаг \texttt{--tptp}) строят соответствующие
+\texttt{.p}-файлы; \texttt{intuitR} самостоятельно выполняет клаузификацию и
+доказательство, печатая время двух фаз в секундах с точностью до миллисекунды.
+
+\subsection{Семейство syj201}
+
+Семейство формул \texttt{syj201} из библиотеки TPTP (ILTP, SYJ201) --- основной
+набор экспериментов на выводимых формулах. Для параметра $N$ строится формула
+с $m = 2N + 1$ атомами $p_1, \ldots, p_m$. Левая часть состоит из конъюнкции
+импликаций
+\[
+  (p_i \leftrightarrow p_{i+1}) \rightarrow c(N), \quad i = 1, \ldots, m,
+\]
+где индексация $i+1$ берётся по модулю $m$, а $c(N) = p_1 \land \ldots \land p_m$.
+Заключение совпадает с $c(N)$. Для $N = 1$ получается исходный пример
+\texttt{syj201.txt}; генератор \texttt{syj201-gen} позволяет получать формулы
+для произвольного $N$ в синтаксисе прототипа и в формате TPTP для
+\texttt{intuitR}. Все формулы семейства выводимы в IPL.
 
 \begin{listing}[!htb]
 \caption{Генерация семейства syj201 и запуск intuitR}
@@ -3084,27 +3257,7 @@ intuitR benchmarks/syj201/intuitr-formulas/syj201-n03.p
 \end{minted}
 \end{listing}
 
-\subsection{Семейство бенчмарков syj201}
-
-Основной набор экспериментов --- семейство формул \texttt{syj201} из библиотеки
-TPTP (ILTP, семейство SYJ201). Для параметра $N$
-строится формула с $m = 2N + 1$ атомами $p_1, \ldots, p_m$. Левая часть
-состоит из конъюнкции импликаций
-\[
-  (p_i \leftrightarrow p_{i+1}) \rightarrow c(N), \quad i = 1, \ldots, m,
-\]
-где индексация $i+1$ берётся по модулю $m$, а $c(N) = p_1 \land \ldots \land p_m$.
-Заключение совпадает с $c(N)$. Для $N = 1$ получается исходный пример
-\texttt{syj201.txt}; генератор \texttt{syj201-gen} позволяет получать формулы
-для произвольного $N$ в синтаксисе прототипа и в формате TPTP для \texttt{intuitR}.
-
-Дополнительно на каталоге \texttt{examples/formulas} (18 формул, включая
-\texttt{syj201.txt}) были получены средние времена по фазам. Для выводимых
-формул среднее полное время составило $15{,}581$~мс, при этом основной вклад
-даёт фаза доказательства ($15{,}251$~мс); клаузификация и аннотирование занимают
-менее $0{,}05$~мс в среднем.
-
-\subsection{Результаты для разработанного доказателя}
+\subsubsection{Результаты прототипа}
 
 На семействе \texttt{syj201} для $N = 1, \ldots, 10$ прототип успешно доказал
 все формулы. Время резко растёт с параметром $N$: от $17$~мс при $N = 1$ до
@@ -3137,27 +3290,29 @@ $N$ & Результат & Клауз., мс & Доказ., мс & Аннот., 
 Из таблицы~\ref{tab:benchmark-syj201-family} видно, что основной вклад даёт фаза
 доказательства: при $N = 10$ она составляет более $99{,}99\%$ полного времени.
 Клаузификация и аннотирование остаются малыми на всём диапазоне $N$, однако
-рост \texttt{proving\_ms} носит сверхлинейный характер и указывает на
-структурную, а не чисто инженерную причину замедления.
+рост \texttt{proving\_ms} носит сверхлинейный характер. График времени фаз разработанного доказателя для syj201 представлен на рисунке~\ref{fig:benchmark-syj201-phases}: доминирует кривая доказательства, тогда как клаузификация и
+аннотирование остаются у нижней границы логарифмической шкалы.
 
 \begin{figure}[!htb]
 \centering
 \includegraphics[width=\textwidth]{syj201-n1-10.png}
-\caption{Время фаз разработанного доказателя для $N = 1, \ldots, 10$}
+\caption{Время фаз разработанного доказателя для syj201, $N = 1, \ldots, 10$}
 \label{fig:benchmark-syj201-phases}
 \end{figure}
 
-На рисунке~\ref{fig:benchmark-syj201-phases} показано распределение времени по
-фазам; доминирует кривая доказательства, тогда как клаузификация и
-аннотирование остаются у нижней границы логарифмической шкалы.
+Как видно из рисунка~\ref{fig:benchmark-syj201-phases}, рост времени
+доказательства опережает остальные фазы уже при малых $N$. Дополнительно на
+каталоге \texttt{examples/formulas} (18 формул, включая
+\texttt{syj201.txt}) для выводимых формул среднее полное время составило
+$15{,}581$~мс, при этом основной вклад даёт фаза доказательства
+($15{,}251$~мс).
 
-\subsection{Сравнение с intuitR}
+\subsubsection{Сравнение с intuitR}
 
-В качестве аналога использовался \texttt{intuitR} --- реализация процедуры
-\texttt{proveR} с перезапуском, описанная в конструкторской части. На том же
-семействе \texttt{syj201} оба инструмента доказали все формулы для
-$N = 1, \ldots, 10$. Сводная таблица приведена в
-таблице~\ref{tab:benchmark-intuitr-comparison}.
+На том же семействе \texttt{syj201} \texttt{intuitR} доказал все формулы для
+$N = 1, \ldots, 10$. Сводные данные приведены в
+таблице~\ref{tab:benchmark-intuitr-comparison} и на
+рисунке~\ref{fig:benchmark-syj201-comparison}.
 
 \begin{table}[!htb]
 \centering
@@ -3186,29 +3341,187 @@ $N$ & Прототип & Время, мс & intuitR & Клауз.+доказ., �
 содержит сумму времени клаузификации и доказательства, которую \texttt{intuitR}
 печатает самостоятельно; столбец <<Wall>> --- полное wall-clock время запуска
 процесса. \texttt{intuitR} выводит время с точностью $0{,}001$~с, поэтому
-малые значения округляются до нуля.
+малые значения округляются до нуля. График сравнения полного времени прототипа и \texttt{intuitR} на syj201 представлен на рисунке~\ref{fig:benchmark-syj201-comparison}.
 
 \begin{figure}[!htb]
 \centering
 \includegraphics[width=\textwidth]{syj201-comparison.png}
-\caption{Сравнение полного времени: прототип и intuitR}
+\caption{Сравнение полного времени: прототип и intuitR на syj201}
 \label{fig:benchmark-syj201-comparison}
 \end{figure}
 
-На рисунке~\ref{fig:benchmark-syj201-comparison} сопоставлены полное время
-прототипа и суммарное время фаз \texttt{intuitR}. При одинаковом исходе
+По рисунку~\ref{fig:benchmark-syj201-comparison} при одинаковом исходе
 (формула доказуема для всех $N$) разрыв достигает нескольких порядков уже при
 малых $N$ и сохраняется на всём диапазоне.
 
-\subsubsection{Предположения о расхождении производительности}
+\subsection{Семейство syj207}
 
-Оба инструмента решают одну и ту же задачу проверки выводимости на
+Семейство \texttt{syj207} (ILTP, SYJ207; схема \texttt{psi.p}) дополняет
+эксперименты формулами, невыводимыми в IPL. Для параметра $N$ задаётся цикл
+из $m = 2N$ атомов $p_1, \ldots, p_m$ и отдельный атом $p_0$. Левая часть ---
+конъюнкция импликаций $(p_i \leftrightarrow p_{i+1}) \rightarrow c(N)$ по
+циклу, где $c(N) = p_1 \land \ldots \land p_m$. Заключение имеет вид
+$p_0 \lor c(N) \lor \lnot p_0$. Ожидается контрмодель. Генератор
+\texttt{syj207-gen} строит формулы в синтаксисе прототипа и в формате TPTP для
+\texttt{intuitR}.
+
+\subsubsection{Результаты прототипа}
+
+Измерения проводились для $N = 1, \ldots, 5$; для $N \geqslant 6$ время
+прототипа превышало лимит $600$~с на формулу, поэтому серия была остановлена.
+Прототип корректно находит контрмодели для всех пяти случаев
+(таблица~\ref{tab:benchmark-syj207-family}, рисунок~\ref{fig:benchmark-syj207-phases}).
+
+\begin{table}[!htb]
+\centering
+\caption{Время фаз разработанного доказателя на семействе syj207 ($N = 1, \ldots, 5$)}
+\label{tab:benchmark-syj207-family}
+\small
+\begin{tabular}{|r|l|r|r|r|r|}
+\hline
+$N$ & Результат & Клауз., мс & Доказ., мс & Аннот., мс & Всего, мс \\
+\hline
+1 & invalid & 1.232 & 36.711 & 0.000 & 37.943 \\
+2 & invalid & 2.024 & 68.896 & 0.000 & 70.920 \\
+3 & invalid & 3.293 & 338.073 & 0.000 & 341.367 \\
+4 & invalid & 5.238 & 132440.380 & 0.000 & 132445.618 \\
+5 & invalid & 7.008 & 8631.909 & 0.000 & 8638.917 \\
+\hline
+\end{tabular}
+\end{table}
+
+Время доказательства не монотонно растёт с $N$: пик при $N = 4$ составляет
+около $132$~с, тогда как при $N = 5$ --- $8{,}6$~с. График времени фаз прототипа для syj207 ($N = 1, \ldots, 5$) представлен на рисунке~\ref{fig:benchmark-syj207-phases}.
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=\textwidth]{syj207-n1-5.png}
+\caption{Время фаз прототипа для syj207, $N = 1, \ldots, 5$}
+\label{fig:benchmark-syj207-phases}
+\end{figure}
+
+Из рисунка~\ref{fig:benchmark-syj207-phases} видно резкое доминирование фазы
+доказательства при $N = 4$.
+
+\subsubsection{Сравнение с intuitR}
+
+Сравнение с \texttt{intuitR} для $N = 1, \ldots, 5$ приведено в
+таблице~\ref{tab:benchmark-syj207-intuitr} и на
+рисунке~\ref{fig:benchmark-syj207-comparison}. Оба инструмента согласны по
+исходу (\texttt{invalid}). \texttt{intuitR} укладывается в единицы--десятки
+миллисекунд по внутренним таймерам на всём диапазоне, тогда как прототип
+на $N = 4$ тратит более двух минут на поиск контрмодели.
+
+\begin{table}[!htb]
+\centering
+\caption{Сравнение разработанного доказателя и intuitR на syj207 ($N = 1, \ldots, 5$)}
+\label{tab:benchmark-syj207-intuitr}
+\small
+\begin{tabular}{|r|l|r|l|r|r|}
+\hline
+$N$ & Прототип & Время, мс & intuitR & Клауз.+доказ., мс & Wall, мс \\
+\hline
+1 & invalid & 37.943 & invalid & 0.000 & 15.124 \\
+2 & invalid & 70.920 & invalid & 1.000 & 15.345 \\
+3 & invalid & 341.367 & invalid & 2.000 & 14.953 \\
+4 & invalid & 132445.618 & invalid & 2.000 & 15.538 \\
+5 & invalid & 8638.917 & invalid & 5.000 & 25.558 \\
+\hline
+\end{tabular}
+\end{table}
+
+График сравнения полного времени прототипа и \texttt{intuitR} на syj207 представлен на рисунке~\ref{fig:benchmark-syj207-comparison}.
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=\textwidth]{syj207-comparison.png}
+\caption{Сравнение полного времени: прототип и intuitR на syj207}
+\label{fig:benchmark-syj207-comparison}
+\end{figure}
+
+На рисунке~\ref{fig:benchmark-syj207-comparison} разрыв в несколько порядков при $N = 4$ виден при совпадающем исходе \texttt{invalid}.
+
+\subsection{Семейство fresh-tail}
+
+Семейство \texttt{fresh-tail} проверяет поведение на валидных формулах с
+регулярно растущей структурой импликаций. Базой служит выводимая формула
+\texttt{syj201} при $N = 1$; поверх неё $n$ раз накладывается схема
+\[
+  \bigl(\,(\cdots) \Rightarrow p_n\bigr) \Rightarrow p_n,
+\]
+где каждый $p_n$ --- свежий атом, не встречающийся ранее (начиная с $d$).
+Генератор \texttt{fresh-tail-gen} строит формулы для произвольного числа
+хвостов во внутреннем синтаксисе прототипа.
+
+\subsubsection{Результаты прототипа}
+
+Измерения выполнены для $N = 1, \ldots, 100$ без таймаутов. Все сто формул
+доказаны успешно (таблица~\ref{tab:benchmark-fresh-tail-family},
+рисунок~\ref{fig:benchmark-fresh-tail-phases}). Полное время растёт от
+$70$~мс при $N = 1$ до $7{,}4$~с при $N = 70$ (максимум серии) и $4{,}9$~с
+при $N = 100$; рост не монотонен. Клаузификация и аннотирование остаются
+пренебрежимо малыми; основной вклад даёт фаза доказательства.
+
+\begin{table}[!htb]
+\centering
+\caption{Время фаз прототипа на семействе fresh-tail (выборочные значения $N$)}
+\label{tab:benchmark-fresh-tail-family}
+\small
+\begin{tabular}{|r|l|r|r|r|r|}
+\hline
+$N$ & Результат & Клауз., мс & Доказ., мс & Аннот., мс & Всего, мс \\
+\hline
+1 & valid & 1.244 & 68.710 & 0.236 & 70.191 \\
+10 & valid & 2.953 & 234.435 & 0.359 & 237.747 \\
+20 & valid & 2.693 & 397.140 & 0.358 & 400.191 \\
+30 & valid & 3.708 & 534.449 & 0.415 & 538.572 \\
+40 & valid & 4.695 & 878.023 & 0.448 & 883.166 \\
+50 & valid & 5.640 & 1427.600 & 0.493 & 1433.733 \\
+60 & valid & 7.764 & 3615.880 & 0.570 & 3624.214 \\
+70 & valid & 8.525 & 7416.072 & 0.704 & 7425.302 \\
+80 & valid & 11.394 & 3659.444 & 0.817 & 3671.656 \\
+90 & valid & 11.717 & 4929.499 & 0.821 & 4942.037 \\
+100 & valid & 15.130 & 4857.191 & 0.822 & 4873.143 \\
+\hline
+\end{tabular}
+\end{table}
+
+График времени фаз прототипа для fresh-tail ($N = 1, \ldots, 100$) представлен на рисунке~\ref{fig:benchmark-fresh-tail-phases}.
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=\textwidth]{fresh-tail-n1-100.png}
+\caption{Время фаз прототипа для fresh-tail, $N = 1, \ldots, 100$}
+\label{fig:benchmark-fresh-tail-phases}
+\end{figure}
+
+По рисунку~\ref{fig:benchmark-fresh-tail-phases} рост времени доказательства
+остаётся умеренным на протяжении всей серии; локальный максимум около
+$N = 70$ хорошо виден на графике.
+
+\subsubsection{Сравнение с intuitR}
+
+Сравнение с \texttt{intuitR} для семейства \texttt{fresh-tail} не проводилось:
+формулы генерируются только во внутреннем синтаксисе прототипа, без
+TPTP-представления, пригодного для \texttt{intuitR}. По времени прототипа
+(до $7{,}4$~с на $100$ вложенных хвостов) семейство демонстрирует умеренный
+рост по сравнению с \texttt{syj201} при сопоставимой глубине импликаций.
+
+\subsection{Общий анализ производительности}
+
+В качестве аналога использовался \texttt{intuitR} --- реализация процедуры
+\texttt{proveR} с перезапуском, описанная в конструкторской части. Оба
+инструмента решают одну и ту же задачу проверки выводимости на
 клаузифицированных r-секвенциях, однако прототип измеряет полный конвейер с
 построением дерева клаузификации, дерева доказательства в $C^{\rightarrow}$ и
-последующим аннотированием. По данным таблицы~\ref{tab:benchmark-syj201-family},
-основной разрыв с \texttt{intuitR} формируется в фазе \texttt{proving\_ms}.
-Ниже выделены два ключевых фактора; первый требует доработки алгоритма, второй
---- осознанное архитектурное решение прототипа.
+последующим аннотированием. По данным таблиц~\ref{tab:benchmark-syj201-family},
+\ref{tab:benchmark-intuitr-comparison} и~\ref{tab:benchmark-syj207-intuitr}, а
+также рисунков~\ref{fig:benchmark-syj201-comparison}
+и~\ref{fig:benchmark-syj207-comparison}, основной разрыв с \texttt{intuitR}
+формируется в фазе \texttt{proving\_ms}. Семейство \texttt{fresh-tail}
+(рисунок~\ref{fig:benchmark-fresh-tail-phases}) показывает, что при умеренном
+росте времени (до $7{,}4$~с) прототип справляется с глубокой вложенностью
+импликаций без участия \texttt{intuitR}. Ниже выделены ключевые факторы расхождения.
 
 \begin{itemize}
 \item \textbf{Асимптотика клаузификации.} Текущая процедура клаузификации на
@@ -3244,128 +3557,6 @@ $N$ & Прототип & Время, мс & intuitR & Клауз.+доказ., �
 ради программного содержания и наглядности). Для количественной проверки
 потребовались бы счётчики числа клауз после клаузификации, длины выводов в
 $C^{\rightarrow}$ и числа вызовов \texttt{satProve} на каждом $N$.
-
-\subsection{Семейство бенчмарков syj207}
-
-Дополнительно рассмотрено семейство \texttt{syj207} (ILTP, SYJ207; схема
-\texttt{psi.p}). Для параметра $N$ задаётся цикл из $m = 2N$ атомов
-$p_1, \ldots, p_m$ и отдельный атом $p_0$. Левая часть --- конъюнкция
-импликаций $(p_i \leftrightarrow p_{i+1}) \rightarrow c(N)$ по циклу, где
-$c(N) = p_1 \land \ldots \land p_m$. Заключение имеет вид
-$p_0 \lor c(N) \lor \lnot p_0$ и \emph{не} выводимо в IPL (ожидается
-контрмодель). Генератор \texttt{syj207-gen} строит формулы в синтаксисе
-прототипа и в формате TPTP для \texttt{intuitR}. Измерения проводились для
-$N = 1, \ldots, 5$; для $N \geqslant 6$ время прототипа превышало лимит
-$600$~с на формулу, поэтому серия была остановлена.
-
-\begin{table}[!htb]
-\centering
-\caption{Время фаз разработанного доказателя на семействе syj207 ($N = 1, \ldots, 5$)}
-\label{tab:benchmark-syj207-family}
-\small
-\begin{tabular}{|r|l|r|r|r|r|}
-\hline
-$N$ & Результат & Клауз., мс & Доказ., мс & Аннот., мс & Всего, мс \\
-\hline
-1 & invalid & 1.232 & 36.711 & 0.000 & 37.943 \\
-2 & invalid & 2.024 & 68.896 & 0.000 & 70.920 \\
-3 & invalid & 3.293 & 338.073 & 0.000 & 341.367 \\
-4 & invalid & 5.238 & 132440.380 & 0.000 & 132445.618 \\
-5 & invalid & 7.008 & 8631.909 & 0.000 & 8638.917 \\
-\hline
-\end{tabular}
-\end{table}
-
-Прототип корректно находит контрмодели для всех пяти случаев. Время
-доказательства не монотонно растёт с $N$: пик при $N = 4$ составляет
-около $132$~с, тогда как при $N = 5$ --- $8{,}6$~с. Это согласуется с
-зависимостью поиска от конкретной структуры клауз, а не только от размера
-формулы.
-
-\begin{figure}[!htb]
-\centering
-\includegraphics[width=\textwidth]{syj207-n1-5.png}
-\caption{Время фаз прототипа для syj207, $N = 1, \ldots, 5$}
-\label{fig:benchmark-syj207-phases}
-\end{figure}
-
-\begin{table}[!htb]
-\centering
-\caption{Сравнение разработанного доказателя и intuitR на syj207 ($N = 1, \ldots, 5$)}
-\label{tab:benchmark-syj207-intuitr}
-\small
-\begin{tabular}{|r|l|r|l|r|r|}
-\hline
-$N$ & Прототип & Время, мс & intuitR & Клауз.+доказ., мс & Wall, мс \\
-\hline
-1 & invalid & 37.943 & invalid & 0.000 & 15.124 \\
-2 & invalid & 70.920 & invalid & 1.000 & 15.345 \\
-3 & invalid & 341.367 & invalid & 2.000 & 14.953 \\
-4 & invalid & 132445.618 & invalid & 2.000 & 15.538 \\
-5 & invalid & 8638.917 & invalid & 5.000 & 25.558 \\
-\hline
-\end{tabular}
-\end{table}
-
-На таблице~\ref{tab:benchmark-syj207-intuitr} оба инструмента согласны по
-исходу (\texttt{invalid}). \texttt{intuitR} укладывается в единицы--десятки
-миллисекунд по внутренним таймерам на всём диапазоне, тогда как прототип
-на $N = 4$ тратит более двух минут на поиск контрмодели.
-
-\begin{figure}[!htb]
-\centering
-\includegraphics[width=\textwidth]{syj207-comparison.png}
-\caption{Сравнение полного времени: прототип и intuitR на syj207}
-\label{fig:benchmark-syj207-comparison}
-\end{figure}
-
-\subsection{Семейство формул fresh-tail}
-
-Для проверки поведения на валидных формулах с регулярно растущей структурой
-импликаций построено семейство \texttt{fresh-tail}. Базой служит выводимая
-формула \texttt{syj201} при $N = 1$; поверх неё $n$ раз накладывается схема
-\[
-  \bigl(\,(\cdots) \Rightarrow p_n\bigr) \Rightarrow p_n,
-\]
-где каждый $p_n$ --- свежий атом, не встречающийся ранее (начиная с $d$).
-Генератор \texttt{fresh-tail-gen} строит формулы для произвольного числа
-хвостов; измерения выполнены для $N = 1, \ldots, 100$ без таймаутов.
-
-\begin{table}[!htb]
-\centering
-\caption{Время фаз прототипа на семействе fresh-tail (выборочные значения $N$)}
-\label{tab:benchmark-fresh-tail-family}
-\small
-\begin{tabular}{|r|l|r|r|r|r|}
-\hline
-$N$ & Результат & Клауз., мс & Доказ., мс & Аннот., мс & Всего, мс \\
-\hline
-1 & valid & 1.244 & 68.710 & 0.236 & 70.191 \\
-10 & valid & 2.953 & 234.435 & 0.359 & 237.747 \\
-20 & valid & 2.693 & 397.140 & 0.358 & 400.191 \\
-30 & valid & 3.708 & 534.449 & 0.415 & 538.572 \\
-40 & valid & 4.695 & 878.023 & 0.448 & 883.166 \\
-50 & valid & 5.640 & 1427.600 & 0.493 & 1433.733 \\
-60 & valid & 7.764 & 3615.880 & 0.570 & 3624.214 \\
-70 & valid & 8.525 & 7416.072 & 0.704 & 7425.302 \\
-80 & valid & 11.394 & 3659.444 & 0.817 & 3671.656 \\
-90 & valid & 11.717 & 4929.499 & 0.821 & 4942.037 \\
-100 & valid & 15.130 & 4857.191 & 0.822 & 4873.143 \\
-\hline
-\end{tabular}
-\end{table}
-
-Все сто формул доказаны успешно. Полное время растёт от $70$~мс при $N = 1$
-до $7{,}4$~с при $N = 70$ (максимум серии) и $4{,}9$~с при $N = 100$; рост
-не монотонен. Клаузификация и аннотирование остаются пренебрежимо малыми;
-основной вклад по-прежнему даёт фаза доказательства.
-
-\begin{figure}[!htb]
-\centering
-\includegraphics[width=\textwidth]{fresh-tail-n1-100.png}
-\caption{Время фаз прототипа для fresh-tail, $N = 1, \ldots, 100$}
-\label{fig:benchmark-fresh-tail-phases}
-\end{figure}
 
 \anonsection{ЗАКЛЮЧЕНИЕ}
 
@@ -3737,8 +3928,7 @@ $R(s), w, a \vdash_{\mathit{cpl}} b$ завершается успехом, пр
 \anonappendix
 \label{app:hilbert-axioms}
 
-Ниже приведены схемы аксиом гильбертовой системы для интуиционистской
-пропозициональной логики и правило modus ponens.
+Правило modus ponens гильбертовой системы представлено на рисунке~\ref{fig:hilbert-mp-app}.
 
 \begin{figure}[!htb]
 \centering
@@ -3749,6 +3939,8 @@ $R(s), w, a \vdash_{\mathit{cpl}} b$ завершается успехом, пр
 \caption{Правило modus ponens}
 \label{fig:hilbert-mp-app}
 \end{figure}
+
+Схемы аксиом (A1)--(A9) гильбертовой системы представлены на рисунке~\ref{fig:hilbert-axioms-app}.
 
 \begin{figure}[!htb]
 \centering

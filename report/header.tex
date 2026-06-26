@@ -422,6 +422,10 @@
 \usepackage{mathtools}  % \abs, \norm
     \DeclarePairedDelimiter\abs{\lvert}{\rvert} % операция модуля
     \DeclarePairedDelimiter\norm{\lVert}{\rVert} % операция нормы
+\NewDocumentCommand{\caseof}{m m m o}{%
+  \mathrm{case}\,#1\,\mathrm{of}\,#2\,\mathrm{or}\,#3%
+  \IfValueT{#4}{:#4}%
+}
 \DeclareTextCommandDefault{\textvisiblespace}{%
   \mbox{\kern.06em\vrule \@height.3ex}%
   \vbox{\hrule \@width.3em}%
