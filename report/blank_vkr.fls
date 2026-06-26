@@ -3,7 +3,7 @@ INPUT /etc/texmf/web2c/texmf.cnf
 INPUT /usr/share/texmf/web2c/texmf.cnf
 INPUT /usr/share/texlive/texmf-dist/web2c/texmf.cnf
 INPUT /var/lib/texmf/web2c/pdftex/pdflatex.fmt
-INPUT blank_vkr.tex
+INPUT /home/uma-op/dev/bmstu/diploma/report/blank_vkr.tex
 OUTPUT blank_vkr.log
 INPUT /usr/share/texlive/texmf-dist/tex/latex/koma-script/scrartcl.cls
 INPUT /usr/share/texlive/texmf-dist/tex/latex/koma-script/scrartcl.cls

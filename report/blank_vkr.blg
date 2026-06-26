@@ -1,15 +1,15 @@
-[1] Config.pm:308> INFO - This is Biber 2.20
-[2] Config.pm:311> INFO - Logfile is 'blank_vkr.blg'
-[185] biber:340> INFO - === Fri Jun 26, 2026, 22:19:36
-[226] Biber.pm:420> INFO - Reading 'blank_vkr.bcf'
-[432] Biber.pm:994> INFO - Found 9 citekeys in bib section 0
-[470] Biber.pm:4463> INFO - Processing section 0
-[494] Biber.pm:4654> INFO - Looking for bibtex file 'biblio.bib' for section 0
-[496] bibtex.pm:1713> INFO - LaTeX decoding ...
-[524] bibtex.pm:1519> INFO - Found BibTeX data source 'biblio.bib'
-[695] UCollate.pm:68> INFO - Overriding locale 'ru-RU' defaults 'normalization = NFD' with 'normalization = prenormalized'
-[695] UCollate.pm:68> INFO - Overriding locale 'ru-RU' defaults 'variable = shifted' with 'variable = non-ignorable'
-[695] Biber.pm:4283> INFO - Sorting list 'none/global//global/global/global' of type 'entry' with template 'none' and locale 'ru-RU'
-[695] Biber.pm:4289> INFO - No sort tailoring available for locale 'ru-RU'
-[708] bbl.pm:676> INFO - Writing 'blank_vkr.bbl' with encoding 'UTF-8'
-[716] bbl.pm:779> INFO - Output to blank_vkr.bbl
+[0] Config.pm:308> INFO - This is Biber 2.20
+[0] Config.pm:311> INFO - Logfile is 'blank_vkr.blg'
+[108] biber:340> INFO - === Sat Jun 27, 2026, 00:04:27
+[132] Biber.pm:420> INFO - Reading 'blank_vkr.bcf'
+[266] Biber.pm:994> INFO - Found 9 citekeys in bib section 0
+[290] Biber.pm:4463> INFO - Processing section 0
+[303] Biber.pm:4654> INFO - Looking for bibtex file 'biblio.bib' for section 0
+[304] bibtex.pm:1713> INFO - LaTeX decoding ...
+[320] bibtex.pm:1519> INFO - Found BibTeX data source 'biblio.bib'
+[423] UCollate.pm:68> INFO - Overriding locale 'ru-RU' defaults 'variable = shifted' with 'variable = non-ignorable'
+[423] UCollate.pm:68> INFO - Overriding locale 'ru-RU' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[423] Biber.pm:4283> INFO - Sorting list 'none/global//global/global/global' of type 'entry' with template 'none' and locale 'ru-RU'
+[423] Biber.pm:4289> INFO - No sort tailoring available for locale 'ru-RU'
+[431] bbl.pm:676> INFO - Writing 'blank_vkr.bbl' with encoding 'UTF-8'
+[435] bbl.pm:779> INFO - Output to blank_vkr.bbl
