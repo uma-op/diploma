@@ -141,40 +141,6 @@
       \field{volume}{39}
       \range{volume}{1}
     \endentry
-    \entry{Dyckhoff1992}{article}{}{}
-      \name{author}{1}{}{%
-        {{hash=0a35066b65062308c6bf6cd5598067eb}{%
-           family={Dyckhoff},
-           familyi={D\bibinitperiod},
-           given={Roy},
-           giveni={R\bibinitperiod}}}%
-      }
-      \list{language}{1}{%
-        {english}%
-      }
-      \strng{namehash}{0a35066b65062308c6bf6cd5598067eb}
-      \strng{fullhash}{0a35066b65062308c6bf6cd5598067eb}
-      \strng{fullhashraw}{0a35066b65062308c6bf6cd5598067eb}
-      \strng{bibnamehash}{0a35066b65062308c6bf6cd5598067eb}
-      \strng{authorbibnamehash}{0a35066b65062308c6bf6cd5598067eb}
-      \strng{authornamehash}{0a35066b65062308c6bf6cd5598067eb}
-      \strng{authorfullhash}{0a35066b65062308c6bf6cd5598067eb}
-      \strng{authorfullhashraw}{0a35066b65062308c6bf6cd5598067eb}
-      \field{sortinit}{7}
-      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{internalsortvolume}{57}
-      \field{journaltitle}{Journal of Symbolic Logic}
-      \field{title}{Contraction-free sequent calculi for intuitionistic logic}
-      \field{year}{1992}
-      \field{number}{3}
-      \range{number}{1}
-      \field{pages}{795\bibrangedash 807}
-      \range{pages}{13}
-      \field{volume}{57}
-      \range{volume}{1}
-    \endentry
     \entry{ClaessenRosen2015}{inproceedings}{}{}
       \name{author}{2}{}{%
         {{hash=b5810f3c048af7890859f522af846370}{%
@@ -202,8 +168,8 @@
       \strng{authornamehash}{94c33956d2285c5ed5032f047148778e}
       \strng{authorfullhash}{94c33956d2285c5ed5032f047148778e}
       \strng{authorfullhashraw}{94c33956d2285c5ed5032f047148778e}
-      \field{sortinit}{8}
-      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
+      \field{sortinit}{7}
+      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{booktitle}{Logic for Programming, Artificial Intelligence, and Reasoning (LPAR)}
@@ -248,8 +214,8 @@
       \strng{authornamehash}{48bb4f26e5ee8d6ce4279cd5a98c285a}
       \strng{authorfullhash}{48bb4f26e5ee8d6ce4279cd5a98c285a}
       \strng{authorfullhashraw}{48bb4f26e5ee8d6ce4279cd5a98c285a}
-      \field{sortinit}{9}
-      \field{sortinithash}{0a5ebc79d83c96b6579069544c73c7d4}
+      \field{sortinit}{8}
+      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{booktitle}{Automated Reasoning with Analytic Tableaux and Related Methods (TABLEAUX)}
@@ -260,6 +226,40 @@
       \field{pages}{111\bibrangedash 129}
       \range{pages}{19}
       \field{volume}{11714}
+      \range{volume}{1}
+    \endentry
+    \entry{Dyckhoff1992}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=0a35066b65062308c6bf6cd5598067eb}{%
+           family={Dyckhoff},
+           familyi={D\bibinitperiod},
+           given={Roy},
+           giveni={R\bibinitperiod}}}%
+      }
+      \list{language}{1}{%
+        {english}%
+      }
+      \strng{namehash}{0a35066b65062308c6bf6cd5598067eb}
+      \strng{fullhash}{0a35066b65062308c6bf6cd5598067eb}
+      \strng{fullhashraw}{0a35066b65062308c6bf6cd5598067eb}
+      \strng{bibnamehash}{0a35066b65062308c6bf6cd5598067eb}
+      \strng{authorbibnamehash}{0a35066b65062308c6bf6cd5598067eb}
+      \strng{authornamehash}{0a35066b65062308c6bf6cd5598067eb}
+      \strng{authorfullhash}{0a35066b65062308c6bf6cd5598067eb}
+      \strng{authorfullhashraw}{0a35066b65062308c6bf6cd5598067eb}
+      \field{sortinit}{9}
+      \field{sortinithash}{0a5ebc79d83c96b6579069544c73c7d4}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{internalsortvolume}{57}
+      \field{journaltitle}{Journal of Symbolic Logic}
+      \field{title}{Contraction-free sequent calculi for intuitionistic logic}
+      \field{year}{1992}
+      \field{number}{3}
+      \range{number}{1}
+      \field{pages}{795\bibrangedash 807}
+      \range{pages}{13}
+      \field{volume}{57}
       \range{volume}{1}
     \endentry
     \entry{Clarke2000CEGAR}{inproceedings}{useauthor=false}{}
@@ -348,101 +348,6 @@
       \range{pages}{17}
       \field{volume}{12699}
       \range{volume}{1}
-    \endentry
-    \entry{HaskellReport2010}{misc}{}{}
-      \list{language}{1}{%
-        {english}%
-      }
-      \list{organization}{1}{%
-        {Haskell.org}%
-      }
-      \field{sortinit}{1}
-      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
-      \field{labeltitlesource}{title}
-      \field{annotation}{дата обращения: 24.06.2026}
-      \field{title}{Haskell 2010 Language Report [Электронный ресурс]}
-      \verb{urlraw}
-      \verb https://www.haskell.org/onlinereport/haskell2010/
-      \endverb
-      \verb{url}
-      \verb https://www.haskell.org/onlinereport/haskell2010/
-      \endverb
-    \endentry
-    \entry{GHCUserGuide}{misc}{}{}
-      \list{language}{1}{%
-        {english}%
-      }
-      \list{organization}{1}{%
-        {GHC Development Team}%
-      }
-      \field{sortinit}{1}
-      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
-      \field{labeltitlesource}{title}
-      \field{annotation}{дата обращения: 24.06.2026}
-      \field{title}{The Glasgow Haskell Compiler User's Guide [Электронный ресурс]}
-      \verb{urlraw}
-      \verb https://downloads.haskell.org/ghc/9.10.3/docs/users_guide/
-      \endverb
-      \verb{url}
-      \verb https://downloads.haskell.org/ghc/9.10.3/docs/users_guide/
-      \endverb
-    \endentry
-    \entry{StackDocs}{misc}{}{}
-      \list{language}{1}{%
-        {english}%
-      }
-      \list{organization}{1}{%
-        {Commercial Haskell SIG}%
-      }
-      \field{sortinit}{1}
-      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
-      \field{labeltitlesource}{title}
-      \field{annotation}{дата обращения: 24.06.2026}
-      \field{title}{The Haskell Tool Stack --- Documentation [Электронный ресурс]}
-      \verb{urlraw}
-      \verb https://docs.haskellstack.org/
-      \endverb
-      \verb{url}
-      \verb https://docs.haskellstack.org/
-      \endverb
-    \endentry
-    \entry{Hackage}{misc}{}{}
-      \list{language}{1}{%
-        {english}%
-      }
-      \list{organization}{1}{%
-        {Haskell.org}%
-      }
-      \field{sortinit}{1}
-      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
-      \field{labeltitlesource}{title}
-      \field{annotation}{дата обращения: 24.06.2026}
-      \field{title}{Hackage: The Haskell Package Repository [Электронный ресурс]}
-      \verb{urlraw}
-      \verb https://hackage.haskell.org/
-      \endverb
-      \verb{url}
-      \verb https://hackage.haskell.org/
-      \endverb
-    \endentry
-    \entry{HaskellWiki}{misc}{}{}
-      \list{language}{1}{%
-        {english}%
-      }
-      \list{organization}{1}{%
-        {Haskell.org}%
-      }
-      \field{sortinit}{1}
-      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
-      \field{labeltitlesource}{title}
-      \field{annotation}{дата обращения: 24.06.2026}
-      \field{title}{HaskellWiki [Электронный ресурс]}
-      \verb{urlraw}
-      \verb https://wiki.haskell.org/
-      \endverb
-      \verb{url}
-      \verb https://wiki.haskell.org/
-      \endverb
     \endentry
   \enddatalist
 \endrefsection
