@@ -1,0 +1,3910 @@
+% !TeX TXS-program:bibliography = txs:///biber
+\documentclass[14pt, russian]{scrartcl}
+\include{header.tex}
+\addbibresource{biblio.bib}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric,calc,fit,backgrounds}
+\usepackage{bussproofs}
+    
+\begin{document}
+\sloppy
+\setcounter{secnumdepth}{2}
+
+\def\figurename{Рисунок}
+
+\begin{titlepage}
+\thispagestyle{empty}
+\newpage
+
+\bmstuheader
+ 
+ 
+\vspace{3em}
+ 
+\begin{center}
+\Large \bf{РАСЧЕТНО-ПОЯСНИТЕЛЬНАЯ ЗАПИСКА\\\textbf{\textit{К ВЫПУСКНОЙ КВАЛИФИКАЦИОННОЙ РАБОТЕ\\НА ТЕМУ:}} \\}
+{\large\bfseries\itshape <<Верификация населенности полиморфных функциональных типов>>}
+\end{center}
+
+\vspace{\fill}
+ 
+
+\newlength{\ML}
+\settowidth{\ML}{«\underline{\hspace{0.7cm}}» \underline{\hspace{2cm}}}
+
+\noindent Студент \underline{\text{ИУ9-81Б}} \hfill \underline{ \hspace{4cm}}\quad
+\raisebox{0.42ex}{\underline{\parbox{4cm}{\centering Банников А. С.}}}
+
+\vspace{-2.1ex}
+\noindent\hspace{9ex}\scriptsize{(Группа)}\normalsize\hspace{170pt}\hspace{2ex}\scriptsize{(Подпись, дата)}\normalsize\hspace{30pt}\hspace{6ex}\scriptsize{(И.О. Фамилия)}\normalsize
+
+\bigskip
+
+\noindent Научный руководитель  \hfill \underline{\hspace{4cm}}\quad
+\raisebox{0.3ex}{\underline{\parbox{4cm}{\centering Непейвода А. Н.}}}
+
+
+\vspace{-2ex}
+\noindent\hspace{13.5ex}\normalsize\hspace{170pt}\hspace{2ex}\scriptsize{(Подпись, дата)}\normalsize\hspace{30pt}\hspace{6ex}\scriptsize{(И.О. Фамилия)}\normalsize
+\bigskip
+
+\noindent Нормоконтролёр  \hfill \underline{\hspace{4cm}}\quad
+\raisebox{0.15ex}{\underline{\parbox{4cm}{\centering Алексеев С. М.}}}
+
+\vspace{-0.5ex}
+\noindent\hspace{13.5ex}\normalsize\hspace{170pt}\hspace{2ex}\scriptsize{(Подпись, дата)}\normalsize\hspace{30pt}\hspace{6ex}\scriptsize{(Фамилия И.О.)}\normalsize
+\vfill
+
+%\vspace{\fill}
+ 
+
+
+\begin{center}
+\textsl{\the\year{} г.}
+\end{center}
+\end{titlepage}
+
+%\renewcommand{\ttdefault}{pcr}
+
+\setlength{\tabcolsep}{3pt}
+\newpage
+\setcounter{page}{2}
+%----------------------------------------------------------------------------
+%                  ОТСЮДА --- СОБСТВЕННО ТЕКСТ
+%----------------------------------------------------------------------------
+\anonsection{АННОТАЦИЯ}
+
+Объектом работы является задача автоматической проверки выводимости формул
+интуиционистской пропозициональной логики и извлечения из найденных выводов
+программного содержания в виде $\lambda$-термов в соответствии с изоморфизмом
+Карри---Говарда.
+
+Цель работы --- разработка и исследование программного прототипа доказателя IPL,
+который для валидных формул строит дерево доказательства и редуцированный
+$\lambda$-терм, а для невалидных --- конечную контрмодель Крипке с визуализацией
+результата в формате DOT.
+
+В исследовательской части изложены основы интуиционистской логики, BHK-интерпретация,
+семантика Крипке, натуральный и секвенциальный вывод, типизированное
+$\lambda$-исчисление и аннотирование правил секвенциального исчисления.
+
+В конструкторской части рассмотрены исчисления LJT, $LJT_{SAT}$ и
+$C^{\rightarrow}$, процедуры клаузификации и извлечения $\lambda$-терма из
+дерева вывода.
+
+В технологической части описан конвейер прототипа на Haskell с использованием
+Z3: клаузификация, SAT-ориентированный поиск вывода, построение LJT-поддеревьев,
+аннотирование и визуализация.
+
+В аналитической части приведены результаты измерений производительности на
+семействах бенчмарков и сравнение с аналогом \texttt{intuitR}.
+
+Практическая значимость работы состоит в наглядной связи между формулами,
+доказательствами и программами и в возможности использования прототипа для
+изучения изоморфизма Карри---Говарда и методов формальной верификации.
+
+\newpage
+\renewcommand\contentsname{\hfill{\normalfont{СОДЕРЖАНИЕ}}\hfill}  %Оглавление
+\tableofcontents
+\newpage
+\anonsection{ВВЕДЕНИЕ}  %Введение
+
+Изоморфизм Карри-Говарда устанавливает удивительное соответствие между системами
+формальной логики и вычислительными.  Все начинается с наблюдения о том, что
+импликация $A \rightarrow B$ соответствует типу функции, принимающей значение
+типа $A$, и возвращающей значение типа $B$. Так как вывод формулы $B$ из посылок
+$A \rightarrow B$ и $A$ может рассматриваться как применение первой посылки ко
+второй, точно так будто функция из $A$ в $B$, примененная к $A$, возвращает $B$. 
+
+Данная идея --- сопоставление логических формул и некоторых вычислительных
+выражений --- является довольно богатой идеей.  Благодаря ней развивается очень
+перспективная сфера --- формальная верификация программ. Формальная верификация
+позволяет провалидировать (верифицировать) критически важные программы (или их
+компоненты), например, в ПАО <<Группа Астра>>, занимающейся разработкой ОС Astra
+Linux, модуль PAM (управление привелигерованным доступом) должен быть формально
+верифицирован, т.е. должна быть доказана корректность как самих алгоритмов, так и
+их реализации.
+
+Изучение изоморфизма Карри-Говарда сопряжено с существенными трудностями. Прежде
+всего, сложность обусловлена необходимостью одновременного понимания нескольких
+абстрактных областей: математической логики (в частности, интуиционистской
+логики), $\lambda$-исчисления и теории типов. Каждая из этих областей сама по
+себе требует серьезной теоретической подготовки, а их объединение в рамках
+единого соответствия <<доказательства $\leftrightarrow$ программы>> и <<формулы
+$\leftrightarrow$ типы>> создает высокий порог входа. Дополнительную сложность
+вносит высокий уровень абстракции: многие соответствия не имеют наглядной
+интерпретации и воспринимаются исключительно символически, что затрудняет
+формирование интуитивного понимания.
+
+В связи с этим разработка специализированного визуализатора представляется
+особенно актуальной. Создание системы, позволяющей интерактивно отображать
+соответствия между логическими доказательствами и программами, может существенно
+повысить доступность данной темы, упростить процесс обучения и способствовать
+более глубокому пониманию фундаментальных принципов, лежащих в основе
+современных типовых систем и методов формальной верификации.
+
+\section{Исследовательская часть}
+
+\subsection{Интуиционистская логика}
+
+Интуиционистская логика (IPL) возникла в контексте кризиса оснований математики ---
+масштабного пересмотра фундаментальных допущений, на которых строилось
+математическое знание. Во второй половине XIX века Георг Кантор заложил основы
+теории множеств, предложив рассматривать бесконечные совокупности как
+полноправные математические объекты. Теория Кантора позволила единообразно
+описать числовые системы, точки континуума и функциональные пространства, однако
+вскоре обнаружились серьёзные затруднения: в 1897 году Чезаре Бурали-Форти
+указал на парадокс, связанный с множеством всех ординалов, а в 1901 году
+Бертран Рассел сформулировал знаменитый парадокс о множестве всех множеств, не
+содержащих самих себя. Эти противоречия показали, что наивное обращение с
+бесконечными объектами чревато антиномиями и что сама система допущений
+классической математики нуждается в критическом анализе.
+
+В ответ на кризис сформировались несколько программ обоснования математики.
+Давид Гильберт предложил формалистический подход: зафиксировать аксиомы и
+правила вывода, а затем доказать непротиворечивость полученной формальной
+системы финитными средствами. Готлоб Фреге и Бертран Рассел развивали
+логицистскую программу, стремясь свести математику к логике. Третий путь
+избрал нидерландский математик Луитзен Эгбертус Ян Брауэр: его
+\emph{интуиционизм}~\cite{Brouwer1975}, оформившийся в 1907---1912 годах,
+предполагал радикальный пересмотр не только оснований, но и самих методов
+математического рассуждения.
+
+Брауэр исходил из того, что математические объекты не существуют независимо от
+познающего субъекта, а являются мысленными конструкциями. Математическое
+утверждение считается истинным лишь тогда, когда для него предъявлена
+конструкция --- явная процедура, позволяющая убедиться в его справедливости.
+Следствием этой позиции стало отвержение закона исключённого третьего
+(\emph{tertium non datur}): высказывание $A \lor \neg A$ не может приниматься
+как логический закон, поскольку для произвольного $A$ мы можем не располагать ни
+доказательством $A$, ни доказательством $\neg A$. Классическая логика, напротив,
+постулирует этот закон безусловно, допуская тем самым \emph{неконструктивные}
+доказательства существования: утверждение $\exists x.\, P(x)$ считается
+доказанным, даже если конкретный $x$ не предъявлен, а лишь показано, что
+отсутствие такого $x$ ведёт к противоречию.
+
+Именно неконструктивность являлась главной мишенью критики Брауэра.
+Классическое доказательство может гарантировать существование объекта, не
+указывая ни способа его построения, ни алгоритма нахождения. Для Брауэра такое
+доказательство лишено математического содержания: оно не даёт конструкции и
+потому не может считаться обоснованием истинности. Отказ от закона исключённого
+третьего и, как следствие, от снятия двойного отрицания ($\neg\neg A \rightarrow
+A$), закона Пирса ($((A \rightarrow B) \rightarrow A) \rightarrow A$) и ряда
+других классически допустимых принципов позволил ограничить доказательства лишь
+теми, которые несут конструктивное содержание.
+
+Формальная аксиоматизация интуиционистской логики была осуществлена учеником
+Брауэра --- Арендом Гейтингом~\cite{Heyting1956}. Гейтинг предложил исчисление
+высказываний, в котором каждая аксиома и правило вывода допускают конструктивную
+интерпретацию, а закон исключённого третьего не выводим.
+
+\subsubsection{BHK-интерпретация}
+В 1930---1945 годах Андрей Николаевич Колмогоров и независимо
+Гейтинг~\cite{Heyting1956}
+сформулировали интерпретацию логических связок через задачи и решения,
+известную как BHK-интерпретация (Брауэр --- Гейтинг --- Колмогоров). Семантика
+связок в интуиционистской логике определяется через понятие доказательства:
+\begin{itemize}
+    \item \textbf{Конъюнкция} \( A \land B \) считается доказанной, если
+      имеются доказательства как \( A \), так и \( B \);
+    \item \textbf{Дизъюнкция} \( A \lor B \) доказана, если известно, какая из
+      частей истинна, и имеется её доказательство;
+    \item \textbf{Импликация} \( A \rightarrow B \) интерпретируется как
+      конструкция (метод), преобразующая любое доказательство \( A \) в
+      доказательство \( B \);
+    \item \textbf{Отрицание} \( \neg A \) определяется как \( A \rightarrow
+      \bot \), где \( \bot \) обозначает ложь;
+    \item \textbf{Ложь} \( \bot \) не имеет доказательства.
+\end{itemize}
+BHK-интерпретация придала интуиционистской логике ясный вычислительный смысл и
+послужила одной из отправных точек для изоморфизма Карри---Говарда,
+устанавливающего соответствие между доказательствами и программами.
+
+\subsubsection{Семантика Крипке}
+\emph{Семантика Крипке}~\cite{Kripke1965} задаёт класс моделей, в которых истинность формулы
+определяется относительно \emph{миров}, связанных отношением частичного порядка с наименьшим элементом.
+Формула называется \emph{общезначимой}, если она истинна в корне любой модели.
+\emph{Контрмодель} --- модель, в корне которой некоторая формула не вынуждена;
+существование контрмодели показывает, что формула не является теоремой
+интуиционистской логики.
+
+\emph{Пропозициональной моделью Крипке} называется четвёрка $(W, w_0, {\preceq}, V)$, где
+\begin{itemize}
+\item $W$ --- непустое конечное множество \emph{миров};
+\item ${\preceq}$ --- частичный порядок (рефлексивное, антисимметричное и
+  транзитивное отношение) на $W$;
+\item $w_0 \in W$ --- выделенный \emph{корневой} мир, из которого достижим
+  любой другой: $w_0 \preceq w$ для всех $w \in W$;
+\item $V$ --- \emph{оценка}, сопоставляющая каждой пропозициональной переменной
+  $p$ множество миров $V(p) \subseteq W$, в которых $p$ истинна; оценка
+  удовлетворяет условию \emph{наследуемости} (монотонности): если $w \in V(p)$ и
+  $w \preceq v$, то $v \in V(p)$.
+\end{itemize} Отношение \emph{вынуждения} $w \Vdash A$
+(<<$A$ истинна в $w$>>) определяется индуктивно:
+\begin{itemize}
+\item $w \Vdash p$ тогда и только тогда, когда $w \in V(p)$;
+\item $w \Vdash A \land B$ тогда и только тогда, когда $w \Vdash A$ и $w \Vdash B$;
+\item $w \Vdash A \lor B$ тогда и только тогда, когда $w \Vdash A$ или $w \Vdash B$;
+\item $w \Vdash A \rightarrow B$ тогда и только тогда, когда для всякого $v \succeq w$ из $v \Vdash A$ следует $v \Vdash B$. Стоит отметить, что под отрицанием $A$ понимается $A \rightarrow \bot$;
+\item $w \Vdash \bot$ никогда не выполняется.
+\end{itemize}
+Тогда $w \Vdash \neg A$ эквивалентно тому, что для всех $v \succeq w$ имеем $v
+\not\Vdash A$. Из определения следует монотонность вынуждения для пропозициональных формул: если $w \Vdash A$
+и $w \preceq v$, то $v \Vdash A$. Формула в интуиционистской логике
+\emph{общезначима}, если $w_0 \Vdash A$ в любой модели и любой оценке
+
+\textbf{Пример 1.} Рассмотрим цепочку из двух миров $w_0 \prec w_1$ и одну
+переменную $p$, положив $V(p) = \{w_1\}$ (наследуемость соблюдена).
+Двухмировая контрмодель показана на рисунке~\ref{fig:kripke-countermodels}~\subref{fig:kripke-chain}.
+
+Тогда $w_1 \Vdash p$, а $w_0 \not\Vdash p$.
+
+\textbf{Закон исключённого третьего} $p \lor \neg p$. В мире $w_0$ не вынуждена
+ни $p$ (нет вынуждения в $w_0$), ни $\neg p$ (так как $w_1 \succeq w_0$ и $w_1
+\Vdash p$). Следовательно, $w_0 \not\Vdash p \lor \neg p$. Данная модель
+является контрмоделью, и закон исключённого третьего не общезначим в
+интуиционистской логике.
+
+\textbf{Схема снятия двойного отрицания} $\neg\neg p \rightarrow p$. Та же модель
+служит контрмоделью. Имеем $w_0 \not\Vdash p$. При этом $w_0 \Vdash \neg\neg p$:
+для любого $v \succeq w_0$, если бы $v \Vdash \neg p$, то для всех $u \succeq v$
+было бы $u \not\Vdash p$, что неверно при $u = w_1$. Значит,
+$v \not\Vdash \neg p$ для всех $v \succeq w_0$, откуда $w_0 \Vdash \neg\neg p$.
+Итак, $w_0 \Vdash \neg\neg p$, но $w_0 \not\Vdash p$, поэтому
+$w_0 \not\Vdash \neg\neg p \rightarrow p$.
+
+\textbf{Пример 2. Закон Пирса} $((p \rightarrow q) \rightarrow p) \rightarrow p$.
+Возьмём ту же цепочку $w_0 \prec w_1$ рисунок~\ref{fig:kripke-countermodels}~\subref{fig:kripke-chain}, но с двумя
+переменными: $V(p) = \{w_1\}$, $V(q) = \varnothing$.
+
+Тогда $w_1 \not\Vdash q$, откуда $w_0 \not\Vdash p \rightarrow q$: для
+$v = w_1$ имеем $v \Vdash p$, но $v \not\Vdash q$. Проверим
+$w_0 \Vdash (p \rightarrow q) \rightarrow p$: для любого $v \succeq w_0$ нужно
+<<если $v \Vdash p \rightarrow q$, то $v \Vdash p$>>. При $v = w_0$ посылка
+$w_0 \Vdash p \rightarrow q$ ложна, импликация выполняется. При $v = w_1$
+посылка $w_1 \Vdash p \rightarrow q$ требует, чтобы для всех $u \succeq w_1$ из
+$u \Vdash p$ следовало $u \Vdash q$; при $u = w_1$ это даёт $w_1 \Vdash q$, что
+неверно, значит $w_1 \not\Vdash p \rightarrow q$, и импликация тривиальна.
+Следовательно, $w_0 \Vdash (p \rightarrow q) \rightarrow p$, но
+$w_0 \not\Vdash p$, поэтому
+$w_0 \not\Vdash ((p \rightarrow q) \rightarrow p) \rightarrow p$.
+
+\textbf{Пример 3.} Не всякая контрмодель является цепочкой. Рассмотрим формулу
+$(p \rightarrow q) \lor (q \rightarrow p)$ и модель с ветвлением
+рисунок~\ref{fig:kripke-countermodels}~\subref{fig:kripke-branching}.
+
+Здесь $w_0 \not\Vdash p \rightarrow q$, поскольку $w_1 \Vdash p$, но
+$w_1 \not\Vdash q$. Аналогично $w_0 \not\Vdash q \rightarrow p$, так как
+$w_2 \Vdash q$, но $w_2 \not\Vdash p$. Следовательно,
+$w_0 \not\Vdash (p \rightarrow q) \lor (q \rightarrow p)$.
+
+\begin{figure}[!htb]
+\centering
+\subfloat[\label{fig:kripke-chain}]{%
+\begin{tikzpicture}[
+    world/.style={circle, draw, minimum size=8mm, inner sep=0pt},
+    >=stealth
+  ]
+  \node[world] (w0) at (0,0)   {$w_0$};
+  \node[world] (w1) at (0,1.5) {$w_1$};
+  \draw[->] (w0) -- (w1);
+  \node[right=4mm] at (w0.east) {$V(w_0) = \varnothing$};
+  \node[right=4mm] at (w1.east) {$V(w_1) = \{p\}$};
+\end{tikzpicture}%
+}\hfill
+\subfloat[\label{fig:kripke-branching}]{%
+\begin{tikzpicture}[
+    world/.style={circle, draw, minimum size=8mm, inner sep=0pt},
+    >=stealth
+  ]
+  \node[world] (w0) at (0,0)     {$w_0$};
+  \node[world] (w1) at (-1.5,1.5) {$w_1$};
+  \node[world] (w2) at (1.5,1.5)  {$w_2$};
+  \draw[->] (w0) -- (w1);
+  \draw[->] (w0) -- (w2);
+  \node[left=4mm]  at (w1.west) {$V(w_1) = \{p\}$};
+  \node[right=4mm] at (w2.east) {$V(w_2) = \{q\}$};
+  \node[below=2mm] at (w0.south) {$V(w_0) = \varnothing$};
+\end{tikzpicture}%
+}
+\caption{Контрмодели Крипке}
+\label{fig:kripke-countermodels}
+\end{figure}
+
+\subsection{Системы вывода}
+
+Формальные системы вывода представляют собой строгие математические конструкции,
+предназначенные для задания правил построения корректных доказательств в рамках
+заданной логики. Ниже рассматриваются три основных подхода: аксиоматическая
+система в стиле Гильберта, натуральный вывод и секвенциальное исчисление.
+
+Гильбертова система задаёт логику фиксированным набором схем аксиом и единственным
+правилом вывода modus ponens. Для IPL используются стандартные схемы (A1)---(A9),
+включающие аксиомы для импликации, конъюнкции, дизъюнкции и ex falso quodlibet;
+полный перечень приведён в приложении~\ref{app:hilbert-axioms}. Такая формулировка компактна и удобна для металогических рассуждений, но плохо
+приспособлена для практического построения доказательств: даже тождество
+$A \rightarrow A$ требует длинной цепочки подстановок в схемы аксиом, а структура
+рассуждения не выделена явно.
+
+Натуральный вывод~\cite{Gentzen1935} представляет собой систему, в которой доказательства строятся
+с использованием правил введения и устранения для каждой логической связки.
+
+Основные правила натурального вывода представлены на рисунке~\ref{fig:natural-deduction-rules}.
+
+\begin{figure}[!htb]
+\begin{center}
+\AxiomC{$\Gamma, A \vdash B$}
+\RightLabel{\scriptsize$\rightarrow I$}
+\UnaryInfC{$\Gamma \vdash A \rightarrow B$}
+\DisplayProof\hskip 2em
+\AxiomC{$\Gamma \vdash A \rightarrow B$}
+\AxiomC{$\Gamma \vdash A$}
+\RightLabel{\scriptsize$\rightarrow E$}
+\BinaryInfC{$\Gamma \vdash B$}
+\DisplayProof
+\end{center}
+
+\begin{center}
+\AxiomC{$\Gamma \vdash A$}
+\AxiomC{$\Gamma \vdash B$}
+\RightLabel{\scriptsize$\land I$}
+\BinaryInfC{$\Gamma \vdash A \land B$}
+\DisplayProof
+\end{center}
+
+\begin{center}
+\AxiomC{$\Gamma \vdash A \land B$}
+\RightLabel{\scriptsize$\land E_1$}
+\UnaryInfC{$\Gamma \vdash A$}
+\DisplayProof\hskip 2em
+\AxiomC{$\Gamma \vdash A \land B$}
+\RightLabel{\scriptsize$\land E_2$}
+\UnaryInfC{$\Gamma \vdash B$}
+\DisplayProof
+\end{center}
+
+\begin{center}
+\AxiomC{$\Gamma \vdash A$}
+\RightLabel{\scriptsize$\lor I_1$}
+\UnaryInfC{$\Gamma \vdash A \lor B$}
+\DisplayProof\hskip 2em
+\AxiomC{$\Gamma \vdash B$}
+\RightLabel{\scriptsize$\lor I_2$}
+\UnaryInfC{$\Gamma \vdash A \lor B$}
+\DisplayProof
+\end{center}
+
+\begin{center}
+\AxiomC{$\Gamma \vdash A \lor B$}
+\AxiomC{$\Gamma, A \vdash C$}
+\AxiomC{$\Gamma, B \vdash C$}
+\RightLabel{\scriptsize$\lor E$}
+\TrinaryInfC{$\Gamma \vdash C$}
+\DisplayProof
+\end{center}
+
+\begin{center}
+\AxiomC{$\Gamma \vdash \bot$}
+\RightLabel{\scriptsize$\bot E$}
+\UnaryInfC{$\Gamma \vdash A$}
+\DisplayProof\hskip 2em
+\AxiomC{}
+\RightLabel{\scriptsize$Ax$}
+\UnaryInfC{$\Gamma, A \vdash A$}
+\DisplayProof
+\end{center}
+\caption{Основные правила натурального вывода}
+\label{fig:natural-deduction-rules}
+\end{figure}
+
+Пример. Вывод формулы $A \rightarrow (B \rightarrow A)$ в натуральном выводе представлен на рисунке~\ref{fig:natural-deduction-example}.
+
+\begin{figure}[!htb]
+\centering
+\AxiomC{}
+\RightLabel{\scriptsize$Ax$}
+\UnaryInfC{$A, B \vdash A$}
+\RightLabel{\scriptsize$\rightarrow I$}
+\UnaryInfC{$A \vdash B \rightarrow A$}
+\RightLabel{\scriptsize$\rightarrow I$}
+\UnaryInfC{$\vdash A \rightarrow (B \rightarrow A)$}
+\DisplayProof
+\caption{Вывод формулы $A \rightarrow (B \rightarrow A)$ в натуральном выводе}
+\label{fig:natural-deduction-example}
+\end{figure}
+
+По сравнению с гильбертовой аксиоматикой натуральный вывод гораздо проще для
+восприятия человеком: правила введения и устранения связок напрямую отражают ход
+рассуждения. Вместе с тем такой формат хуже подходит для автоматической
+обработки: дерево доказательства с произвольным порядком введения гипотез и
+вложенными подвыводами не столь удобно разбирать алгоритмически, как линейные
+или почти линейные объекты.
+
+Секвенциальное исчисление~\cite{Gentzen1935} основано на понятии \emph{секвенции}.
+Пусть $\mathcal{L}$ --- множество формул пропозициональной логики, построенных из
+пропозициональных переменных, связок $\land$, $\lor$, $\rightarrow$ и константы
+$\bot$. \emph{Секвенцией} называется пара $(\Gamma, \Delta)$, записываемая как
+\[
+\Gamma \vdash \Delta,
+\]
+где $\Gamma$ (антецедент) и $\Delta$ (сукцедент) --- конечные мультимножества
+формул из $\mathcal{L}$. Неформально секвенция $\Gamma \vdash \Delta$ читается
+как <<из конъюнкции всех формул $\Gamma$ выводима дизъюнкция формул $\Delta$>>.
+Секвенция с пустым антецедентом ($\vdash \Delta$) утверждает безусловную
+выводимость; секвенция с пустым сукцедентом ($\Gamma \vdash$) означает
+противоречивость $\Gamma$.
+
+Полный набор правил классического секвенциального исчисления LK в стиле Генцена
+приведён в приложении~\ref{app:lk-lj-rules} (рисунок~\ref{fig:lk-rules}).
+
+Секвенция $\vdash A \rightarrow A$ выводится без сечения и структурных правил. Вывод секвенции $\vdash A \rightarrow A$ в LK представлен на рисунке~\ref{fig:lk-a-implies-a}.
+
+\begin{figure}[!htb]
+\centering
+\AxiomC{}
+\RightLabel{\scriptsize$Ax$}
+\UnaryInfC{$A \vdash A$}
+\RightLabel{\scriptsize$\rightarrow R$}
+\UnaryInfC{$\vdash A \rightarrow A$}
+\DisplayProof
+\caption{Вывод секвенции $\vdash A \rightarrow A$ в LK}
+\label{fig:lk-a-implies-a}
+\end{figure}
+
+Интуиционистская версия секвенциального исчисления получается ограничением на
+форму секвенций: \emph{интуиционистскими} называются те секвенции, в которых
+справа находится не более одной формулы (то есть выводы строятся в подсистеме,
+где $\Delta$ либо пусто, либо состоит ровно из одной формулы). Правила
+интуиционистского секвенциального исчисления LJ приведены в
+приложении~\ref{app:lk-lj-rules} (рисунок~\ref{fig:lj-rules}).
+
+Ключевое отличие от LK --- отсутствие правых структурных правил (ослабления,
+сокращения и перестановки справа), поскольку в сукцеденте находится не более
+одной формулы. Кроме того, в двухпосылочных правилах ($\rightarrow L$, $cut$)
+сукцеденты посылок не объединяются: одна из посылок обязана вывести ровно одну
+<<вспомогательную>> формулу, а другая --- передать результат в единственную
+формулу заключения.
+
+Секвенциальный формат удобен для реализации на ЭВМ: правила локальны, вывод
+представляется деревом с предсказуемой структурой, что облегчает поиск вывода и
+проверку корректности. Именно на секвенциальных исчислениях и их модификациях
+(ориентированные варианты, ограничения на правила, стратегии устранения сечения
+и~т.~д.) строятся многие современные автоматические средства; они служат основой
+для развитых систем в духе $LJT$, $LJT_{SAT}$ и аналогов.
+
+\subsection{Типизированное \texorpdfstring{$\lambda$-исчисление}{лямбда-исчисление}}
+
+В теории доказательств основной задачей является поиск доказательства: его
+структура, сравнение различных выводов одной и той же формулы. Для
+конструктивной (интуиционистской) логики это особенно существенно, поскольку
+доказательство трактуется как конструкция в смысле интерпретации
+интуиционистской логики.
+
+Удобно явно указывать терм (объект доказательства) рядом с формулой: запись
+$M : \psi$ означает, что $M$ --- доказательство $\psi$, при контексте гипотез
+$\Gamma$ используют суждение $\Gamma \vdash M : \psi$. Так как для натурального вывода
+аннотировать дерево термами особенно удобно, первые примеры приведены именно для него.
+
+Правило устранения импликации в натуральном выводе с аннотациями: если
+$\Gamma \vdash M : A \rightarrow B$ и $\Gamma \vdash N : A$, то доказательством $B$ задаётся применение $M\,N$; правило применения для импликации представлено на рисунке~\ref{fig:lambda-application}.
+
+\begin{figure}[!htb]
+\centering
+\AxiomC{$\Gamma \vdash M : A \rightarrow B$}
+\AxiomC{$\Gamma \vdash N : A$}
+\RightLabel{\scriptsize$\rightarrow E$}
+\BinaryInfC{$\Gamma \vdash M\,N : B$}
+\DisplayProof
+\caption{Правило применения для импликации}
+\label{fig:lambda-application}
+\end{figure}
+
+Аксиома гипотезы: переменная, помеченная формулой $A$, служит доказательством
+$A$ в расширенном контексте; аксиома гипотезы представлена на рисунке~\ref{fig:lambda-variable}.
+
+\begin{figure}[!htb]
+\centering
+\AxiomC{}
+\RightLabel{\scriptsize$Ax$}
+\UnaryInfC{$\Gamma,\, x : A \vdash x : A$}
+\DisplayProof
+\caption{Аксиома гипотезы}
+\label{fig:lambda-variable}
+\end{figure}
+
+Введение импликации: доказательство $A \rightarrow B$ из подвывода с гипотезой
+$x : A$ записывают как $\lambda$-абстракцию по $x$; правило абстракции для импликации представлено на рисунке~\ref{fig:lambda-abstraction}.
+
+\begin{figure}[!htb]
+\centering
+\AxiomC{$\Gamma,\, x : A \vdash M : B$}
+\RightLabel{\scriptsize$\rightarrow I$}
+\UnaryInfC{$\Gamma \vdash \lambda x.\, M : A \rightarrow B$}
+\DisplayProof
+\caption{Правило абстракции для импликации}
+\label{fig:lambda-abstraction}
+\end{figure}
+
+Таким образом аннотированный натуральный вывод совпадает по виду с правилами
+типизации в $\lambda$-исчислении. В интерпретации интуиционистской логики конструкция для импликации
+$A \rightarrow B$ --- это функция, сопоставляющая конструкции для $A$
+конструкции для $B$.
+
+\subsubsection{Аннотирование правил LJ (импликативный фрагмент)}
+
+Подход с аннотированном термами к формулам можно распространить и на
+секвенциальное исчисление; аннотированные правила $Ax$ и $(\rightarrow R)$ представлены на рисунке~\ref{fig:annotated-lj-imp-right}.
+
+\begin{figure}[!htb]
+\centering
+\AxiomC{}
+\RightLabel{\scriptsize$Ax$}
+\UnaryInfC{$\Gamma,\, x : A \vdash x : A$}
+\DisplayProof\hskip 2em
+\AxiomC{$\Gamma,\, x : A \vdash M : B$}
+\RightLabel{\scriptsize$\rightarrow R$}
+\UnaryInfC{$\Gamma \vdash \lambda x.\, M : A \rightarrow B$}
+\DisplayProof
+\caption{Аннотированные правила $Ax$ и $(\rightarrow R)$}
+\label{fig:annotated-lj-imp-right}
+\end{figure}
+
+Аннотированное правило $(\rightarrow L)$ представлено на рисунке~\ref{fig:annotated-lj-imp-left}.
+
+\begin{figure}[!htb]
+\centering
+\AxiomC{$\Gamma \vdash M : A$}
+\AxiomC{$\Delta,\, z : B \vdash N : C$}
+\RightLabel{\scriptsize$\rightarrow L$}
+\BinaryInfC{$\Gamma,\, \Delta,\, u : A \rightarrow B \vdash N[z := u\,M] : C$}
+\DisplayProof
+\caption{Аннотированное правило $(\rightarrow L)$}
+\label{fig:annotated-lj-imp-left}
+\end{figure}
+
+Основная суть аннотирования в том, чтобы устранять свободные переменные у терма
+справа. Под свободными переменными понимаются только те свободные относительно
+терма справа, которых нет слева.  Проще всего объяснить данную идею на правиле
+$(\rightarrow L)$. В нем мы в результате справа получаем $C$, но среди посылок у
+нас пропадает $B$. Из этого следует, что нужно заменить все вхождения терма $z$
+в терме $N$, на те, что остались слева. Также стоит обосновать, почему мы можем
+использовать терм $M$ при замене. Тут мы знаем, что все свободные переменные терма $M$ содержатся
+в $\Gamma$ (левая посылка $\Gamma \vdash M : A$), поэтому подстановка не вносит
+новых свободных переменных.
+
+В правиле $(\rightarrow R)$ мы удаляем из левой части $x : A$, поэтому в правой
+должны как-то удалить свободную переменную $x$ в терме $M$. Для этого мы просто
+делаем ее связанной при помощи $\lambda$-абстракции.
+
+\subsubsection{Суперскрипты для произведения и суммы}
+Аннотировать можно также и остальные правила секвенциального исчисления, но для
+этого требуется ввести лямбда-термы для произведения и суммы типов. Для произведения
+подойдет терм пары; термы для произведения типов представлены ниже.
+
+$$
+\begin{array}{l}
+\langle M, N \rangle = \lambda x.xMN \\
+\pi_1 = \lambda p.p\,(\lambda xy.x) \\
+\pi_2 = \lambda p.p\,(\lambda xy.y)
+\end{array}$$
+
+Здесь $\pi_1$ и $\pi_2$ --- проекции на первую и вторую компоненту пары. Причем
+$ \pi_1 \langle M, N \rangle \rightarrow_\beta M$ и $\pi_2 \langle M, N \rangle
+\rightarrow_\beta N$.
+
+Для суммы типов используются термы, представленные ниже.
+
+$$
+\begin{array}{c}
+L = \lambda e c_1 c_2. c_1 e \\
+R = \lambda e c_1 c_2. c_2 e \\
+\caseof{M}{[x]P}{[y]Q} = M(\lambda x.P)(\lambda y.Q)
+\end{array}$$
+
+Тут $L$ и $R$ --- конструкторы суммы, а $\mathrm{case}$ --- элиминатор. В выражении
+$\caseof{M}{\ldots}{\ldots}$ первый аргумент $M$ может быть вида $LV$ либо $RV$,
+где $V$ какой-либо терм. Таким образом правила $\beta$-редукции для
+$\mathrm{case}$ представлены ниже.
+
+
+$$
+\begin{array}{l}
+\caseof{LM}{[x]P}{[y]Q} \rightarrow_\beta P[x := M] \\
+\caseof{RM}{[x]P}{[y]Q} \rightarrow_\beta Q[y := M]
+\end{array}$$
+
+\subsubsection{Аннотирование правил LJ (полный фрагмент)}
+Теперь благодаря введенным термам для произведения и суммы типов, можно аннотировать
+остальные правила секвенциального исчисления. Для простоты будем аннотировать только
+логические правила, так как структурные аннотируются естественно.
+
+Аннотированные правила LJ представлены на рисунке~\ref{fig:annotated-lj}.
+
+\begin{figure}[!htb]
+\begin{tabular}{|c|}\hline
+\textbf{Правило $(\land R)$}
+\\\\
+\AxiomC{$\Gamma \vdash a: A$}
+\AxiomC{$\Gamma \vdash b: B$}
+\RightLabel{\scriptsize$\land R$}
+\BinaryInfC{$\Gamma \vdash \langle a, b \rangle : A \land B$}
+\DisplayProof
+
+\\\\
+\textbf{Правила $(\land L_1)$ и $(\land L_2)$}
+\\\\
+\AxiomC{$\Gamma, a: A \vdash d: C$}
+\RightLabel{\scriptsize$\land L_1$}
+\UnaryInfC{$\Gamma, p: A \land B \vdash d[a:=\pi_1 p]: C$}
+\DisplayProof\hskip 2em
+\AxiomC{$\Gamma, b: B \vdash d: C$}
+\RightLabel{\scriptsize$\land L_2$}
+\UnaryInfC{$\Gamma, p: A \land B \vdash d[b:=\pi_2 p]: C$}
+\DisplayProof
+\\\\
+\textbf{Правило $(\lor L)$}
+\\\\
+\AxiomC{$\Gamma, a: A \vdash d_1: C$}
+\AxiomC{$\Gamma, b: B \vdash d_2: C$}
+\RightLabel{\scriptsize$\lor L$}
+\BinaryInfC{$\Gamma, p: A \lor B \vdash \caseof{p}{[a]d_1}{[b]d_2}[C]$}
+\DisplayProof
+\\\\
+\textbf{Правила $(\lor R_1)$ и $(\lor R_2)$}
+\\\\
+\AxiomC{$\Gamma \vdash a: A$}
+\RightLabel{\scriptsize$\lor R_1$}
+\UnaryInfC{$\Gamma \vdash La: A \lor B$}
+\DisplayProof\hskip 2em
+\AxiomC{$\Gamma \vdash b: B$}
+\RightLabel{\scriptsize$\lor R_2$}
+\UnaryInfC{$\Gamma \vdash Rb: A \lor B$}
+\DisplayProof\\\\\hline
+\end{tabular}
+\caption{Аннотированные правила исчисления LJ}
+\label{fig:annotated-lj}
+\end{figure}
+
+
+\section{Конструкторская часть}
+
+\subsection{Исчисление LJT}
+Секвенция --- пара $\Gamma \vdash G$, где $\Gamma$ --- \emph{мультимножество}
+формул (антецедент), $G$ --- формула (сукцедент). Поскольку антецедент является
+мультимножеством, перестановка формул допускается автоматически, и
+\emph{структурное правило перестановки не требуется}. Формулы строятся из
+пропозициональных переменных, связок $\land$, $\lor$, $\rightarrow$ и константы
+$\bot$. Константа $\bot$ \emph{не считается} атомом.
+
+Правила исчисления LJ в формулировке Дайкхоффа представлены на рисунке~\ref{fig:dyckhoff-lj-rules}. Выделенная формула в заключении каждого правила называется \emph{главной} (principal).
+
+\begin{figure}[!htb]
+\textbf{Аксиома и абсурд}
+
+\begin{center}
+\AxiomC{}
+\RightLabel{\scriptsize$Ax$\,,\; $A$ --- атом}
+\UnaryInfC{$\underline{A}, \Gamma \vdash A$}
+\DisplayProof\hskip 2em
+\AxiomC{}
+\RightLabel{\scriptsize$\bot L$}
+\UnaryInfC{$\underline{\bot}, \Gamma \vdash G$}
+\DisplayProof
+\end{center}
+
+\textbf{Конъюнкция}
+
+\begin{center}
+\AxiomC{$A, B, \Gamma \vdash G$}
+\RightLabel{\scriptsize$\land L$}
+\UnaryInfC{$\underline{A \land B}, \Gamma \vdash G$}
+\DisplayProof\hskip 2em
+\AxiomC{$\Gamma \vdash A$}
+\AxiomC{$\Gamma \vdash B$}
+\RightLabel{\scriptsize$\land R$}
+\BinaryInfC{$\Gamma \vdash \underline{A \land B}$}
+\DisplayProof
+\end{center}
+
+\textbf{Дизъюнкция}
+
+\begin{center}
+\AxiomC{$A, \Gamma \vdash G$}
+\AxiomC{$B, \Gamma \vdash G$}
+\RightLabel{\scriptsize$\lor L$}
+\BinaryInfC{$\underline{A \lor B}, \Gamma \vdash G$}
+\DisplayProof\hskip 2em
+\AxiomC{$\Gamma \vdash A_i$}
+\RightLabel{\scriptsize$\lor R$}
+\UnaryInfC{$\Gamma \vdash \underline{A_1 \lor A_2}$}
+\DisplayProof
+\end{center}
+
+\textbf{Импликация}
+
+\begin{center}
+\AxiomC{$\underline{A \rightarrow B}, \Gamma \vdash A$}
+\AxiomC{$B, \Gamma \vdash G$}
+\RightLabel{\scriptsize$\rightarrow L$}
+\BinaryInfC{$\underline{A \rightarrow B}, \Gamma \vdash G$}
+\DisplayProof\hskip 2em
+\AxiomC{$A, \Gamma \vdash B$}
+\RightLabel{\scriptsize$\rightarrow R$}
+\UnaryInfC{$\Gamma \vdash \underline{A \rightarrow B}$}
+\DisplayProof
+\end{center}
+\caption{Правила LJ в формулировке Дайкхоффа}
+\label{fig:dyckhoff-lj-rules}
+\end{figure}
+
+Ключевая особенность данной формулировки --- правило $(\rightarrow L)$: главная
+формула $A \rightarrow B$ сохраняется в левой посылке. Тем самым правило
+сокращения встроено в $(\rightarrow L)$, и ни сокращение, ни ослабление, ни
+перестановка не требуются как примитивные правила: все три допустимы как
+производные.
+
+\subsubsection{Проблема завершаемости}
+
+Для формализации завершаемости вводится \emph{вес} формулы $\mathrm{wt}(A)$:
+Определение веса формул LJT представлено на рисунке~\ref{fig:ljt-formula-weights}.
+
+\begin{figure}[!htb]
+\centering
+\begin{align*}
+\mathrm{wt}(p) &= \mathrm{wt}(\bot) = 1, \\
+\mathrm{wt}(A \land B) &= \mathrm{wt}(A) + \mathrm{wt}(B) + 2, \\
+\mathrm{wt}(A \lor B) &= \mathrm{wt}(A) + \mathrm{wt}(B) + 1, \\
+\mathrm{wt}(A \rightarrow B) &= \mathrm{wt}(A) + \mathrm{wt}(B) + 1.
+\end{align*}
+\caption{Вес формул в доказательстве завершаемости LJT}
+\label{fig:ljt-formula-weights}
+\end{figure}
+Формулы антецедента и сукцедент секвенции образуют мультимножество; на
+мультимножествах определяется отношение $\gg$ (мультимножественное упорядочение
+Дершовица---Манны), которое \emph{фундировано}: если из мультимножества удалить
+один или несколько элементов и заменить их произвольным числом элементов меньшего
+веса, результат строго меньше исходного.
+
+Во всех правилах LJ, \emph{кроме $(\rightarrow L)$}, каждая посылка строго
+меньше заключения в смысле $\gg$: главная формула заменяется подформулами
+меньшего веса. Однако в правиле $(\rightarrow L)$ левая посылка
+$A \rightarrow B, \Gamma \vdash A$ содержит ту же формулу $A \rightarrow B$, что
+и заключение, поэтому $\gg$-убывание не гарантировано. Как следствие, обратный
+поиск вывода от корня к листьям (root-first proof search) может зациклиться:
+применение $(\rightarrow L)$ к секвенции $(D_1 \rightarrow D_2) \rightarrow C,
+\Gamma \vdash G$ порождает подцель $(D_1 \rightarrow D_2) \rightarrow C, \Gamma
+\vdash D_1 \rightarrow D_2$, в которой главная формула по-прежнему присутствует и
+может быть использована повторно.
+
+\subsubsection{Правила исчисления LJT}
+
+В 1992 году Дайкхофф предложил исчисление LJT (также известное как G4ip), в
+котором правило $(\rightarrow L)$ заменяется четырьмя правилами, определяемыми
+структурой левой части (антецедента) главной импликации $D \rightarrow C$. Все
+остальные правила сохраняются без изменений.
+
+\textbf{Случай 1.} $D = p$ --- пропозициональная переменная; правило
+$(\rightarrow L_1)$:
+\begin{center}
+\AxiomC{$B, p, \Gamma \vdash G$}
+\RightLabel{\scriptsize$\rightarrow L_1$}
+\UnaryInfC{$p \rightarrow B, p, \Gamma \vdash G$}
+\DisplayProof
+\end{center}
+\label{fig:ljt-l1}
+
+\textbf{Случай 2.} $D = C_1 \land C_2$; правило $(\rightarrow L_2)$:
+\begin{center}
+\AxiomC{$C_1 \rightarrow (C_2 \rightarrow B), \Gamma \vdash G$}
+\RightLabel{\scriptsize$\rightarrow L_2$}
+\UnaryInfC{$(C_1 \land C_2) \rightarrow B, \Gamma \vdash G$}
+\DisplayProof
+\end{center}
+\label{fig:ljt-l2}
+
+\textbf{Случай 3.} $D = C_1 \lor C_2$; правило $(\rightarrow L_3)$:
+\begin{center}
+\AxiomC{$C_1 \rightarrow B, C_2 \rightarrow B, \Gamma \vdash G$}
+\RightLabel{\scriptsize$\rightarrow L_3$}
+\UnaryInfC{$(C_1 \lor C_2) \rightarrow B, \Gamma \vdash G$}
+\DisplayProof
+\end{center}
+\label{fig:ljt-l3}
+
+\textbf{Случай 4.} $D = C_1 \rightarrow C_2$; правило $(\rightarrow L_4)$:
+\begin{center}
+\AxiomC{$C_2 \rightarrow B, \Gamma \vdash C_1 \rightarrow C_2$}
+\AxiomC{$B, \Gamma \vdash G$}
+\RightLabel{\scriptsize$\rightarrow L_4$}
+\BinaryInfC{$(C_1 \rightarrow C_2) \rightarrow B, \Gamma \vdash G$}
+\DisplayProof
+\end{center}
+\label{fig:ljt-l4}
+
+Во всех четырёх правилах главная формула \emph{не сохраняется} ни в одной из
+посылок: она заменяется формулами строго меньшего веса. Действительно:
+\begin{itemize}
+\item $(\rightarrow L_1)$: формула $p \rightarrow B$ ($\mathrm{wt} = \mathrm{wt}(B) + 2$)
+  заменяется на $B$;
+\item $(\rightarrow L_2)$: $\mathrm{wt}((C_1 \land C_2) \rightarrow B)
+  = \mathrm{wt}(C_1) + \mathrm{wt}(C_2) + \mathrm{wt}(B) + 3$, а
+  $\mathrm{wt}(C_1 \rightarrow (C_2 \rightarrow B))
+  = \mathrm{wt}(C_1) + \mathrm{wt}(C_2) + \mathrm{wt}(B) + 2$;
+\item $(\rightarrow L_3)$: одна формула веса
+  $\mathrm{wt}(C_1) + \mathrm{wt}(C_2) + \mathrm{wt}(B) + 2$ заменяется двумя
+  формулами весов $\mathrm{wt}(C_1) + \mathrm{wt}(B) + 1$ и
+  $\mathrm{wt}(C_2) + \mathrm{wt}(B) + 1$, каждая строго меньше;
+\item $(\rightarrow L_4)$: формула $(C_1 \rightarrow C_2) \rightarrow B$ заменяется
+  на $C_2 \rightarrow B$ (в левой посылке) и $B$ (в правой), обе строго меньше.
+\end{itemize}
+
+Таким образом, \emph{каждая} посылка каждого правила LJT строго меньше
+заключения в мультимножественном упорядочении $\gg$, что гарантирует завершаемость
+обратного поиска вывода. Правила ослабления и сокращения \emph{допустимы}, но
+не входят в систему как примитивные.
+
+\subsubsection{Обратный поиск вывода}
+
+Обратный поиск вывода (root-first proof search) в LJT --- процедура, которая по
+данной секвенции $\Gamma \vdash G$ определяет, выводима ли она. Процедура
+сопоставляет секвенцию с заключением одного из правил и рекурсивно доказывает
+посылки. Все правила LJT, кроме $(\lor R)$ и $(\rightarrow L_4)$,
+\emph{обратимы}: из доказуемости заключения следует доказуемость каждой посылки.
+При применении обратимого правила возврат (backtracking) не требуется: если
+хотя бы одна посылка недоказуема, заключение также недоказуемо. Правило
+$(\rightarrow L_4)$ является \emph{правообратимым}: из доказуемости заключения
+следует доказуемость правой посылки $\Gamma, C \vdash G$, тогда как левая посылка
+может быть недоказуема. Поэтому $(\rightarrow L_4)$ может рассматриваться как
+правило с одной посылкой и побочным условием (side-condition), а вызов для правой
+посылки является хвостовой рекурсией.
+
+Возврат необходим только при применении $(\lor R)$ (выбор дизъюнкта) и
+$(\rightarrow L_4)$ (выбор импликационной клаузы из антецедента).
+
+Псевдокод процедуры приведён в приложении~\ref{app:ljt}
+(листинг~\ref{alg:ljt-prove}). Поскольку множество формул в каждой посылке
+строго меньше в мультимножественном упорядочении $\gg$, рекурсия завершается.
+
+\subsection{Исчисление $LJT_{SAT}$}
+
+Исчисление LJT предоставляет завершающуюся процедуру поиска вывода, однако не
+даёт \emph{свидетельства} недоказуемости: при неудаче поиска остаётся лишь факт
+отсутствия вывода, но не контрмодель. Клэссен и Розен~\cite{ClaessenRosen2015}
+предложили инструмент \texttt{intuit} --- доказатель для интуиционистской
+пропозициональной логики, построенный поверх инкрементального SAT-решателя по
+схеме SMT (Satisfiability Modulo Theories). Фиорентини, Горе и
+Грэм-Ленгран~\cite{FiorentiniGoreGL2019} дали теоретико-доказательственное
+обоснование этого подхода, сформулировав исчисление $LJT_{SAT}$, которое
+объединяет поиск вывода в LJT~\cite{Dyckhoff1992} с использованием
+SAT-решателя и реализует полную процедуру принятия решения с двумя исходами:
+вывод в $LJT_{SAT}$ либо контрмодель Крипке.
+
+\subsubsection{Клаузальная форма}
+
+Исчисление $LJT_{SAT}$ работает с секвенциями в \emph{клаузальной форме}
+$R, X \Rightarrow q$, где:
+\begin{itemize}
+\item $R$ --- множество \emph{плоских клауз} вида $\bigwedge A_1 \rightarrow
+  \bigvee A_2$, где $A_1, A_2 \subseteq \mathit{Atm}$ --- конечные множества
+  атомов;
+\item $X$ --- множество \emph{импликационных клауз} вида $(a \rightarrow b)
+  \rightarrow c$, где $a, b, c$ --- атомы;
+\item $q$ --- атом (целевая формула).
+\end{itemize}
+
+Произвольная формула $\alpha$ интуиционистской логики преобразуется в
+клаузальную форму процедурой \emph{клаузификации}~\cite{ClaessenRosen2015}.
+
+\textbf{Шаг 1.} Формула $\alpha$ приводится к виду $B \rightarrow q$, где $q$ ---
+атом. Если $\alpha$ не имеет такого вида, вводится свежий атом $q$ и формула
+заменяется на $(\alpha \rightarrow q) \rightarrow q$ (эквивалентность в
+интуиционистской логике).
+
+\textbf{Шаг 2.} Формула $B$ раскладывается в множества $R$ и $X$ с помощью
+правил перезаписи вида $A \leadsto B_1, \ldots, B_n$, заменяющих допущение $A$
+на эквивалентный набор допущений $B_i$. Если формула ещё не является импликацией,
+применяется правило
+\[
+A \;\leadsto\; \top \rightarrow A.
+\]
+
+Структурные правила клаузификации, упрощающие вид импликации, представлены на рисунке~\ref{fig:clausification-structural-rules}.
+\begin{figure}[!htb]
+\centering
+\vspace*{-3ex}
+\begin{align*}
+(A \lor B) \rightarrow a &\;\leadsto\; A \rightarrow a,\quad B \rightarrow a, \\
+a \rightarrow (A \land B) &\;\leadsto\; a \rightarrow A,\quad a \rightarrow B, \\
+A \rightarrow (B \rightarrow C) &\;\leadsto\; (A \land B) \rightarrow C,
+\end{align*}
+\caption{Структурные правила клаузификации}
+\label{fig:clausification-structural-rules}
+\end{figure}
+Где $a$ --- атом или константа $\bot$, $\top$. Для введения атомов на нужных
+позициях используются правила с введением свежих переменных (обозначены строчными
+буквами справа); правила клаузификации с введением свежих атомов представлены на рисунке~\ref{fig:clausification-aliasing-rules}.
+
+\begin{figure}[!htb]
+\centering
+\vspace*{-3ex}
+\begin{align*}
+A \rightarrow (\ldots \lor B \lor \ldots) &\;\leadsto\;
+  A \rightarrow (\ldots \lor b \lor \ldots),\quad b \rightarrow B, \\
+(\ldots \land A \land \ldots) \rightarrow B &\;\leadsto\;
+  (\ldots \land a \land \ldots) \rightarrow B,\quad A \rightarrow a, \\
+(A \rightarrow B) \rightarrow C &\;\leadsto\;
+  (a \rightarrow B) \rightarrow C,\quad A \rightarrow a, \\
+(A \rightarrow B) \rightarrow C &\;\leadsto\;
+  (A \rightarrow b) \rightarrow C,\quad B \rightarrow b, \\
+(A \rightarrow B) \rightarrow C &\;\leadsto\;
+  (A \rightarrow B) \rightarrow c,\quad c \rightarrow C.
+\end{align*}
+\caption{Правила клаузификации с введением свежих атомов}
+\label{fig:clausification-aliasing-rules}
+\end{figure}
+Здесь $a$, $b$, $c$ --- свежие атомы, не встречающиеся в формуле. Каждая
+подформула именуется не более одного раза, поэтому суммарный размер $(R, X, q)$
+линеен относительно размера~$\alpha$.
+
+Результатом клаузификации является тройка
+$\mathit{clausal}(\alpha) = (R, X, q)$, для которой выполняется
+$\vdash_{\mathit{ipl}} \alpha$ тогда и только тогда, когда
+$R, X \vdash_{\mathit{ipl}} q$.
+
+В клаузальной форме из правил LJT применимо только правило $(\rightarrow L_4)$,
+так как антецеденты импликационных клауз сами являются импликациями. Плоские
+клаузы не содержат вложенных связок и допускают классическое рассуждение:
+$R \vdash_{\mathit{cpl}} q$ тогда и только тогда, когда $R \vdash_{\mathit{ipl}}
+q$, что позволяет делегировать работу с ними SAT-решателю.
+
+\subsubsection{Правила исчисления $LJT_{SAT}$}
+
+Исчисление $LJT_{SAT}$ состоит из трёх правил.
+
+\textbf{Правило $(cpl)$.} Если множество плоских клауз $R$ классически влечёт
+$q$ (что проверяется SAT-решателем), секвенция выводима; правило $(cpl)$ представлено на рисунке~\ref{fig:ljtsat-cpl}.
+
+\begin{figure}[!htb]
+\centering
+\AxiomC{$R \vdash_{\mathit{cpl}} q$}
+\RightLabel{\scriptsize$cpl$}
+\UnaryInfC{$R, X \Rightarrow q$}
+\DisplayProof
+\caption{Правило $(cpl)$ исчисления $LJT_{SAT}$}
+\label{fig:ljtsat-cpl}
+\end{figure}
+
+\textbf{Правило $(cut_{\mathit{ipl}})$.} Интуиционистское сечение: если левая
+посылка является интуиционистской теоремой и плоская клауза $\varphi$ позволяет
+вывести правую посылку, то заключение выводимо; правило $(cut_{\mathit{ipl}})$ представлено на рисунке~\ref{fig:ljtsat-cut}.
+
+\vspace*{-2ex}
+\begin{figure}[!htb]
+\centering
+\AxiomC{$R_1, X_1 \vdash_{\mathit{ipl}} \varphi$}
+\AxiomC{$\varphi, R_2, X_2 \Rightarrow q$}
+\RightLabel{\scriptsize$cut_{\mathit{ipl}}$}
+\BinaryInfC{$R_1, R_2, X_1, X_2 \Rightarrow q$}
+\DisplayProof
+\caption{Правило $(cut_{\mathit{ipl}})$ исчисления $LJT_{SAT}$}
+\label{fig:ljtsat-cut}
+\end{figure}
+
+\textbf{Правило $(ljt)$.} Обобщённое правило левого введения импликации,
+соответствующее $(\rightarrow L_4)$ из LJT, адаптированное к клаузальной форме.
+Пусть $\iota = (a \rightarrow b) \rightarrow c \in X$, $X_\iota = X \setminus
+\{\iota\}$ и $A_1$ --- множество атомов. Правило $(ljt)$ представлено на рисунке~\ref{fig:ljtsat-ljt}:
+
+\begin{figure}[!htb]
+\centering
+\AxiomC{$R_1,\, b \rightarrow c,\, X_\iota,\, A_1 \Rightarrow b$}
+\AxiomC{$R_2,\, \textstyle\bigwedge(A_1 \setminus \{a\}) \rightarrow c,\, X,\, \iota \Rightarrow q$}
+\RightLabel{\scriptsize$ljt$}
+\BinaryInfC{$R_1, R_2, X, \iota \Rightarrow q$}
+\DisplayProof
+\caption{Правило $(ljt)$ исчисления $LJT_{SAT}$}
+\label{fig:ljtsat-ljt}
+\end{figure}
+
+Правило $(ljt)$ обобщает $(\rightarrow L_4)$ из LJT в двух направлениях.
+Во-первых, допускается расщепление контекста ($R_1$ и $R_2$ могут различаться).
+Во-вторых, в левую посылку могут быть добавлены дополнительные атомарные
+допущения $A_1$, что расширяет область применимости правила; ценой этого
+расширения является ослабление выученной клаузы в правой посылке:
+вместо атома $c$ появляется плоская клауза $\bigwedge(A_1 \setminus \{a\})
+\rightarrow c$.
+
+При $R_1 = R_2 = R$ и $A_1 = \{a\}$ (то есть $\bigwedge(A_1 \setminus \{a\})
+\rightarrow c$ вырождается в атом $c$) правило $(ljt)$ сводится к $(\rightarrow
+L_4)$ исчисления LJT, поскольку наличие $c$ в правой посылке делает
+импликационную клаузу $\iota$ избыточной.
+
+\subsubsection{Техника CEGAR}
+\label{subsec:cegar}
+
+Техника CEGAR (Counter-Example Guided Abstraction Refinement), предложенная
+Кларком и соавторами~\cite{Clarke2000CEGAR}, объединяет решение задачи на
+\emph{абстракции} с итеративным уточнением по контрпримерам. Общая схема
+состоит из трёх шагов:
+\begin{enumerate}
+\item \emph{Абстракция} --- исходная задача заменяется более грубой, но проще
+  решаемой;
+\item \emph{Проверка} --- по найденному решению или контрпримеру абстракции
+  проверяется, переносится ли результат на исходную задачу;
+\item \emph{Уточнение} --- если абстрактное решение ложно, из контрпримера
+  строится новое ограничение, исключающее эту ошибку, после чего цикл
+  повторяется.
+\end{enumerate}
+
+В $LJT_{SAT}$ роль абстракции играет классическое рассуждение над плоскими
+клаузами. SAT-решатель проверяет, выводим ли целевой атом $q$ из $R$ при
+дополнительных атомарных допущениях~$A$. Классическая логика сильнее
+интуиционистской для таких подзадач, поэтому SAT может находить <<оптимистичный>>
+вывод, недостижимый в IPL. Контрпримером служит классическая модель $M$ ---
+множество истинных атомов, удовлетворяющее $R \cup A$, но не содержащее $q$:
+она показывает, что текущая абстракция слишком слаба.
+
+Уточнение выполняется через рекурсивное применение правила $(ljt)$. Для
+импликационной клаузы, несовместимой с $M$, либо строится подзадача, либо
+формируется \emph{выученная} плоская клауза $\tilde{\varphi}$, добавляемая в
+SAT-решатель и исключающая модель $M$ из множества классических моделей
+$\mathcal{M}(R)$. Каждая такая клауза строго уменьшает $\mathcal{M}(R)$, что
+обеспечивает завершаемость процедуры. Если ни одна ветка не даёт вывода,
+контрмодель Крипке собирается методом склейки подмоделей.
+
+Тот же принцип CEGAR лежит в основе процедуры \texttt{proveR} в исчислении
+$C^{\rightarrow}$ (подраздел~\ref{subsec:carrow-prover}) и реализован в прототипе
+через цикл запросов к инкрементальному SAT/SMT-решателю Z3.
+
+\subsubsection{Процедура поиска вывода}
+
+Процедура поиска вывода в $LJT_{SAT}$ состоит из двух функций: главной
+$\textsc{LJTSatMain}$ и рекурсивной $\textsc{LJTSat}$ (псевдокод приведён в
+Приложении~\ref{app:ljtsat}, листинги~\ref{alg:ljtsat-main}
+и~\ref{alg:ljtsat}). Обе функции используют единый инкрементальный SAT-решатель
+$s$: клаузы могут добавляться в $s$, но не удаляться; запросы принимают
+переменное множество атомарных допущений.
+
+Функция $\textsc{LJTSatMain}(R_0, X_0, q_0)$ инициализирует SAT-решатель $s$
+и загружает в него все плоские клаузы из $R_0$, а также для каждой
+импликационной клаузы $(a \to b) \to c \in X_0$ --- клаузу $b \to c$
+(следствие исходной задачи). После этого управление передаётся функции
+$\textsc{LJTSat}$.
+
+Функция $\textsc{LJTSat}(R, X, A, q)$ реализует описанную в
+подразделе~\ref{subsec:cegar} схему CEGAR. Она запрашивает SAT-решатель:
+выполняется ли $R(s), A \vdash_{\mathit{cpl}} q$? Если да, секвенция выводима по
+правилу $(cpl)$; SAT-решатель возвращает подмножество $A' \subseteq A$,
+достаточное для вывода. В противном случае SAT-решатель возвращает классическую
+контрмодель $M$ --- множество атомов, удовлетворяющее $R(s) \cup A$, но не $q$.
+
+Контрмодель $M$ проверяется на совместимость с импликационными клаузами.
+Для каждой $\iota = (a \to b) \to c \in X$, такой что $a \notin M$,
+$b \notin M$ и $c \notin M$ (то есть $M$ не удовлетворяет $\iota$ тривиально),
+выполняется рекурсивный вызов для левой посылки правила $(ljt)$:
+$\textsc{LJTSat}(R \cup \{b \to c\},\; X_\iota,\; M \cup \{a\},\; b)$, где
+$X_\iota = X \setminus \{\iota\}$. Если вызов вернул контрмодель $K_1$, она
+сохраняется для последующей склейки. Если же вызов успешен и возвращает множество
+атомов $A_1$, из него формируется \emph{выученная клауза}
+$\tilde{\varphi} = \bigwedge(A_1 \setminus \{a\}) \to c$, которая добавляется в
+SAT-решатель. Затем $\textsc{LJTSat}$ вызывается рекурсивно для правой посылки:
+$\textsc{LJTSat}(R \cup \{\tilde{\varphi}\},\; X,\; A,\; q)$. Этот вызов
+является хвостовой рекурсией (правообратимость правила $(ljt)$) и соответствует
+перезапуску цикла CEGAR с уточнённым множеством клауз.
+
+Если для всех применимых импликационных клауз рекурсивные вызовы вернули
+контрмодели, формула недоказуема, и из $M$ и накопленных подмоделей
+конструируется контрмодель Крипке методом склейки.
+
+Завершаемость процедуры гарантируется убыванием пары $(X, \mathcal{M}(R))$
+по лексикографическому порядку, где $\mathcal{M}(R)$ --- множество классических
+моделей, удовлетворяющих $R$. Каждая выученная клауза $\tilde{\varphi}$
+исключает хотя бы одну модель (а именно $M$) из $\mathcal{M}(R)$, что
+гарантирует строгое убывание по второй компоненте при неизменной первой.
+
+\subsubsection{Построение контрмодели Крипке}
+
+При неудаче поиска вывода процедура строит контрмодель Крипке методом
+\emph{склейки} (gluing). Каждый неудачный лист дерева поиска задаёт мир
+контрмодели, а рекурсивная структура вызовов определяет отношение достижимости.
+
+Пусть $\Theta = (K_\iota)_{\iota \in X_M}$ --- семейство крипке-моделей,
+построенных рекурсивными вызовами для импликационных клауз
+$X_M = \{\iota = (a \rightarrow b) \rightarrow c \in X \mid a \notin M,\, b \notin M,\, c \notin M\}$,
+и $M$ --- классическая контрмодель. Тогда модель
+$\mathrm{Mod}(r, \Theta, M) = \langle W, {\preceq}, r, V \rangle$ определяется
+так:
+\begin{itemize}
+\item $W = \{r\} \cup \bigcup_{\iota \in X_M} W_\iota$, где $W_\iota$ ---
+  множество миров модели $K_\iota$;
+\item $r$ --- новый корневой мир с оценкой $V(r) = M$;
+\item $r \preceq r_\iota$ для каждого корня $r_\iota$ модели $K_\iota$;
+\item ${\preceq}$ --- рефлексивно-транзитивное замыкание отношений достижимости
+  всех подмоделей и связей $r \preceq r_\iota$.
+\end{itemize}
+
+Если $\Theta = \varnothing$ (все импликационные клаузы имеют хотя бы один
+компонент, истинный в $M$), контрмодель состоит из единственного мира $r$ с
+$V(r) = M$. Условие наследуемости выполняется по построению: корни подмоделей
+$r_\iota$ удовлетворяют $r_\iota \Vdash M$, поскольку $M \subseteq V(r_\iota)$.
+
+Корректность построения гарантируется тем, что в корне $r$ вынуждены все формулы
+из $R \cup X$, но не вынуждена целевая формула $q$, что делает построенную
+структуру контрмоделью для исходной секвенции.
+
+\subsection{Аннотирование термами}
+
+В исследовательской части было показано, что правила секвенциального исчисления
+LJ могут быть аннотированы $\lambda$-термами в соответствии с изоморфизмом
+Карри---Говарда: каждому выводу сопоставляется терм, типом которого является
+выведенная формула. Тот же подход применим к исчислениям LJT и к правилам
+клаузификации, что позволяет по найденному выводу \emph{извлечь программу}
+(свидетель населённости типа).
+
+\subsubsection{Аннотирование правил LJT}
+
+Правила LJT, общие с LJ (аксиома, $\bot L$, $\land L$, $\land R$, $\lor L$,
+$\lor R$, $\rightarrow R$), аннотируются так же, как в LJ. Специфика LJT
+состоит в четырёх правилах левого введения импликации.
+
+\textbf{Правило $(\rightarrow L_1)$.} Атом $p$ присутствует в антецеденте,
+поэтому терм для $B$ получается применением $f$ к $x$; аннотированное правило $(\rightarrow L_1)$ представлено на рисунке~\ref{fig:annotated-ljt-l1}.
+
+\begin{figure}[!htb]
+\centering
+\AxiomC{$\Gamma,\, x : p,\, y : B \vdash t : G$}
+\RightLabel{\scriptsize$\rightarrow L_1$}
+\UnaryInfC{$\Gamma,\, x : p,\, f : p \rightarrow B \vdash t[y := f\,x] : G$}
+\DisplayProof
+\caption{Аннотированное правило $(\rightarrow L_1)$}
+\label{fig:annotated-ljt-l1}
+\end{figure}
+
+\textbf{Правило $(\rightarrow L_2)$.} Импликация $(A \land B) \rightarrow C$
+заменяется на $A \rightarrow (B \rightarrow C)$; аннотированное правило $(\rightarrow L_2)$ представлено на рисунке~\ref{fig:annotated-ljt-l2}.
+
+\begin{figure}[!htb]
+\centering
+\AxiomC{$\Gamma,\, g : A \rightarrow (B \rightarrow C) \vdash t : G$}
+\RightLabel{\scriptsize$\rightarrow L_2$}
+\UnaryInfC{$\Gamma,\, f : (A \land B) \rightarrow C \vdash t[g := \lambda x.\,\lambda y.\,f\,\langle x,y \rangle] : G$}
+\DisplayProof
+\caption{Аннотированное правило $(\rightarrow L_2)$}
+\label{fig:annotated-ljt-l2}
+\end{figure}
+
+\textbf{Правило $(\rightarrow L_3)$.} Импликация $(A \lor B) \rightarrow C$
+заменяется парой $A \rightarrow C$ и $B \rightarrow C$; аннотированное правило $(\rightarrow L_3)$ представлено на рисунке~\ref{fig:annotated-ljt-l3}.
+
+\begin{figure}[!htb]
+\centering
+\AxiomC{$\Gamma, g_1:A\rightarrow C, g_2:B \rightarrow C \vdash t : G$}
+\RightLabel{\scriptsize$\rightarrow L_3$}
+\UnaryInfC{$\Gamma,f : (A \lor B) \rightarrow C \vdash t[g_1 := \lambda x.f(Lx),\; g_2 := \lambda y.f(Ry)] : G$}
+\DisplayProof
+\caption{Аннотированное правило $(\rightarrow L_3)$}
+\label{fig:annotated-ljt-l3}
+\end{figure}
+
+\textbf{Правило $(\rightarrow L_4)$.} Единственное правило с двумя посылками.
+В левой посылке формула $(C_1 \rightarrow C_2) \rightarrow B$ заменяется на
+$C_2 \rightarrow B$; аннотированное правило $(\rightarrow L_4)$ представлено на рисунке~\ref{fig:annotated-ljt-l4}.
+\begin{figure}[!htb]
+\centering
+\AxiomC{$\Gamma,\, g : C_2 \rightarrow B \vdash s : C_1 \rightarrow C_2$}
+\AxiomC{$\Gamma,\, y : B \vdash t : G$}
+\RightLabel{\scriptsize$\rightarrow L_4$}
+\BinaryInfC{$\Gamma,\, f : (C_1 \rightarrow C_2) \rightarrow B \vdash t[y := f\,s',\; g := \lambda z.\,f\,(Kz)] : G$}
+\DisplayProof
+\caption{Аннотированное правило $(\rightarrow L_4)$}
+\label{fig:annotated-ljt-l4}
+\end{figure}
+Где $K = \lambda a.\,\lambda b.\, a$ --- комбинатор константы, а
+$s' = s[g := \lambda z.\,f\,(Kz)]$.
+Интуиция подстановки: имея $f : (C_1 \rightarrow C_2) \rightarrow B$ и
+значение $z : C_2$, можно построить константную функцию
+$Kz = \lambda x^{C_1}.\, z : C_1 \rightarrow C_2$ и применить $f$, получив
+$f(Kz) : B$.  Таким образом $g := \lambda z.\,f\,(Kz) : C_2 \rightarrow B$.
+Развёрнутый пример подстановки приведён в приложении~\ref{app:ljt-example}
+(с.~\pageref{app:ljt-example}).
+
+Покажем вывод формулы $((a \lor (a \rightarrow b)) \rightarrow b) \rightarrow b$
+в системе LJT с $\lambda$-термовыми аннотациями.
+
+\begin{figure}[!htb]
+\centering
+\def\extraVskip{4pt}
+\AxiomC{}
+\RightLabel{\scriptsize$Ax$}
+\UnaryInfC{$g_1 : a \rightarrow b,\, h : b \rightarrow b \vdash g_1 : a \rightarrow b$}
+\AxiomC{}
+\RightLabel{\scriptsize$Ax$}
+\UnaryInfC{$y : b,\, g_1 : a \rightarrow b \vdash y : b$}
+\RightLabel{\scriptsize$\rightarrow L_4$}
+\BinaryInfC{$g_1 : a \rightarrow b,\; g_2 : (a \rightarrow b) \rightarrow b \vdash g_2\, g_1 : b$}
+\RightLabel{\scriptsize$\rightarrow L_3$}
+\UnaryInfC{$f : (a \lor (a \rightarrow b)) \rightarrow b \vdash f(R(\lambda x.\, f(Lx))) : b$}
+\RightLabel{\scriptsize$\rightarrow R$}
+\UnaryInfC{$\vdash \lambda f.\, f(R(\lambda x.\, f(Lx))) : ((a \lor (a \rightarrow b)) \rightarrow b) \rightarrow b$}
+\DisplayProof
+\caption{Пример LJT-вывода с $\lambda$-термовыми аннотациями}
+\label{fig:ljt-annotated-example}
+\end{figure}
+
+Более сложный пример --- вывод формулы
+$((((a \land b) \rightarrow c) \rightarrow ((a \rightarrow c) \lor (b \rightarrow c)))
+\rightarrow c) \rightarrow c$ с аннотированием термами --- приведён
+в приложении~\ref{app:ljt-example} (с.~\pageref{app:ljt-example}).
+
+\subsubsection{Клаузификация как секвенциальные правила}
+
+Каждое правило перезаписи, используемое при клаузификации формулы в клаузальную
+форму $R, X \Rightarrow q$, может быть представлено как допустимое правило
+секвенциального исчисления. Это позволяет аннотировать клаузификацию
+$\lambda$-термами: каждому шагу перезаписи соответствует терм, преобразующий
+доказательство в клаузальной форме в доказательство исходной формулы. Рассмотрим правила клаузификации. Каждое из них имеет вид: секвенция с
+допущением $B_1, \ldots, B_n$ выводима тогда и только тогда, когда выводима
+секвенция с допущением $A$. Аннотирование состоит в указании терма,
+реализующего это преобразование.
+
+\textbf{Начальное правило.} Формула, не являющаяся импликацией, оборачивается; аннотированное начальное правило клаузификации представлено ниже.
+\begin{figure}[!htb]
+\centering
+\AxiomC{$\Gamma,\, f : \top \rightarrow A \vdash t : G$}
+\UnaryInfC{$\Gamma,\, x : A \vdash t[f := \lambda u.\, x] : G$}
+\DisplayProof
+\caption{Аннотирование начала клаузификации}
+\end{figure}
+
+\textbf{Дизъюнкция слева от стрелки.} Аннотированное правило клаузификации для дизъюнкции слева представлено ниже.
+\begin{figure}[!htb]
+\centering
+\AxiomC{$\Gamma,\, f_1 : A \rightarrow a,\, f_2 : B \rightarrow a \vdash t : G$}
+\UnaryInfC{$\Gamma,\, f : (A \lor B) \rightarrow a \vdash t[f_1 := \lambda x.\, f\,(Lx),\; f_2 := \lambda y.\, f\,(Ry)] : G$}
+\DisplayProof
+\end{figure}
+
+\textbf{Конъюнкция справа от стрелки.} Аннотированное правило клаузификации для конъюнкции справа представлено ниже.
+\begin{figure}[!htb]
+\centering
+\AxiomC{$\Gamma,\, f_1 : a \rightarrow A,\, f_2 : a \rightarrow B \vdash t : G$}
+\UnaryInfC{$\Gamma,\, f : a \rightarrow (A \land B) \vdash t[f_1 := \lambda x.\, \pi_1(f\,x),\; f_2 := \lambda x.\, \pi_2(f\,x)] : G$}
+\DisplayProof
+\end{figure}
+
+\textbf{Каррирование.} Аннотированное правило клаузификации для каррирования представлено ниже.
+\begin{figure}[!htb]
+\centering
+\AxiomC{$\Gamma,\, g : (A \land B) \rightarrow C \vdash t : G$}
+\UnaryInfC{$\Gamma,\, f : A \rightarrow (B \rightarrow C) \vdash t[g := \lambda p.\, f\,(\pi_1 p)\,(\pi_2 p)] : G$}
+\DisplayProof
+\end{figure}
+
+\textbf{Правила именования подформул.} При клаузификации для сложной подформулы
+$B$ вводится свежий атом $b$, играющий роль \emph{определительного сокращения}:
+$b \equiv B$. Поскольку $b$ и $B$ отождествляются на уровне типов, все правила
+именования имеют тривиальную термовую аннотацию. Рассмотрим два характерных
+случая.
+
+\textbf{Именование в положительной позиции} (например, в сукцеденте дизъюнкции).
+Подформула $B$ заменяется на $b$, добавляется клауза $b \rightarrow B$; аннотированное правило именования в положительной позиции представлено ниже.
+\begin{figure}[!htb]
+\centering
+\AxiomC{$\Gamma,\, f' : A \rightarrow (\ldots \lor b \lor \ldots),\, h : b \rightarrow B \vdash t : G$}
+\UnaryInfC{$\Gamma,\, f : A \rightarrow (\ldots \lor B \lor \ldots) \vdash t[f' := f,\; h := \lambda x.\, x] : G$}
+\DisplayProof
+\end{figure}
+
+\textbf{Именование в отрицательной позиции} (например, в антецеденте дизъюнкции).
+Подформула $B$ заменяется на $b$, добавляется клауза $B \rightarrow b$; аннотированное правило именования в отрицательной позиции представлено ниже.
+\begin{figure}[!htb]
+\centering
+\AxiomC{$\Gamma,\, f' : (\ldots \lor b \lor \ldots) \rightarrow a,\, h : B \rightarrow b \vdash t : G$}
+\UnaryInfC{$\Gamma,\, f : (\ldots \lor B \lor \ldots) \rightarrow a \vdash t[f' := f,\; h := \lambda x.\, x] : G$}
+\DisplayProof
+\end{figure}
+
+В обоих случаях подстановка тождественна: $f' := f$ и $h := \lambda x.\, x$,
+поскольку $b$ является определительным сокращением для $B$ и значения этих типов
+совпадают. Аналогичная аннотация применяется ко всем остальным позициям
+именования (конъюнкция, импликация).
+
+Совокупность аннотированных правил клаузификации и аннотированных правил LJT
+позволяет по выводу в $LJT_{SAT}$ построить $\lambda$-терм, являющийся
+свидетелем населённости исходного типа.
+
+\subsubsection{Извлечение терма из клаузальной формы}
+
+При клаузификации формула $\alpha$ приводится к виду $(\alpha \rightarrow q)
+\rightarrow q$, где $q$ --- свежий атом, не входящий в $\alpha$. Между $\alpha$
+и $(\alpha \rightarrow q) \rightarrow q$ имеет место \emph{эквивалентность
+доказуемости}: $\vdash_{\mathit{ipl}} \alpha$ тогда и только тогда, когда
+$\vdash_{\mathit{ipl}} (\alpha \rightarrow q) \rightarrow q$. Причем важно
+заметить, что эквивалентность доказуемости не означает эквивалентность формул,
+т.е. не выводима $\vdash_{\mathit{ipl}} a \leftrightarrow ((a \rightarrow q) \rightarrow q)$
+
+Допустим, процедура поиска вывода в $LJT_{SAT}$ завершилась успешно и по
+аннотированному выводу построен замкнутый $\lambda$-терм
+$M : (\alpha \rightarrow q) \rightarrow q$.
+Поскольку $q$ --- свежий атом, не входящий в $\alpha$, к доказательству
+применима \emph{равномерная подстановка}: замена атома $q$ на произвольную
+формулу $\psi$ во всём выводе сохраняет его корректность. При этом структура
+$\lambda$-терма $M$ не изменяется --- подстановка затрагивает только типовые
+аннотации, но не сам терм.
+
+Выполним подстановку $q := \alpha$. Терм $M$ приобретает тип
+$(\alpha \rightarrow \alpha) \rightarrow \alpha$.
+Тождественная функция $I = \lambda x.\, x$ имеет тип $\alpha \rightarrow
+\alpha$, поэтому применение
+\[
+M\, I \;\twoheadrightarrow_\beta\; N
+\]
+даёт терм $N : \alpha$, являющийся свидетелем населённости типа $\alpha$.
+
+\subsection{Исчисление $C^{\rightarrow}$}
+
+Фиорентини~\cite{Fiorentini2021} предложил упрощённый вариант исчисления
+$LJT_{SAT}$, названный $C^{\rightarrow}$, а также процедуру поиска вывода
+\texttt{proveR} (prove with Restart), реализованную в инструменте
+\texttt{intuitR}. По сравнению с $LJT_{SAT}$ исчисление $C^{\rightarrow}$ не
+содержит правила сечения и правила $(ljt)$; вместо них используется единственное
+правило $(cpl_1)$, в котором левая посылка проверяется \emph{классически}.
+Благодаря этому выводы в $C^{\rightarrow}$ имеют линейную структуру (единственная
+ветвь), что существенно упрощает как сам вывод, так и извлечение из него
+$\lambda$-терма.
+
+\subsubsection{Правила исчисления}
+
+Исчисление $C^{\rightarrow}$ работает с r-секвенциями $R, X \Rightarrow g$
+(того же вида, что и в $LJT_{SAT}$) и состоит из двух правил.
+
+\textbf{Правило $(cpl_0)$.} Аксиома: если плоские клаузы $R$ классически
+влекут $g$, секвенция выводима; правило $(cpl_0)$ исчисления $C^{\rightarrow}$ представлено на рисунке~\ref{fig:carrow-cpl0}.
+
+\begin{figure}[!htb]
+\centering
+\AxiomC{$R \vdash_{\mathit{cpl}} g$}
+\RightLabel{\scriptsize$cpl_0$}
+\UnaryInfC{$R, X \Rightarrow g$}
+\DisplayProof
+\caption{Правило $(cpl_0)$ исчисления $C^{\rightarrow}$}
+\label{fig:carrow-cpl0}
+\end{figure}
+
+\textbf{Правило $(cpl_1)$.} Пусть $(a \rightarrow b) \rightarrow c \in X$ и
+$A \subseteq \mathcal{V}$ --- множество пропозициональных переменных (локальные
+допущения). Если $R, A \vdash_{\mathit{cpl}} b$, формируется выученная клауза
+$\varphi = \bigwedge(A \setminus \{a\}) \rightarrow c$; правило $(cpl_1)$ исчисления $C^{\rightarrow}$ представлено на рисунке~\ref{fig:carrow-cpl1}.
+
+\begin{figure}[!htb]
+\centering
+\AxiomC{$R, A \vdash_{\mathit{cpl}} b$}
+\AxiomC{$R \cup \{\varphi\}, X \Rightarrow g$}
+\RightLabel{\scriptsize$cpl_1$}
+\BinaryInfC{$R, X \Rightarrow g$}
+\DisplayProof
+\caption{Правило $(cpl_1)$ исчисления $C^{\rightarrow}$}
+\label{fig:carrow-cpl1}
+\end{figure}
+
+Вывод в $C^{\rightarrow}$ представляет собой линейную последовательность
+применений правила $(cpl_1)$, завершающуюся применением $(cpl_0)$:
+на каждом шаге $k$ множество плоских клауз $R_k$ пополняется выученной клаузой
+$\varphi_k$, и следующий шаг работает с $R_{k+1} = R_k \cup \{\varphi_k\}$.
+
+Корректность правила $(cpl_1)$ основана на следующем свойстве: если
+$R, A \vdash_{\mathit{cpl}} b$, то
+$R, (a \rightarrow b) \rightarrow c \vdash_{\mathit{ipl}} \varphi$.
+Действительно, из $R, A \vdash_{\mathit{cpl}} b$ по лемме о плоских клаузах
+следует $R, A \vdash_{\mathit{ipl}} b$, откуда
+$R, A \setminus \{a\} \vdash_{\mathit{ipl}} a \rightarrow b$, и с учётом
+импликационной клаузы получаем
+$R, (a \rightarrow b) \rightarrow c, A \setminus \{a\} \vdash_{\mathit{ipl}} c$,
+что даёт $R, (a \rightarrow b) \rightarrow c \vdash_{\mathit{ipl}} \varphi$.
+
+\subsubsection{Аннотирование правил}
+
+Как и для LJT, r-секвенции $R, X \Rightarrow g$ могут быть аннотированы
+$\lambda$-термами: каждой плоской клаузе из $R$ сопоставляется переменная,
+импликационной клаузе $(a \rightarrow b) \rightarrow c \in X$ --- переменная
+$h : (a \rightarrow b) \rightarrow c$, заключению --- терм $t : g$.
+
+\textbf{Правило $(cpl_0)$.} Если $R \vdash_{\mathit{cpl}} g$, терм $t : g$
+строится из переменных плоских клауз $R$; множество $X$ в аннотации не
+участвует; аннотированное правило $(cpl_0)$ представлено на рисунке~\ref{fig:annotated-carrow-cpl0}.
+
+\begin{figure}[!htb]
+\centering
+\AxiomC{$R \vdash_{\mathit{cpl}} g$}
+\RightLabel{\scriptsize$cpl_0$}
+\UnaryInfC{$R, X \vdash t : g$}
+\DisplayProof
+\caption{Аннотированное правило $(cpl_0)$}
+\label{fig:annotated-carrow-cpl0}
+\end{figure}
+
+\textbf{Сечение $(cut_{\mathit{ipl}})$.} Правило $(cpl_1)$ реализует сечение
+с синтезированным доказательством выученной клаузы; аннотированная схема сечения представлена на рисунке~\ref{fig:annotated-carrow-cut}.
+
+\begin{figure}[!htb]
+\centering
+\AxiomC{$\Gamma \vdash s : \varphi$}
+\AxiomC{$\Delta,\, f : \varphi \vdash t : g$}
+\RightLabel{\scriptsize$cut_{\mathit{ipl}}$}
+\BinaryInfC{$\Gamma, \Delta \vdash t[f := s] : g$}
+\DisplayProof
+\caption{Аннотированная схема сечения}
+\label{fig:annotated-carrow-cut}
+\end{figure}
+
+\textbf{Правило $(cpl_1)$.} Пусть $\iota = (a \rightarrow b) \rightarrow c \in X$,
+$A \subseteq \mathcal{V}$ и $R, A \vdash_{\mathit{cpl}} b$. SAT-решатель
+возвращает минимальное подмножество $A' \subseteq A$, достаточное для вывода;
+по лемме о плоских клаузах существует терм $p : b$ в контексте $R$ и
+переменных $x_q : q$ для $q \in A'$. Выученная клауза
+$\varphi = \bigwedge(A \setminus \{a\}) \rightarrow c$ в каррированном виде
+имеет тип $u_1 \rightarrow (\ldots \rightarrow c)$ для атомов
+$u_i \in A \setminus \{a\}$. Терм для $\varphi$:
+\[
+s \;=\; \lambda \vec u.\; h(\lambda x^a.\, p'),
+\]
+где $\vec u$ --- последовательность абстракций по атомам из $A \setminus \{a\}$,
+а $p'$ --- терм $p$ с подстановкой соответствующих $\vec u$ вместо переменных
+из $A'$. Аннотированное правило $(cpl_1)$ представлено на рисунке~\ref{fig:annotated-carrow-cpl1}.
+
+\begin{figure}[!htb]
+\centering
+\AxiomC{$R, A \vdash_{\mathit{cpl}} b$}
+\AxiomC{$R,\, f : \varphi,\, X \vdash t : g$}
+\RightLabel{\scriptsize$cpl_1$}
+\BinaryInfC{$R,\, h : (a \rightarrow b) \rightarrow c,\, X \vdash t[f := s] : g$}
+\DisplayProof
+\caption{Аннотированное правило $(cpl_1)$}
+\label{fig:annotated-carrow-cpl1}
+\end{figure}
+
+\noindent
+Левая посылка не содержит $\lambda$-терма --- только классическое
+свидетельство $A'$. Терм $s$ синтезируется из переменной $h$ импликационной
+клаузы и существования $p : b$. Правило $(cpl_1)$ --- линейная замена связки
+$(ljt) + (cut_{\mathit{ipl}})$: вместо явного IPL-вывода $b$ слева
+используется классическая проверка, а подстановка $t[f := s]$ выполняет
+сечение с выученной клаузой $\varphi$.
+
+\medskip
+\noindent
+\textbf{Пример.} Пусть $A = \{a\}$, тогда $A \setminus \{a\} = \varnothing$ и
+$\varphi = c$. Если $R, \{a\} \vdash_{\mathit{cpl}} b$ и $p : b$ при $x : a$,
+то $s = h(\lambda x^a.\, p) : c$, и заключение имеет вид
+$t[f := h(\lambda x^a.\, p)] : g$.
+
+\subsubsection{Процедура поиска вывода}
+\label{subsec:carrow-prover}
+
+Процедура \texttt{proveR}$(R, X, g)$ реализует поиск вывода в $C^{\rightarrow}$
+с помощью двух вложенных циклов и инкрементального SAT-решателя $s$. Как и
+$\textsc{LJTSat}$, она следует схеме CEGAR (подраздел~\ref{subsec:cegar}): SAT
+проверяет классическую выводимость, контрмодель порождает выученную клаузу или
+ветвление по импликационным клаузам.
+
+\emph{Главный цикл} начинается с пустого множества интерпретаций $W$ и вызова
+SAT-решателя: $R(s) \vdash_{\mathit{cpl}} g$? Если ответ положительный,
+секвенция выводима по правилу $(cpl_0)$. В противном случае SAT-решатель
+возвращает классическую контрмодель $M$, и начинается внутренний цикл.
+
+\emph{Внутренний цикл} пополняет множество $W$ интерпретациями и ищет пару
+$\langle w, \lambda \rangle$, где $w \in W$, $\lambda = (a \rightarrow b)
+\rightarrow c \in X$ и $w$ не реализует $\lambda$ в модели $K(W)$. Если такой
+пары нет, $K(W)$ является контрмоделью Крипке и процедура завершается с ответом
+\texttt{CountSat}. Если пара найдена, SAT-решателю передаётся запрос:
+$R(s), w \cup \{a\} \vdash_{\mathit{cpl}} b$? При отрицательном ответе
+возвращённая интерпретация $M$ добавляется в $W$, и внутренний цикл продолжается.
+При положительном ответе из возвращённых допущений $A$ формируется выученная
+клауза $\varphi = \bigwedge(A \setminus \{a\}) \rightarrow c$, которая
+добавляется в SAT-решатель, множество $W$ очищается и главный цикл
+перезапускается (\emph{restart}).
+
+Завершаемость главного цикла гарантируется тем, что выученные клаузы попарно
+не классически эквивалентны: каждая новая клауза $\varphi_k$ ложна на
+интерпретации $w_k$, а все ранее выученные --- истинны на ней. Завершаемость
+внутреннего цикла следует из строгого роста $W$ на каждой итерации при конечном
+универсуме $U(s)$.
+
+\subsubsection{Преимущества перед $LJT_{SAT}$}
+
+Исчисление $C^{\rightarrow}$ и процедура \texttt{proveR} обладают рядом
+преимуществ по сравнению с $LJT_{SAT}$ и исходной процедурой
+\texttt{intuit}~\cite{ClaessenRosen2015}.
+
+\textbf{Линейная структура вывода.} Вывод в $C^{\rightarrow}$
+представляет собой единственную ветвь без сечений, тогда как вывод в
+$LJT_{SAT}$ может содержать ветвления (правило $(ljt)$) и применения правила
+сечения. Это упрощает извлечение $\lambda$-терма.
+
+\textbf{Компактные контрмодели.} Перезапуск (\emph{restart}) очищает
+множество $W$, исключая избыточные миры. На бенчмарке SYJ212 ($k = 25$)
+контрмодель \texttt{intuitR} содержит 4 мира против 1955 у \texttt{intuit}.
+
+\textbf{Производительность.} На стандартном наборе из 1200 бенчмарков
+\texttt{intuitR} решает больше задач и в целом работает быстрее, чем
+\texttt{intuit}, \texttt{fCube} и \texttt{intHistGC}.
+
+\section{Технологическая часть}
+
+В рамках работы разработан программный прототип доказателя формул
+интуиционистской пропозициональной логики. Прототип реализует описанный выше
+подход на основе клаузификации, исчисления $C^{\rightarrow}$, инкрементального
+SAT/SMT-решателя и последующего аннотирования найденного вывода
+$\lambda$-термами. Основная цель реализации состоит не только в ответе на
+вопрос о выводимости формулы, но и в построении артефактов, полезных для
+визуализации соответствия Карри---Говарда: дерева доказательства, контрмодели
+Крипке и терма, свидетельствующего о населённости соответствующего типа.
+
+\subsection{Выбранные технологии}
+
+Прототип реализован на языке Haskell~\cite{HaskellReport2010,GHCUserGuide}. Этот
+выбор обусловлен тем, что структуры формул, секвенций, клауз, правил вывода и
+$\lambda$-термов естественно описываются алгебраическими типами данных. Кроме
+того, сильная статическая типизация позволяет разделить несколько уровней
+представления: неаннотированные деревья доказательств, деревья с аннотациями
+SAT-решателя и деревья с $\lambda$-термами.
+
+Сборка проекта выполняется с помощью Stack~\cite{StackDocs}. В качестве внешнего
+решателя используется Z3; он применяется как инкрементальный классический
+SAT/SMT-оракул для проверки плоских клауз и извлечения ядра невыполнимости
+(\emph{unsat core}). Основными библиотеками реализации
+(документация на Hackage~\cite{Hackage}) являются:
+\begin{itemize}
+\item \texttt{z3} --- низкоуровневые привязки к API Z3;
+\item \texttt{containers} --- структуры \texttt{Map} и \texttt{Set} для
+  хранения окружений, множеств атомов и миров контрмодели;
+\item \texttt{mtl} --- монада состояния для клаузификации и генерации свежих
+  переменных;
+\item \texttt{fmt} --- форматирование формул, секвенций и графов DOT.
+\end{itemize}
+
+Справочные материалы по языку и экосистеме Haskell также доступны на
+HaskellWiki~\cite{HaskellWiki}.
+
+\subsection{Основные структуры данных и классы}
+
+Реализация построена вокруг небольшого набора алгебраических типов данных.
+Каждый такой тип соответствует объекту из теоретической части: формуле, клаузе,
+секвенции, правилу вывода, контрмодели или $\lambda$-терму. Благодаря этому
+переходы между фазами алгоритма выражаются как преобразования типизированных
+структур, а не как обработка строкового представления формул.
+
+\texttt{Atom\_} описывает атомарные формулы. В нём различаются обычная
+пропозициональная переменная, константа истины $\top$ и константа ложности
+$\bot$. Этот тип используется во всех последующих структурах, поскольку после
+клаузификации левая и правая части клауз состоят только из атомов.
+
+\texttt{Formula\_} задаёт синтаксическое дерево исходной формулы IPL. В нём
+есть четыре конструктора: импликация, конъюнкция, дизъюнкция и атом.
+Импликация, конъюнкция и дизъюнкция хранят списки подформул; такое
+представление удобно для правил, которые раскладывают цепочки импликаций или
+многоместные конъюнкции и дизъюнкции.
+
+Класс \texttt{Formula} задаёт общий интерфейс для объектов, которые могут
+рассматриваться как формулы. Он предоставляет операции извлечения атомов,
+попытки распознать специализированную структуру из общей формулы и обратного
+преобразования в \texttt{Formula\_}. За счёт этого одни и те же функции могут
+работать с формулами, атомами, плоскими клаузами и импликационными клауза\-ми.
+
+\begin{listing}[!htb]
+\caption{Тип атомарных формул \texttt{Atom\_}}
+\label{lst:refactoring-atom}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
+data Atom_ = Top | Bottom | Variable String
+  deriving (Eq, Ord, Show)
+\end{minted}
+\end{listing}
+
+Листинг~\ref{lst:refactoring-atom} фиксирует минимальный набор атомов,
+который затем используется в формулах, клауза\-х, секвенциях и моделях.
+
+\begin{listing}[!htb]
+\caption{Тип формул \texttt{Formula\_}}
+\label{lst:refactoring-formula-type}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
+data Formula_ =
+  Implication [Formula_] |
+  Conjunction [Formula_] |
+  Disjunction [Formula_] |
+  Atom Atom_
+  deriving (Eq, Ord, Show)
+\end{minted}
+\end{listing}
+
+Листинг~\ref{lst:refactoring-formula-type} показывает представление
+синтаксического дерева исходной формулы до перехода к клаузальной форме.
+
+\begin{listing}[!htb]
+\caption{Класс преобразования в формулу \texttt{Formula}}
+\label{lst:refactoring-formula-class}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
+class Formula f where
+  atoms :: f -> [Atom_]
+  fromFormula :: Formula_ -> Maybe f
+  toFormula :: f -> Formula_
+\end{minted}
+\end{listing}
+
+Листинг~\ref{lst:refactoring-formula-class} задаёт интерфейс, через который
+специализированные структуры распознаются в общей формуле и собираются обратно.
+
+\texttt{Annotated\_ a b} --- универсальная обёртка для хранения аннотаций.
+Значение типа \texttt{b} содержит сам математический объект, а значение типа
+\texttt{a} содержит дополнительную информацию, зависящую от фазы алгоритма. На
+ранних этапах аннотация может быть пустой; при работе с Z3 в ней хранится
+AST-узел решателя; после аннотирования доказательства --- $\lambda$-терм.
+
+\begin{listing}[!htb]
+\caption{Универсальная аннотация \texttt{Annotated\_}}
+\label{lst:refactoring-annotated}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
+data Annotated_ a b = Annotated {
+  annotation :: a,
+  annotated :: b
+}
+\end{minted}
+\end{listing}
+
+В листинге~\ref{lst:refactoring-annotated} показано, что аннотация хранится
+рядом с объектом и может меняться независимо от логического содержимого.
+
+\texttt{Flat\_} представляет плоскую клаузу вида
+$\bigwedge A_i \rightarrow \bigvee B_j$. В реализации она хранит два списка
+аннотированных атомов: список посылок и список заключений. Такие клаузы
+добавляются в Z3 и образуют классическую часть задачи.
+
+\texttt{Impl\_} представляет импликационную клаузу вида
+$(a \rightarrow b) \rightarrow c$. Именно такие клаузы образуют множество $X$ в
+исчислении $C^{\rightarrow}$ и выбираются во внутреннем CEGAR-цикле, когда
+построенная модель нарушает интуиционистскую импликацию.
+
+\texttt{Unclausified\_} описывает промежуточное состояние клаузификации. Оно
+содержит зоны $R$, $X$, $U$ и цель: уже полученные плоские клаузы,
+импликационные клаузы, ещё не обработанные формулы и целевой атом. Эта
+структура нужна для пошагового применения правил клаузификации.
+
+\texttt{Intuit\_} описывает r-секвенцию исчисления $C^{\rightarrow}$:
+множество плоских клауз $R$, множество импликационных клауз $X$ и цель. Она
+получается после завершения клаузификации и является входом для основного
+CEGAR-поиска.
+
+\texttt{Classic\_} описывает классическую подзадачу вида $R, A \vdash g$, где
+$R$ --- плоские клаузы, $A$ --- локальные атомарные допущения, а $g$ --- цель.
+Такие секвенции появляются в правилах \texttt{CPL0} и \texttt{CPL1}, а затем
+доказываются LJT-процедурой.
+
+\begin{listing}[!htb]
+\caption{Тип плоской клаузы \texttt{Flat\_}}
+\label{lst:refactoring-flat}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
+data Flat_ a =
+  Flat [Annotated_ a Atom_] [Annotated_ a Atom_]
+\end{minted}
+\end{listing}
+
+Листинг~\ref{lst:refactoring-flat} отражает форму плоской клаузы как пары
+списков атомов: посылок и возможных заключений.
+
+\begin{listing}[!htb]
+\caption{Тип импликационной клаузы \texttt{Impl\_}}
+\label{lst:refactoring-impl}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
+data Impl_ a =
+  Impl (Annotated_ a Atom_)
+       (Annotated_ a Atom_)
+       (Annotated_ a Atom_)
+\end{minted}
+\end{listing}
+
+Листинг~\ref{lst:refactoring-impl} показывает компактное представление клаузы
+$(a \rightarrow b) \rightarrow c$ тремя атомами.
+
+\begin{listing}[!htb]
+\caption{Секвенция фазы клаузификации \texttt{Unclausified\_}}
+\label{lst:refactoring-unclausified}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
+data Unclausified_ a c =
+  Unclausified
+    [Annotated_ a (Flat_ c)]
+    [Annotated_ a (Impl_ c)]
+    [Annotated_ a Formula_]
+    (Annotated_ (a, c) Atom_)
+\end{minted}
+\end{listing}
+
+В листинге~\ref{lst:refactoring-unclausified} выделена зона $U$, где хранятся
+формулы, ещё не переведённые в плоские или импликационные клаузы.
+
+\begin{listing}[!htb]
+\caption{r-секвенция \texttt{Intuit\_}}
+\label{lst:refactoring-intuit}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
+data Intuit_ a c =
+  Intuit
+    [Annotated_ a (Flat_ c)]
+    [Annotated_ a (Impl_ c)]
+    (Annotated_ (a, c) Atom_)
+\end{minted}
+\end{listing}
+
+Листинг~\ref{lst:refactoring-intuit} соответствует r-секвенции
+$R, X \Rightarrow g$, которая является входом алгоритма $C^{\rightarrow}$.
+
+\begin{listing}[!htb]
+\caption{Классическая секвенция \texttt{Classic\_}}
+\label{lst:refactoring-classic}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
+data Classic_ a c =
+  Classic
+    [Annotated_ a (Flat_ c)]
+    [Annotated_ (a, c) Atom_]
+    (Annotated_ (a, c) Atom_)
+\end{minted}
+\end{listing}
+
+Листинг~\ref{lst:refactoring-classic} показывает форму классической подзадачи:
+плоские клаузы, локальные атомарные допущения и атомарная цель.
+
+\texttt{ClausificationRule\_}, \texttt{CArrowRule\_} и \texttt{LJTRule\_}
+описывают не только факт успешного применения правила, но и дерево вывода.
+Благодаря этому история работы алгоритма сохраняется в структурированном виде
+и может быть затем аннотирована $\lambda$-термами или выведена как граф.
+
+\begin{listing}[!htb]
+\caption{Дерево правил клаузификации \texttt{ClausificationRule\_}}
+\label{lst:refactoring-clausification-rule}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
+data ClausificationRule_ a c =
+  AsImpl (Unclausified_ a c) (ClausificationRule_ a c) Formula_ (Impl_ c) [Substitution_] |
+  AsFlat (Unclausified_ a c) (ClausificationRule_ a c) Formula_ (Flat_ c) [Substitution_] |
+  ImplImpliesFlat (Unclausified_ a c) (ClausificationRule_ a c) (Impl_ c) (Flat_ c) [Substitution_] |
+  MakeImpl (Unclausified_ a c) (ClausificationRule_ a c) Formula_ Formula_ [Substitution_] |
+  LeftDs (Unclausified_ a c) (ClausificationRule_ a c) Formula_ [Formula_] [Substitution_] |
+  RightCs (Unclausified_ a c) (ClausificationRule_ a c) Formula_ [Formula_] [Substitution_] |
+  Uncurry (Unclausified_ a c) (ClausificationRule_ a c) Formula_ Formula_ [Substitution_] |
+  Aliasing (Unclausified_ a c) (ClausificationRule_ a c) Formula_ Formula_ [Formula_] [Substitution_] |
+  FinishClausification (Unclausified_ a c) (Intuit_ a c) |
+  StartCArrow (Unclausified_ a c) (CArrowRule_ a c)
+\end{minted}
+\end{listing}
+
+В листинге~\ref{lst:refactoring-clausification-rule} каждый конструктор
+соответствует одному правилу преобразования формул в клаузальную форму. Список
+\texttt{Substitution\_} хранит термовые подстановки, которые появляются при
+последующем аннотировании доказательства.
+
+\begin{listing}[!htb]
+\caption{Дерево правил $C^{\rightarrow}$ \texttt{CArrowRule\_}}
+\label{lst:refactoring-carrow-rule}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
+data CArrowRule_ a c =
+  CPL0 (Intuit_ a c) (Classic_ a c) |
+  CPL1 (Intuit_ a c) (Classic_ a c) (CArrowRule_ a c) (Flat_ c) (Impl_ c) |
+  ExCPL0 (Intuit_ a c) (LJTRule_ a c) [Substitution_] |
+  ExCPL1 (Intuit_ a c) (LJTRule_ a c) (CArrowRule_ a c) (Flat_ c) (Impl_ c) [Substitution_]
+\end{minted}
+\end{listing}
+
+Листинг~\ref{lst:refactoring-carrow-rule} показывает как исходные правила
+\texttt{CPL0}/\texttt{CPL1}, так и их расширенные версии с LJT-поддеревьями и
+подстановками, возникающими при аннотировании.
+
+\texttt{Solver\_} инкапсулирует состояние Z3: контекст, инкрементальный
+решатель и соответствие между атомами задачи и булевыми AST-узлами. Через эту
+структуру выполняются две операции: добавление плоских клауз и проверка
+классической выводимости цели при заданных атомарных допущениях.
+
+\texttt{CounterModel\_} и \texttt{World} представляют конечную контрмодель
+Крипке. Мир хранит множество истинных в нём атомов, а \texttt{CounterModel\_}
+хранит сами миры и отношение достижимости между ними. Эта структура строится в
+случае, если CEGAR-процедура не может получить новую выученную клаузу и тем
+самым обнаруживает невалидность формулы.
+
+\begin{listing}[!htb]
+\caption{Состояние решателя \texttt{Solver\_}}
+\label{lst:refactoring-solver}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
+data Solver_ =
+  Solver
+    Z3.Context
+    Z3.Solver
+    [Annotated_ Z3.AST Atom_]
+\end{minted}
+\end{listing}
+
+Листинг~\ref{lst:refactoring-solver} показывает состояние, необходимое для
+инкрементального взаимодействия с Z3.
+
+\begin{listing}[!htb]
+\caption{Результат SAT-проверки \texttt{SatProveResult\_}}
+\label{lst:refactoring-sat-prove-result}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
+data SatProveResult_ =
+  Yes [Annotated_ Z3.AST Atom_] |
+  No [Annotated_ Z3.AST Atom_]
+\end{minted}
+\end{listing}
+
+В листинге~\ref{lst:refactoring-sat-prove-result} результат SAT-запроса
+разделён на успешное классическое доказательство и контрпример-модель.
+
+\begin{listing}[!htb]
+\caption{Мир контрмодели \texttt{World}}
+\label{lst:refactoring-world}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
+data World a =
+  World Int (Set (Annotated_ a Atom_))
+\end{minted}
+\end{listing}
+
+Листинг~\ref{lst:refactoring-world} задаёт один мир контрмодели как номер и
+множество атомов, истинных в этом мире.
+
+\begin{listing}[!htb]
+\caption{Контрмодель Крипке \texttt{CounterModel\_}}
+\label{lst:refactoring-countermodel}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
+data CounterModel_ a = CounterModel {
+  reachableTo :: Map Int [Int],
+  reachableFrom :: Map Int [Int],
+  worlds :: Map Int (World a)
+}
+\end{minted}
+\end{listing}
+
+Листинг~\ref{lst:refactoring-countermodel} показывает, что контрмодель хранит
+и сами миры, и отношение достижимости между ними.
+
+\texttt{Lambda\_} описывает термы расширенного $\lambda$-исчисления:
+переменные, абстракции, применения, пары, проекции, вложения в сумму, разбор
+случаев и вспомогательные конструкции для подстановок. Этот тип используется
+на последней фазе, когда из дерева доказательства извлекается программное
+содержание.
+
+\begin{listing}[!htb]
+\caption{Термы расширенного $\lambda$-исчисления}
+\label{lst:refactoring-lambda}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
+data Lambda_ =
+  Abstraction [String] Lambda_ |
+  Const Lambda_ |
+  Variable { varName :: String } |
+  Case Lambda_ [(String, Lambda_)] |
+  Sum Int Int Lambda_ |
+  Product [Lambda_] |
+  Proj Int Int Lambda_ |
+  Insert Int Int Lambda_ Lambda_ |
+  Application [Lambda_]
+\end{minted}
+\end{listing}
+
+Листинг~\ref{lst:refactoring-lambda} перечисляет термовые конструкции,
+соответствующие импликации, конъюнкции и дизъюнкции по Карри---Говарду.
+Некоторые конструкции являются специальными термами, которые используются для
+компактной записи операций над произведениями и суммами типов:
+\begin{itemize}
+\item \texttt{Const} печатается как \texttt{K}. Это абстракция, которая
+  принимает одну переменную и возвращает зафиксированное тело;
+\item \texttt{Case} печатается в виде
+  \texttt{Case(expr, [c]Body...)}. Здесь \texttt{expr} имеет тип суммы. Если
+  \texttt{expr = Sum(n, i, e)}, где \texttt{n} --- размер суммы типов,
+  \texttt{i} --- номер выбранного варианта, а \texttt{e} --- значение выбранного
+  типа, то результатом редукции является \texttt{Body\_i[c := e]};
+\item \texttt{Product} задаёт терм произведения типов своих операндов;
+\item \texttt{Proj(n, i, p)} задаёт $i$-ю проекцию пары \texttt{p} длины
+  \texttt{n};
+\item \texttt{Insert(n, i, p, e)} задаёт вставку элемента \texttt{e} в пару
+  \texttt{p} длины \texttt{n} на позицию \texttt{i}.
+\end{itemize}
+
+\begin{listing}[!htb]
+\caption{Подстановка \texttt{Substitution\_}}
+\label{lst:refactoring-substitution}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
+data Substitution_ =
+  Substitution String Lambda_
+\end{minted}
+\end{listing}
+
+Листинг~\ref{lst:refactoring-substitution} задаёт одну операцию замены: имя
+переменной и терм, который должен быть подставлен вместо неё.
+
+Для большинства перечисленных структур определены экземпляры стандартных
+классов \texttt{Functor} и \texttt{Bifunctor}. Они позволяют менять только
+аннотации дерева, не затрагивая его логическое содержимое. Это важно, поскольку
+одно и то же дерево проходит через несколько представлений: сначала оно не
+аннотировано, затем содержит технические аннотации Z3, а в конце содержит
+$\lambda$-термы. Экземпляры \texttt{Buildable} используются для единообразного
+вывода формул, секвенций, правил и DOT-графов.
+
+\subsection{Конвейер доказательства}
+
+Доказательство состоит из нескольких последовательных фаз. Исходный текст
+формулы разбирается парсером, затем процедура клаузификации строит r-секвенцию
+$R, X \Rightarrow g$, где $R$ --- множество плоских клауз, $X$ --- множество
+импликационных клауз вида $(a \rightarrow b) \rightarrow c$, а $g$ --- атомарная
+цель. К полученной секвенции применяется SAT-ориентированный алгоритм
+\texttt{proveR} (реализация \texttt{carrow}), описанный
+Фиорентини~\cite{Fiorentini2021}: он либо строит вывод в $C^{\rightarrow}$, либо
+завершает работу конечной контрмоделью Крипке. При успешном выводе дерево
+дополняется LJT-поддеревьями, аннотируется $\lambda$-термами, редуцируется и
+выводится в формате DOT.
+
+Полный конвейер функции \texttt{prove} представлен на
+рисунке~\ref{fig:pipeline-full}. На верхнем уровне выделяются шесть стадий
+S0--S5; детальные схемы отдельных блоков (предобработка, \texttt{carrow},
+постобработка) приведены на рисунках~\ref{fig:pipeline-pre}--\ref{fig:pipeline-invalid-post}.
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=0.42\textwidth]{full.png}
+\caption{Общая схема конвейера доказательства}
+\label{fig:pipeline-full}
+\end{figure}
+
+Стадии конвейера на рисунке~\ref{fig:pipeline-full} имеют следующий смысл:
+\begin{itemize}
+\item \textbf{S0} --- предобработка формулы: парсинг и клаузификация
+  (\texttt{parseFormula}, \texttt{clausify});
+\item \textbf{S1} --- построение дерева доказательства процедурой \texttt{carrow}
+  (\texttt{proveR});
+\item \textbf{S2} --- если формула валидна, на стадии~S1 возвращается дерево
+  вывода $\mathrm{Proof}$;
+\item \textbf{S3} --- если формула невалидна, на стадии~S1 возвращается
+  контрмодель $K$;
+\item \textbf{S4} --- для валидного исхода дерево вывода аннотируется
+  $\lambda$-термами;
+\item \textbf{S5} --- результат (аннотированное дерево или контрмодель)
+  преобразуется в формат DOT.
+\end{itemize}
+
+\subsubsection{Предобработка формулы}
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=0.65\textwidth]{pre.png}
+\caption{Предобработка формулы перед доказательством}
+\label{fig:pipeline-pre}
+\end{figure}
+
+На рисунке~\ref{fig:pipeline-pre} показана стадия~S0 общей схемы: на вход
+подаётся текст формулы, который последовательно преобразуется в r-секвенцию.
+Шаги предобработки имеют следующий смысл:
+\begin{itemize}
+\item \textbf{парсинг} --- исходный текст разбирается функцией
+  \texttt{parseFormula}: $F := \mathrm{parseFormula}$;
+\item \textbf{клаузификация} --- процедура \texttt{clausify} строит начальную
+  секвенцию и выделяет множество плоских клауз $R$, множество импликационных
+  клауз $X$ и атомарную цель $g$: $\{R, X, g\} := \mathrm{clausify}\, F$.
+\end{itemize}
+Результатом предобработки становится тройка $\{R, X, g\}$, передаваемая на
+следующую стадию.
+
+\subsubsection{Доказательство}
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=0.65\textwidth]{carrow.png}
+\caption{Алгоритм \texttt{carrow} (\texttt{proveR})}
+\label{fig:pipeline-carrow}
+\end{figure}
+
+На рисунке~\ref{fig:pipeline-carrow} представлена стадия~S1 общей схемы:
+SAT-ориентированный алгоритм \texttt{carrow}, реализующий поиск вывода в
+$C^{\rightarrow}$ по схеме Фиорентини~\cite{Fiorentini2021}. Нумерация S0--S6
+на этом рисунке относится к внутренним шагам \texttt{carrow}, а не к стадиям
+конвейера на рисунке~\ref{fig:pipeline-full}. Алгоритм использует один
+инкрементальный SAT-решатель $s$, множество миров $W$ контрмодели и выученные
+плоские клаузы. Построение контрмодели выполняется во внутреннем цикле
+\texttt{innerLoop}. Шаги алгоритма имеют следующий смысл:
+
+\noindent 1. \textbf{S0} --- создаётся SAT-решатель и в него добавляются все плоские
+  клаузы из $R$: $s := \mathrm{newSolver}$, $s := \mathrm{addClause}\, s\, R$.
+
+\noindent 2. \textbf{S1} --- начинается новая итерация главного цикла, контрмодель
+  перезапускается: $K := \varnothing$.
+
+\noindent 3. \textbf{S2} --- вызывается $\mathrm{satProve}(s, \varnothing, g)$. Если
+  выполняется $R(s) \vdash g$, формула доказана и возвращается дерево вывода
+  $\{\mathrm{Proof}\}$; иначе начинается построение контрмодели.
+
+\noindent 4. \textbf{S3} --- в структуру контрмодели добавляется новый мир $M$ с оценкой составленной из атомов модели полученной от SAT-решателя:
+  $W := \mathrm{addWorld}\, K\, M$ (шаг внутреннего цикла).
+
+\noindent 5. \textbf{S4} --- выбирается пара $\langle w, (a \rightarrow b) \rightarrow c\rangle$,
+  где $w \not\Vdash (a \rightarrow b) \rightarrow c$. Если такой пары нет,
+  алгоритм завершается контрмоделью $\{\mathrm{invalid}, K\}$.
+
+\noindent 6. \textbf{S5} --- проверяется выводимость $R(s), w \cup \{a\} \vdash b$.
+  При ответе \texttt{sat} атомы, принимающие значение истины, образуют новый
+  мир и добавляются на шаге~S3; при ответе \texttt{unsat} выполняется шаг~S6.
+
+\noindent 7. \textbf{S6} --- по unsat core $A$ строится выученная плоская клауза
+  $\varphi = \bigwedge(A \setminus \{a\}) \rightarrow c$, она добавляется в
+  решатель, после чего контрмодель перезапускается с шага~S1.
+
+Псевдокод процедуры \texttt{proveR}, соответствующий этой схеме, приведён в
+приложении~\ref{app:prover}.
+
+\subsubsection{Постобработка при доказанной формуле}
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=0.65\textwidth]{valid-post.png}
+\caption{Постобработка успешного доказательства}
+\label{fig:pipeline-valid-post}
+\end{figure}
+
+Если \texttt{carrow} возвращает $\{\mathrm{valid}, \mathrm{Proof}\}$ (стадия~S2
+общей схемы), дерево вывода проходит через стадию~S4; детальная цепочка
+преобразований показана на рисунке~\ref{fig:pipeline-valid-post}. Нумерация
+S0--S3 на этом рисунке относится к внутренним шагам постобработки; стадии
+S4 и~S5 общей схемы соответствуют блокам \texttt{annotating} и \texttt{formatting}
+на рисунке~\ref{fig:pipeline-full}. Шаги постобработки имеют следующий смысл:
+\begin{itemize}
+\item \textbf{S0} --- дерево $\mathrm{Proof}$ дополняется выводом в исчислении
+  LJT функцией \texttt{extendProof};
+\item \textbf{S1} --- к узлам дерева подставляются $\lambda$-термы по истории
+  клаузификации функцией \texttt{annotateClausification};
+\item \textbf{S2} --- термовые аннотации $\beta$-редуцируются функцией
+  \texttt{reduce};
+\item \textbf{S3} --- результат форматируется в граф DOT.
+\end{itemize}
+
+\subsubsection{Постобработка при контрмодели}
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=0.65\textwidth]{invalid-post.png}
+\caption{Постобработка найденной контрмодели}
+\label{fig:pipeline-invalid-post}
+\end{figure}
+
+Если \texttt{carrow} возвращает $\{\mathrm{invalid}, K\}$ (стадия~S3 общей
+схемы), контрмодель форматируется на стадии~S5; детали приведены на
+рисунке~\ref{fig:pipeline-invalid-post}. Внутренний шаг~S0 на этом рисунке
+совпадает со стадией~S5 общей схемы:
+\begin{itemize}
+\item \textbf{S0} --- структура $K$ преобразуется в граф DOT:
+  $\mathrm{format}\, K$.
+\end{itemize}
+
+На стадии~S5 общей схемы обе ветви сходятся: аннотированное дерево вывода или
+контрмодель переводятся в формат DOT для визуализации.
+
+Центральная функция \texttt{prove} связывает эти фазы в единый конвейер:
+строит начальную секвенцию, запускает клаузификацию, подготавливает Z3,
+вызывает поиск вывода в $C^{\rightarrow}$ и в случае успеха запускает
+построение LJT-поддеревьев, аннотирование, редукцию и визуализацию. Основной
+листинг этой функции приведён в приложении~\ref{app:prove}.
+
+\subsubsection{Клаузификация}
+
+На первой фазе исходная формула $F$ преобразуется в начальную секвенцию с
+целью $\$$:
+\[
+F \rightarrow \$ \;\Rightarrow\; \$.
+\]
+Функция \texttt{clausify} применяет правила \texttt{AsImpl},
+\texttt{AsFlat}, \texttt{MakeImpl}, \texttt{LeftDs}, \texttt{RightCs},
+\texttt{Uncurry}, \texttt{Aliasing} и \texttt{ImplImpliesFlat}. Результатом
+является не только итоговая секвенция \texttt{Intuit\_}, но и дерево
+\texttt{ClausificationRule\_}, фиксирующее все преобразования.
+
+\begin{listing}[!htb]
+\caption{Список правил клаузификации \texttt{clausificationRules}}
+\label{lst:refactoring-clausification-rules}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
+clausificationRules :: [ClausificationRuleSignature]
+clausificationRules = [ applyFinishClausification,
+                        applyAsImpl,
+                        applyAsFlat,
+                        applyLeftDs,
+                        applyRightCs,
+                        applyUncurry,
+                        applyAliasing,
+                        applyMakeImpl
+                      ]
+\end{minted}
+\end{listing}
+
+Листинг~\ref{lst:refactoring-clausification-rules} задаёт порядок, в котором
+процедура клаузификации пытается применить правила к текущей секвенции.
+
+\begin{listing}[!htb]
+\caption{Функция клаузификации \texttt{clausify}}
+\label{lst:refactoring-clausify}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
+clausify :: UnclausifiedII -> State ClausificationState_ ClausificationRuleII
+clausify ucseq = do
+  let appliedRules = map ($ ucseq) clausificationRules
+  fromJust $ asum appliedRules
+\end{minted}
+\end{listing}
+
+Листинг~\ref{lst:refactoring-clausify} показывает диспетчер: функция строит
+список возможных применений правил и выбирает первое успешное. Несмотря на
+использование \texttt{map}, все правила не применяются заранее: благодаря
+ленивым вычислениям Haskell элементы списка \texttt{appliedRules} вычисляются
+только по мере требования со стороны \texttt{asum}, поэтому фактически
+проверяются правила до первого успешного применения.
+
+\begin{listing}[!htb]
+\caption{Правило клаузификации \texttt{applyAsImpl}}
+\label{lst:refactoring-apply-as-impl}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
+applyAsImpl :: ClausificationRuleSignature
+applyAsImpl ucseq@(Unclausified flats impls (uc : ucs) goal) = do
+  impl <- fromFormula $ annotated uc
+  let sequent = Unclausified flats (Annotated () impl : impls) ucs goal
+  return $ do
+    rule <- clausify sequent
+    return $ AsImpl ucseq rule (annotated uc) impl []
+applyAsImpl _ = Nothing
+\end{minted}
+\end{listing}
+
+Листинг~\ref{lst:refactoring-apply-as-impl} показывает пример правила
+\texttt{AsImpl}: если очередная формула уже распознаётся как импликационная
+клауза, она переносится из зоны $U$ в зону $X$, а в дереве сохраняется
+соответствующий узел правила.
+
+После клаузификации необходимо подготовить Z3. Для этого все атомы, встреченные
+в плоских и импликационных клауза\-х, отображаются в булевы переменные Z3, а
+плоские клаузы добавляются в инкрементальный решатель.
+
+\begin{listing}[!htb]
+\caption{Добавление плоской клаузы в Z3: \texttt{addClause}}
+\label{lst:refactoring-add-clause}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
+addClause :: Solver_ -> Flat_ Z3.AST -> IO ()
+addClause (Solver context solver universe) (Flat cs ds) = do
+  csAST <- Z3.mkAnd context $ annotation <$> cs
+  dsAST <- Z3.mkOr context $ annotation <$> ds
+  clauseAST <- Z3.mkImplies context csAST dsAST
+
+  Z3.solverAssertCnstr context solver clauseAST
+\end{minted}
+\end{listing}
+
+Листинг~\ref{lst:refactoring-add-clause} показывает, как плоская клауза
+кодируется в Z3 как классическая импликация между конъюнкцией посылок и
+дизъюнкцией заключений.
+
+На этой фазе дерево ещё не содержит $\lambda$-термов. Аннотация используется
+технически: каждому атому сопоставляется AST-узел Z3, чтобы далее можно было
+формулировать классические запросы к решателю. Полный фрагмент подготовки
+решателя находится в основном листинге функции \texttt{prove} в
+приложении~\ref{app:prove}.
+
+\subsubsection{Поиск в исчислении \texorpdfstring{$C^{\rightarrow}$}{C->}}
+
+На второй фазе выполняется поиск вывода в исчислении $C^{\rightarrow}$.
+Функция \texttt{carrow} сначала проверяет, следует ли цель из текущего
+множества плоских клауз. Если да, строится узел \texttt{CPL0}. Если нет,
+полученная модель используется как первый мир кандидатной контрмодели, и
+запускается внутренний цикл.
+
+Внутренний цикл выбирает импликационную клаузу, нарушенную в одном из миров
+контрмодели, и проверяет с помощью Z3 классическую задачу
+$R, w, a \vdash b$. При успехе из ядра невыполнимости извлекается множество
+допущений и строится новая плоская клауза; она добавляется в решатель, после
+чего основной цикл перезапускается. При неуспехе модель Z3 добавляется как
+новый мир контрмодели. Если нарушенных импликационных клауз больше нет,
+построенная структура миров является контрмоделью Крипке.
+
+\begin{listing}[!htb]
+\caption{Основной цикл поиска вывода в $C^{\rightarrow}$}
+\label{lst:refactoring-carrow}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
+carrow :: Intuit_ () AST -> Solver_ ->
+  IO (Either (CounterModel_ AST) (CArrowRule_ () AST))
+carrow iseq@(Intuit flats impls goal) solver = do
+  result <- satProve solver [] goal
+  case result of
+    Yes _ -> return $ Right $ CPL0 iseq (Classic flats [] goal)
+    No model -> do
+      result <- innerLoop iseq (newCounterModel model) solver
+      case result of
+        Left counterModel -> return $ Left counterModel
+        Right (assumptions, learnedClause) -> do
+          let (Impl a b c) = learnedClause
+          let classicSequent =
+                Classic flats (addAnnotation () <$> a : assumptions)
+                  (addAnnotation () b)
+          let newClause = Flat (List.delete a assumptions) [c]
+          addClause solver newClause
+
+          let intuitSequent = Intuit (Annotated () newClause : flats) impls goal
+          result <- carrow intuitSequent solver
+
+          case result of
+            Left counterModel -> return $ Left counterModel
+            Right proof ->
+              return $ Right $ CPL1 iseq classicSequent proof newClause learnedClause
+\end{minted}
+\end{listing}
+
+Листинг~\ref{lst:refactoring-carrow} соответствует внешнему циклу
+\texttt{proveR}: он либо завершает доказательство правилом \texttt{CPL0}, либо
+добавляет выученную клаузу и рекурсивно перезапускает поиск.
+
+\begin{listing}[!htb]
+\caption{Внутренний цикл построения контрмодели}
+\label{lst:refactoring-inner-loop}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
+innerLoop ::
+  Intuit_ () AST ->
+  CounterModel_ AST ->
+  Solver_ ->
+  IO (Either (CounterModel_ AST) ([Annotated_ AST Atom_], Impl_ AST))
+innerLoop iseq@(Intuit flats impls goal) counterModel solver = do
+  let selectedWorld =
+        asum [do sw <- selectWorld counterModel i; return (i, sw)
+             | (Annotated () i) <- impls]
+  case selectedWorld of
+    Just (learned@(Impl a b c), (World worldId as)) -> do
+      result <- satProve solver (Set.toList $ Set.insert a as) (addAnnotation () b)
+      case result of
+        Yes core -> return $ Right (core, learned)
+        No model -> innerLoop iseq (addWorld counterModel worldId model) solver
+    Nothing -> return $ Left counterModel
+\end{minted}
+\end{listing}
+
+Листинг~\ref{lst:refactoring-inner-loop} соответствует внутреннему циклу:
+он уточняет множество миров контрмодели до тех пор, пока не будет найдена
+нарушенная импликационная клауза, из которой можно получить новое ограничение.
+
+\subsubsection{Построение LJT-поддеревьев}
+
+Классические подзадачи, возникающие в узлах \texttt{CPL0} и \texttt{CPL1},
+передаются в Z3 как SAT-запросы. Теоретически из решателя можно получать
+доказательства невыполнимости или ядра невыполнимости, однако их дальнейшая
+интерпретация усложняет реализацию: такие объекты зависят от внутреннего
+представления решателя и плохо соотносятся с правилами исходного исчисления. В
+данной работе выбран более простой и прозрачный путь: после того как решатель
+подтвердил классическую выводимость подзадачи, для неё строится явное
+доказательство в упрощённой системе LJT. Благодаря специальной форме классических
+секвенций этот алгоритм поиска доказательства получается небольшим, а полученное
+дерево сразу пригодно для последующего аннотирования $\lambda$-термами.
+
+На третьей фазе доказательство расширяется LJT-поддеревьями. Узлы
+\texttt{CPL0} и \texttt{CPL1} содержат классические секвенции, которые затем
+доказываются функцией \texttt{ljt}. В новой реализации эта фаза отделена от
+самого CEGAR-поиска: \texttt{carrow} отвечает за построение линейной структуры
+$C^{\rightarrow}$, а \texttt{extendProof} добавляет к ней узлы
+\texttt{ExCPL0} и \texttt{ExCPL1} с деревьями LJT.
+
+\begin{listing}[!htb]
+\caption{Добавление LJT-поддеревьев к доказательству $C^{\rightarrow}$}
+\label{lst:refactoring-extend-proof}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
+extendProof :: CArrowRule_ () () -> CArrowRule_ () ()
+extendProof (CPL0 iseq cseq) =
+  ExCPL0 iseq (ljt cseq) []
+extendProof (CPL1 iseq cseq rule newFlat learnedImpl) =
+  ExCPL1 iseq (ljt cseq) (extendProof rule) newFlat learnedImpl []
+extendProof _ = undefined
+\end{minted}
+\end{listing}
+
+Листинг~\ref{lst:refactoring-extend-proof} показывает, как к каждому узлу
+\texttt{CPL0} или \texttt{CPL1} добавляется LJT-доказательство соответствующей
+классической секвенции.
+
+\begin{listing}[!htb]
+\caption{Функция построения LJT-доказательства \texttt{ljt}}
+\label{lst:refactoring-ljt}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
+ljt :: Classic_ () () -> LJTRule_ () ()
+ljt cseq@(Classic flats assumptions goal) =
+  fromJust $ asum (map ($ cseq) [applyAxiom, applyCs, applyDs])
+\end{minted}
+\end{listing}
+
+Листинг~\ref{lst:refactoring-ljt} задаёт порядок применения трёх правил
+LJT-поддерева: аксиомы, сокращения левой конъюнкции и разбиения дизъюнкции.
+
+Поскольку в фазу LJT попадают не произвольные интуиционистские секвенции, а
+классические подзадачи специального вида $R, A \vdash g$, полная система LJT
+Дайкхоффа~\cite{Dyckhoff1992} используется в существенно суженном виде. Здесь
+$R$ состоит только из плоских клауз
+\[
+a_1 \land \ldots \land a_n \rightarrow d_1 \lor \ldots \lor d_m,
+\]
+а $A$ содержит только атомарные допущения. Поэтому для построения дерева
+достаточно следующих рассуждений:
+\begin{itemize}
+\item если цель уже содержится среди атомарных допущений, применяется аксиома;
+\item если есть клауза без левой части $\top \rightarrow d_1 \lor \ldots \lor d_m$,
+  используется левое правило для дизъюнкции: доказательство ветвится по всем
+  возможным дизъюнктам;
+\item если левая часть клаузы содержит атом, уже известный в допущениях, этот
+  атом можно удалить из левой части. Логически этот шаг соответствует
+  каррированию плоской клаузы и последующему modus ponens.
+\end{itemize}
+
+В теоретическом описании последний пункт удобно рассматривать как два правила:
+сначала клауза
+\[
+(a_1 \land \ldots \land a_i \land \ldots \land a_n) \rightarrow D
+\]
+переписывается в форму
+\[
+a_i \rightarrow ((a_1 \land \ldots \land a_{i-1} \land a_{i+1}
+\land \ldots \land a_n) \rightarrow D),
+\]
+а затем из наличия $a_i$ в допущениях по modus ponens получается редуцированная
+клауза
+\[
+(a_1 \land \ldots \land a_{i-1} \land a_{i+1}
+\land \ldots \land a_n) \rightarrow D.
+\]
+В реализации эти два шага объединены в одно правило
+\texttt{ReduceConjunction}. Поэтому тип дерева LJT содержит три конструктора:
+\texttt{Axiom}, \texttt{SplitDisjunction} и \texttt{ReduceConjunction}.
+
+\begin{listing}[!htb]
+\caption{Три правила LJT, используемые для классических подзадач}
+\label{lst:refactoring-ljt-rules}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
+data LJTRule_ a c =
+  Axiom
+    (Classic_ a c)
+  |
+  SplitDisjunction
+    (Classic_ a c)
+    [LJTRule_ a c]
+    (Flat_ ())
+    [Substitution_]
+  |
+  ReduceConjunction
+    (Classic_ a c)
+    (LJTRule_ a c)
+    (Flat_ ())
+    Atom_
+    [Substitution_]
+\end{minted}
+\end{listing}
+
+Листинг~\ref{lst:refactoring-ljt-rules} показывает тип дерева LJT, который
+используется только для классических подзадач, возникающих внутри
+$C^{\rightarrow}$. В конструкторах правил сохраняются подстановки, которые затем
+выводятся в DOT-представлении рядом с соответствующими узлами доказательства.
+
+Далее приведены локальные функции из блока \texttt{where} функции \texttt{ljt}.
+Аксиома завершает ветвь доказательства; схема аксиомы LJT-поддерева в реализации
+представлена ниже и в коде проверяется простым условием \texttt{goal `elem` assumptions}.
+
+\begin{center}
+\AxiomC{}
+\RightLabel{\scriptsize$Ax$}
+\UnaryInfC{$R,\; A,\; g \vdash g$}
+\DisplayProof
+\end{center}
+
+\begin{listing}[!htb]
+\caption{Локальная проверка аксиомы в LJT-поддереве}
+\label{lst:refactoring-ljt-axiom}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
+applyAxiom :: Classic_ () () -> Maybe (LJTRule_ () ())
+applyAxiom cseq@(Classic flats assumptions goal) =
+  if goal `elem` assumptions
+    then Just (Axiom cseq)
+    else Nothing
+\end{minted}
+\end{listing}
+
+Листинг~\ref{lst:refactoring-ljt-axiom} показывает локальную реализацию
+аксиомы: ветвь закрывается, когда цель уже присутствует среди допущений.
+
+Правило \texttt{SplitDisjunction} применяется к плоской клаузе с пустой левой
+частью. Такая клауза имеет вид $\top \rightarrow d_1 \lor \ldots \lor d_m$,
+то есть в текущем контексте истинна дизъюнкция. Чтобы доказать цель $g$, нужно
+показать её из каждого возможного дизъюнкта; разбиение LJT-поддерева по дизъюнкции представлено ниже.
+
+\begin{center}
+\AxiomC{$R,\; A,\; d_1 \vdash g$}
+\AxiomC{$\ldots$}
+\AxiomC{$R,\; A,\; d_m \vdash g$}
+\RightLabel{\scriptsize$\lor L$}
+\TrinaryInfC{$R,\; A,\; d_1 \lor \ldots \lor d_m \vdash g$}
+\DisplayProof
+\end{center}
+
+\begin{listing}[!htb]
+\caption{Локальное разбиение по правой части плоской клаузы}
+\label{lst:refactoring-ljt-split}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
+applyDs :: Classic_ () () -> Maybe (LJTRule_ () ())
+applyDs cseq@(Classic flats assumptions goal) = do
+  found@(Annotated () (Flat _ ds)) <- maybeFoundDs
+  return $
+    SplitDisjunction
+      cseq
+      (ljt <$> [
+        Classic (List.delete found flats) (addAnnotation () d : assumptions) goal
+        | d <- ds
+      ])
+      (annotated found) []
+  where
+    maybeFoundDs = List.find dsPred flats
+    dsPred (Annotated () (Flat [] _)) = True
+    dsPred _ = False
+\end{minted}
+\end{listing}
+
+Листинг~\ref{lst:refactoring-ljt-split} показывает ветвление доказательства по
+каждому атому из правой части плоской клаузы.
+
+Правило \texttt{ReduceConjunction} применяется, когда в левой части плоской
+клаузы есть атом, уже находящийся в списке допущений. Пусть в $R$ есть клауза
+$(a_i \land C) \rightarrow D$, а среди допущений есть $a_i$. Тогда вместо этой
+клаузы можно продолжить доказательство с более простой клаузой
+$C \rightarrow D$; сокращение левой конъюнкции в LJT-поддереве представлено ниже.
+
+\begin{center}
+\AxiomC{$R,\; C \rightarrow D,\; A,\; a_i \vdash g$}
+\RightLabel{\scriptsize$reduce$}
+\UnaryInfC{$R,\; (a_i \land C) \rightarrow D,\; A,\; a_i \vdash g$}
+\DisplayProof
+\end{center}
+
+В терминах исходных правил это сокращение соответствует каррированию
+$(a_i \land C) \rightarrow D$ и одному применению modus ponens к допущению
+$a_i$.
+
+\begin{listing}[!htb]
+\caption{Локальное объединение каррирования и modus ponens}
+\label{lst:refactoring-ljt-reduce}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
+applyCs :: Classic_ () () -> Maybe (LJTRule_ () ())
+applyCs cseq@(Classic flats assumptions goal) = do
+  (atom, flat@(Annotated () (Flat cs ds))) <- maybeFoundCs
+  let newClause = Flat (List.delete (reannotate (const ()) atom) cs) ds
+  let newSequent =
+        Classic (Annotated () newClause : List.delete flat flats) assumptions goal
+  return
+    (ReduceConjunction
+      cseq
+      (ljt newSequent)
+      (annotated flat)
+      (annotated atom) [])
+  where
+    maybeFoundCs = List.find (uncurry csPred)
+      [(a', r') | a' <- assumptions, r' <- flats]
+    csPred atom (Annotated () (Flat cs _)) =
+      annotated atom `elem` map annotated cs
+\end{minted}
+\end{listing}
+
+Листинг~\ref{lst:refactoring-ljt-reduce} показывает реализованное сокращение:
+найденный в допущениях атом удаляется из левой части плоской клаузы.
+
+Порядок применения правил в функции \texttt{ljt} выбран так, чтобы сначала
+закрывать уже доказанные цели, затем сокращать левые части плоских клауз по
+имеющимся атомам и только после этого ветвиться по дизъюнкции:
+\[
+\texttt{applyAxiom} \;\rightarrow\; \texttt{applyCs} \;\rightarrow\;
+\texttt{applyDs}.
+\]
+Такой порядок уменьшает размер классической подзадачи до ветвления и тем самым
+делает получаемое LJT-поддерево компактнее.
+
+\subsubsection{Аннотирование \texorpdfstring{$\lambda$}{lambda}-термами}
+
+На четвёртой фазе выполняется аннотирование $\lambda$-термами. Функция
+\texttt{annotateClausification} проходит по объединённому дереву
+клаузификации и $C^{\rightarrow}$ в обратном направлении, восстанавливая
+термовые преобразования. Для LJT-поддеревьев используется функция
+\texttt{annotateLJT}; для узлов $C^{\rightarrow}$ --- функция
+\texttt{annotateCArrow}. В окружении \texttt{Environment} хранятся свежие
+имена термов и соответствия между формулами и уже введёнными переменными.
+
+\begin{listing}[!htb]
+\caption{Переход от клаузификации к аннотированному $C^{\rightarrow}$}
+\label{lst:refactoring-annotate-start-carrow}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
+annotateClausification (StartCArrow useq carrowRule) = do
+  annotatedCArrow <- annotateCArrow carrowRule
+  let (Intuit flats impls goal) = rootCArrow annotatedCArrow
+
+  return $
+    StartCArrow
+      (Unclausified flats impls [] goal)
+      annotatedCArrow
+\end{minted}
+\end{listing}
+
+Листинг~\ref{lst:refactoring-annotate-start-carrow} показывает граничный случай
+аннотирования: после окончания клаузификации управление передаётся дереву
+$C^{\rightarrow}$.
+
+\begin{listing}[!htb]
+\caption{Аннотирование правила \texttt{ExCPL0}: \texttt{annotateCArrow}}
+\label{lst:refactoring-annotate-carrow-excpl0}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
+annotateCArrow :: CArrowRule_ () () -> State Environment (CArrowRule_ Lambda_ ())
+annotateCArrow (ExCPL0 (Intuit _ impls _) ljtRule _) = do
+  annotatedLJT <- annotateLJT ljtRule
+  let (Classic flats _ goal) = rootLJT annotatedLJT
+  implAnnotations <- mapM getTerm (annotated <$> impls)
+  let annotatedImpls =
+        [Annotated ann (annotated impl) | (impl, ann) <- zip impls implAnnotations]
+
+  return $
+    ExCPL0
+      (Intuit flats annotatedImpls goal)
+      annotatedLJT []
+\end{minted}
+\end{listing}
+
+Листинг~\ref{lst:refactoring-annotate-carrow-excpl0} показывает, как результат
+LJT-доказательства переносится в аннотированный узел \texttt{ExCPL0}.
+
+\subsubsection{Редукция и визуализация}
+
+На пятой фазе итоговый терм нормализуется функцией \texttt{Lambda.reduce}.
+В текущей реализации также печатается промежуточный DOT-граф дерева
+клаузификации до запуска решателя. После успешного поиска вывода полное
+аннотированное дерево доказательства выводится в формате Graphviz DOT, а в
+случае невыводимости вместо доказательства печатается DOT-граф контрмодели
+Крипке.
+
+\begin{listing}[!htb]
+\caption{Фрагмент функции редукции \texttt{reduce}}
+\label{lst:refactoring-reduce}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
+reduce :: Lambda_ -> Lambda_
+reduce (Abstraction [] body) = reduce body
+reduce (Abstraction capture body) = Abstraction capture $ reduce body
+reduce (Const body) = Const $ reduce body
+reduce v@(Variable _) = v
+reduce cs@(Case e cases) =
+  case reduce e of 
+    Sum c i arg -> if c /= length cases
+                     then error "Wrong case"
+                     else let (capture, body) = cases !! (i - 1)
+                              substitution = Substitution capture arg
+                          in reduce $ substitute body substitution
+    t -> Case t [(capture, reduce body) | (capture, body) <- cases]
+\end{minted}
+\end{listing}
+
+Листинг~\ref{lst:refactoring-reduce} показывает фрагмент нормализации
+$\lambda$-термов, включая редукцию разбора случаев для суммы.
+
+\begin{listing}[!htb]
+\caption{Фрагмент функции визуализации \texttt{buildDotClausify}}
+\label{lst:refactoring-build-dot-clausify}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
+buildDotClausify ::
+  (BuildableDotAnnotation a, BuildableDotAnnotation c) =>
+  Int -> ClausificationRule_ a c -> Builder
+buildDotClausify rootNodeId (AsImpl c r _ _ subs) = 
+  rootNodeId |+ " [label=\"" <> buildDot c <> "|{" <>
+  joinBy "\\n" (buildDot <$> subs) <> "}\"]\n" +|
+  rootNodeId |+ " -> " +| (rootNodeId + 1) |+ " [label=AsImpl]\n" <>
+  buildDotClausify (rootNodeId + 1) r
+buildDotClausify rootNodeId (StartCArrow c r) = 
+  rootNodeId |+ " [label=\"" <> buildDot c <> "\"]\n" +|
+  rootNodeId |+ " -> " +| (rootNodeId + 1) |+ " [label=StartCArrow]\n" <>
+  buildDotCArrow (rootNodeId + 1) r
+\end{minted}
+\end{listing}
+
+Листинг~\ref{lst:refactoring-build-dot-clausify} показывает, как узлы дерева
+клаузификации превращаются в вершины и рёбра графа Graphviz.
+
+Здесь дерево клаузификации и расширенное дерево $C^{\rightarrow}$
+склеиваются в одно дерево, аннотируются, затем все термы редуцируются функцией
+\texttt{Lambda.reduce}. После этого дерево передаётся в \texttt{buildDotClausify},
+которая строит текстовое представление графа Graphviz. Последовательность
+основных вызовов приведена в листинге функции \texttt{prove} в
+приложении~\ref{app:prove}.
+
+\subsection{Построение контрмодели}
+
+Если формула не является теоремой IPL, процедура строит конечную контрмодель
+Крипке. В реализации она представлена типами \texttt{World} и
+\texttt{CounterModel\_}, приведёнными в листингах~\ref{lst:refactoring-world}
+и~\ref{lst:refactoring-countermodel}. Мир \texttt{World} хранит числовой
+идентификатор и множество атомов, истинных в этом мире. Значение
+\texttt{CounterModel\_} хранит все построенные миры в отображении
+\texttt{worlds}, а отношение достижимости поддерживает в двух направлениях:
+\texttt{reachableTo} задаёт список предков мира, а \texttt{reachableFrom} ---
+список его непосредственных потомков.
+
+Такое представление удобно для двух операций, которые выполняются во внутреннем
+цикле алгоритма. Во-первых, по выбранному миру нужно быстро получить всех его
+потомков и проверить условие истинности импликационной клаузы. Во-вторых, при
+добавлении нового мира необходимо сохранить атомы, полученные из новой модели
+Z3, и зафиксировать, что этот мир становится потомком выбранного мира.
+
+\begin{listing}[!htb]
+\caption{Создание начальной контрмодели \texttt{newCounterModel}}
+\label{lst:refactoring-new-countermodel}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
+newCounterModel :: Ord a => [Annotated_ a Atom_] -> CounterModel_ a
+newCounterModel world = CounterModel {
+  reachableTo = Map.singleton 0 [],
+  reachableFrom = Map.singleton 0 [],
+  worlds = Map.singleton 0 (World 0 (Set.fromList world))
+}
+\end{minted}
+\end{listing}
+
+Листинг~\ref{lst:refactoring-new-countermodel} показывает создание корневого
+мира с номером $0$. Он строится из первой модели Z3: список истинных атомов
+переводится во множество, а списки предков и потомков инициализируются пустыми.
+
+\begin{listing}[!htb]
+\caption{Добавление нового мира в контрмодель \texttt{addWorld}}
+\label{lst:refactoring-add-world}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
+addWorld :: Ord a => CounterModel_ a -> Int -> [Annotated_ a Atom_] -> CounterModel_ a
+addWorld counterModel worldId as = 
+  counterModel {
+    reachableTo =
+      Map.insert newWorldId reachableToNewWorld (reachableTo counterModel),
+    reachableFrom =
+      Map.insert newWorldId [] $
+        List.foldr (Map.update (Just . (:) newWorldId))
+          (reachableFrom counterModel) reachableToNewWorld,
+    worlds = Map.insert newWorldId newWorld (worlds counterModel)
+  }
+  where
+    newWorldId = Map.size $ worlds counterModel
+    newWorld = World newWorldId (Set.fromList as)
+    reachableToNewWorld = worldId : (reachableTo counterModel ! worldId)
+\end{minted}
+\end{listing}
+
+Листинг~\ref{lst:refactoring-add-world} задаёт единственную операцию расширения
+контрмодели. Новый мир получает следующий свободный номер, сохраняет атомы из
+новой модели Z3 и становится потомком мира \texttt{worldId}. Список
+\texttt{reachableToNewWorld} содержит выбранный мир и всех его предков; поэтому
+для каждого из них обновляется отображение \texttt{reachableFrom}.
+
+\begin{listing}[!htb]
+\caption{Поиск мира, нарушающего импликационную клаузу \texttt{selectWorld}}
+\label{lst:refactoring-select-world}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
+selectWorld :: Ord a => CounterModel_ a -> Impl_ a -> Maybe (World a)
+selectWorld counterModel impl@(Impl a b c) =
+  selectWorlds' [0..(Map.size (worlds counterModel) - 1)]
+  where
+    selectWorlds' [] = Nothing
+    selectWorlds' (worldId:t) =
+      if condition
+        then selectWorlds' t
+        else Just world
+      where
+        world@(World _ as) = worlds counterModel ! worldId
+        reachableFromWorlds =
+          map (worlds counterModel !) (reachableFrom counterModel ! worldId)
+        condition =
+          Set.member a as ||
+          Set.member b as ||
+          Set.member c as ||
+          any (reachableFromPred impl) reachableFromWorlds
+\end{minted}
+\end{listing}
+
+Листинг~\ref{lst:refactoring-select-world} показывает основной способ чтения
+контрмодели. Функция перебирает уже построенные миры и ищет первый мир, в
+котором импликационная клауза $(a \rightarrow b) \rightarrow c$ ещё не
+реализована. Если такого мира нет, текущая структура миров уже является
+контрмоделью для исходной формулы.
+
+\begin{listing}[!htb]
+\caption{Предикат для потомков выбранного мира}
+\label{lst:refactoring-reachable-from-pred}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
+reachableFromPred (Impl a b _) (World _ as) =
+  Set.member a as && not (Set.member b as)
+\end{minted}
+\end{listing}
+
+Листинг~\ref{lst:refactoring-reachable-from-pred} уточняет последнюю часть
+проверки из \texttt{selectWorld}. Если среди потомков уже есть мир, где истинно
+$a$ и ложно $b$, то требуемый свидетель для импликации $a \rightarrow b$ уже
+найден, и выбранный мир не нарушает рассматриваемую импликационную клаузу.
+
+\begin{listing}[!htb]
+\caption{Вывод контрмодели в формате DOT}
+\label{lst:refactoring-countermodel-build}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
+instance Buildable (CounterModel_ a) where
+  build (CounterModel reachableTo reachableFrom worlds) = 
+    "digraph {\n" <>
+    "  graph [rankdir=BT]\n" <>
+    "  node [shape=record]\n" <>
+    indentF 2 (unlinesF $ Map.elems worlds) <>
+    indentF 2 (Foldable.fold [
+      ancestor |+ " -> " +| i |+ "\n"
+      | (i, (ancestor: _)) <- Map.toAscList reachableTo]) <>
+    "}"
+\end{minted}
+\end{listing}
+
+Листинг~\ref{lst:refactoring-countermodel-build} показывает интерфейс
+визуализации: контрмодель преобразуется в граф Graphviz с \texttt{shape=record}.
+Каждая вершина-мир содержит две секции --- номер мира и множество истинных
+атомов; рёбра строятся по отношению достижимости.
+
+\subsection{Примеры использования}
+
+Исполняемый модуль \texttt{app/Main.hs} читает формулу из файла, путь к которому
+передаётся единственным аргументом командной строки. Примеры входных формул
+находятся в каталоге \texttt{examples/formulas}. Для части этих формул заранее
+сохранены результаты работы программы: редуцированные термы для выводимых формул
+и изображения контрмоделей для невыводимых. Эти файлы находятся в каталоге
+\texttt{examples/terms} и имеют те же имена, что и соответствующие входные
+данные.
+
+\begin{listing}[!htb]
+\caption{Запуск программы на файле с формулой}
+\label{lst:usage-command}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{text}
+stack exec diploma-exe -- examples/formulas/complex-and-impl-chain.txt
+\end{minted}
+\end{listing}
+
+Листинг~\ref{lst:usage-command} показывает общий способ запуска. После чтения
+файла программа разбирает формулу, запускает конвейер доказательства и печатает
+DOT-представление результата. Для валидных формул из этого результата можно
+извлечь редуцированный $\lambda$-терм. В таких термах используются
+\textbf{супертермы} --- компактные обозначения стандартных комбинаторов над
+произведениями и суммами типов. Каждый супертерм раскрывается в обычное
+$\lambda$-выражение; ниже перечислены все конструкции, встречающиеся в
+примерах.
+
+\texttt{Proj($n$, $i$, $p$)} --- проектор $i$-й компоненты произведения
+  типов длины $n$ от терма произведения $p$. Раскрывается как
+  \[
+    p\,(\lambda x_1 x_2 \ldots x_n.\, x_i).
+  \]
+
+\texttt{Sum($n$, $i$, $e$)} --- конструктор $i$-го варианта суммы типов
+  длины $n$ от терма $e$. Раскрывается как
+  \[
+    \lambda c_1 c_2 \ldots c_n.\, c_i\, e.
+  \]
+
+$\langle T_1, T_2, \ldots, T_n \rangle$ --- терм произведения типов
+  длины $n$. Раскрывается как
+  \[
+    \lambda x.\, x\, T_1 T_2 \ldots T_n.
+  \]
+
+\texttt{Case($e$, $[c_1]b_1$, $[c_2]b_2$, \ldots, $[c_n]b_n$)} --- терм
+  раскрытия (устранения) суммы. Является термом
+  \[
+    e\,(\lambda c_1.\, b_1)\,(\lambda c_2.\, b_2)\,\ldots\,(\lambda c_n.\, b_n).
+  \]
+
+\texttt{K($e$)} --- терм константы. Раскрывается как $\lambda x.\, e$,
+  причём переменная $x$ не входит свободно в $e$.
+
+\texttt{Insert($n$, $i$, $p$, $e$)} --- вставка терма $e$ в произведение
+  $p$ длины $n$ на позицию $i$. Раскрывается как
+  \[
+    \lambda x.\, x\,\mathrm{Proj}(n, 1, p)\,\mathrm{Proj}(n, 2, p)\,\ldots\,
+    \underbrace{e}_{i\text{-я позиция}}\,\ldots\,\mathrm{Proj}(n, n, p),
+  \]
+  то есть на месте $i$-й проекции подставляется $e$, а остальные компоненты
+  извлекаются проекторами \texttt{Proj}.
+
+\begin{listing}[!htb]
+\caption{Входная формула \texttt{complex-and-impl-chain.txt}}
+\label{lst:usage-complex-and-impl-chain-input}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{text}
+(((a /\ (b /\ c) /\ d) => c) => a) => a
+\end{minted}
+\end{listing}
+
+Листинг~\ref{lst:usage-complex-and-impl-chain-input} задаёт формулу, в которой из
+доказательства импликации к $a$ нужно передать функцию, извлекающую компоненту
+$c$ из конъюнкции.
+
+\begin{listing}[!htb]
+\caption{Редуцированный терм для \texttt{complex-and-impl-chain.txt}}
+\label{lst:usage-complex-and-impl-chain-term}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{text}
+\_23.(_23(\_7.Proj(4, 3, _7)))
+\end{minted}
+\end{listing}
+
+Листинг~\ref{lst:usage-complex-and-impl-chain-term} показывает результат
+аннотирования и редукции: терм применяет входной аргумент к функции, которая
+проецирует третью компоненту из произведения длины~$4$ с помощью супертерма
+\texttt{Proj(4, 3, \_7)} (см.~описание \texttt{Proj} выше).
+
+\begin{listing}[!htb]
+\caption{Входная формула \texttt{complex-impl-disjunction.txt}}
+\label{lst:usage-complex-impl-disjunction-input}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{text}
+(((a \/ (a => b))) => b) => b
+\end{minted}
+\end{listing}
+
+Листинг~\ref{lst:usage-complex-impl-disjunction-input} демонстрирует пример с
+дизъюнкцией: для доказательства $b$ достаточно уметь обработать либо готовое
+доказательство $a$, либо функцию $a \rightarrow b$.
+
+\begin{listing}[!htb]
+\caption{Редуцированный терм для \texttt{complex-impl-disjunction.txt}}
+\label{lst:usage-complex-impl-disjunction-term}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{text}
+\_5.(_5Sum(2, 2, (\_4.(_5Sum(2, 1, _4)))))
+\end{minted}
+\end{listing}
+
+Листинг~\ref{lst:usage-complex-impl-disjunction-term} показывает, что в терме
+используется вложение в сумму с помощью супертермов \texttt{Sum}: программа
+передаёт обработчику правый вариант дизъюнкции (\texttt{Sum(2, 2, \ldots)}),
+а внутри него при необходимости строит левый вариант (\texttt{Sum(2, 1, \ldots)}).
+
+Если формула не является теоремой IPL, вместо терма строится конечная
+контрмодель Крипке и выводится в формате DOT (аналогично дереву доказательства
+для валидных формул). Полученный граф следует интерпретировать следующим
+образом.
+
+Контрмодель представляет собой \emph{дерево} миров: рёбра задают отношение
+достижимости между мирами (направление рёбер соответствует направлению
+визуализации в Graphviz). Каждый узел разделён на две секции. \textbf{Верхняя
+секция} содержит номер мира. \textbf{Нижняя секция} задаёт \emph{оценку} в
+этом мире --- множество атомов, принимающих истинное значение.
+
+Следует иметь в виду, что контрмодель строится для \emph{клаузифицированного}
+варианта входной формулы, а не для исходного текста файла. В процессе
+клаузификации вводятся служебные атомы (в частности, атом цели \texttt{\$} и
+атомы, появившиеся при правилах \texttt{Aliasing} и разбиении импликаций),
+поэтому в нижней секции узлов можно увидеть имена, которых не было во входной
+формуле.
+
+Ниже приведены два примера невыводимых формул. Для закона исключённого третьего
+входной файл содержит формулу, приведённую в
+листинге~\ref{lst:usage-invalid-excluded-middle-input}. Контрмодель для закона
+исключённого третьего представлена на
+рисунке~\ref{fig:usage-invalid}.
+
+
+\begin{listing}[!htb]
+\caption{Входная формула \texttt{invalid-excluded-middle.txt}}
+\label{lst:usage-invalid-excluded-middle-input}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{text}
+A \/ -A
+\end{minted}
+\end{listing}
+
+В этой контрмодели корневой мир не вынуждает ни $A$, ни $\neg A$, поэтому дизъюнкция $A \lor \neg A$ не является интуиционистски общезначимой.
+
+\begin{listing}[!htb]
+\caption{Входная формула \texttt{invalid-peirce.txt}}
+\label{lst:usage-invalid-peirce-input}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{text}
+((A => B) => A) => A
+\end{minted}
+\end{listing}
+
+Листинг~\ref{lst:usage-invalid-peirce-input} задаёт схему Пирса, которая
+выводима в классической логике, но не выводима в IPL; контрмодель для схемы Пирса представлена на рисунке~\ref{fig:usage-invalid}.
+
+\begin{figure}[!htb]
+\begin{subfigure}[t]{0.5\textwidth}
+\centering
+\includegraphics[height=0.2\textheight]{../examples/terms/invalid-excluded-middle.png}
+\caption{Контрмодель для закона исключённого третьего}
+\end{subfigure}
+\begin{subfigure}[t]{0.5\textwidth}
+\centering
+\includegraphics[height=0.34\textheight]{../examples/terms/invalid-peirce.png}
+\caption{Контрмодель для схемы Пирса}
+\end{subfigure}
+\caption{Контрмодели для необщезначимых формул IPL}
+\label{fig:usage-invalid}
+\end{figure}
+
+
+В этой контрмодели в разных потомках корневого мира реализуются разные атомарные оценки, из-за чего формула $((A \rightarrow B) \rightarrow A) \rightarrow A$ не вынуждается в корне.
+
+\section{Аналитическая часть}
+
+Технологическая часть описывает устройство прототипа и его конвейер
+доказательства; следующий шаг --- количественная оценка того, насколько эта
+реализация пригодна на практике. Аналитическая часть посвящена измерению
+времени работы разработанного доказателя, интерпретации полученных данных и
+сопоставлению с эталонной реализацией \texttt{intuitR}~\cite{ClaessenRosen2015}.
+
+Для измерений используется модуль \texttt{diploma-bench}, который повторяет
+конвейер \texttt{diploma-exe}, но вместо визуализации возвращает время трёх
+фаз: клаузификации, доказательства в $C^{\rightarrow}$ и аннотирования с
+извлечением $\lambda$-терма. Это позволяет отделить накладные расходы
+предобработки и постобработки от основной SAT-ориентированной процедуры поиска
+вывода.
+
+Эксперименты проводятся на трёх семействах формул с разной структурой:
+\begin{itemize}
+\item \texttt{syj201} --- выводимые формулы из библиотеки ILTP с растущим числом
+  атомов; основной тест на успешных доказательствах и сравнение с
+  \texttt{intuitR};
+\item \texttt{syj207} --- невыводимые формулы того же класса; проверка времени
+  построения контрмодели и сравнение с \texttt{intuitR};
+\item \texttt{fresh-tail} --- искусственное семейство с нарастающей глубиной
+  вложенности импликаций; оценка умеренного роста времени на длинных
+  выводимых формулах без TPTP-аналога для \texttt{intuitR}.
+\end{itemize}
+
+Ниже сначала изложена методика измерений и условия эксперимента. Затем для
+каждого семейства приведены таблицы и графики времени фаз прототипа, а для
+\texttt{syj201} и \texttt{syj207} --- сравнение с \texttt{intuitR}. В
+заключительном подразделе сформулирован общий анализ: какие факторы дают
+основной вклад во время работы и чем прототип принципиально отличается от
+эталона, оптимизированного лишь под ответ о выводимости.
+
+\subsection{Методика измерений}
+
+Для разработанного доказателя добавлен отдельный исполняемый модуль
+\texttt{diploma-bench}. Он использует тот же разбор формул и тот же конвейер
+доказательства, что и \texttt{diploma-exe}, но вместо печати дерева вывода
+возвращает структурированную статистику по трём фазам:
+\begin{itemize}
+\item \texttt{clausification\_ms} --- построение начальной секвенции и
+  клаузификация;
+\item \texttt{proving\_ms} --- подготовка Z3, добавление начальных плоских клауз
+  и запуск поиска вывода в $C^{\rightarrow}$;
+\item \texttt{annotation\_ms} --- построение LJT-поддеревьев, объединение дерева
+  клаузификации с деревом доказательства и извлечение $\lambda$-терма.
+\end{itemize}
+
+Измерение выполнялось на локальной машине под управлением Linux с
+GHC~9.10.3~\cite{GHCUserGuide} и Z3, запускаемыми через \texttt{stack}~\cite{StackDocs}.
+Время фиксировалось монотонным системным таймером в миллисекундах. Исполняемые файлы, использующие Z3, собраны
+с параметром RTS \texttt{-N1}: при многопоточном RTS (\texttt{-N}) вызовы
+низкоуровневого API Z3 приводили к нестабильному завершению процесса.
+
+\begin{listing}[!htb]
+\caption{Запуск бенчмарка разработанного доказателя}
+\label{lst:benchmark-command}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{text}
+stack exec diploma-bench -- benchmarks/syj201/formulas
+\end{minted}
+\end{listing}
+
+Для сравнения с \texttt{intuitR} использовался внешний исполняемый файл
+\texttt{intuitR}, принимающий формулы в формате TPTP. Для семейств
+\texttt{syj201} и \texttt{syj207} генераторы \texttt{syj201-gen} и
+\texttt{syj207-gen} (флаг \texttt{---tptp}) строят соответствующие
+\texttt{.p}-файлы; \texttt{intuitR} самостоятельно выполняет клаузификацию и
+доказательство, печатая время двух фаз в секундах с точностью до миллисекунды.
+
+\subsection{Семейство syj201}
+
+Семейство формул \texttt{syj201} из библиотеки TPTP (ILTP, SYJ201) --- основной
+набор экспериментов на выводимых формулах. Для параметра $N$ строится формула
+с $m = 2N + 1$ атомами $p_1, \ldots, p_m$. Левая часть состоит из конъюнкции
+импликаций
+\[
+  (p_i \leftrightarrow p_{i+1}) \rightarrow c(N), \quad i = 1, \ldots, m,
+\]
+где индексация $i+1$ берётся по модулю $m$, а $c(N) = p_1 \land \ldots \land p_m$.
+Заключение совпадает с $c(N)$. Для $N = 1$ получается исходный пример
+\texttt{syj201.txt}; генератор \texttt{syj201-gen} позволяет получать формулы
+для произвольного $N$ в синтаксисе прототипа и в формате TPTP для
+\texttt{intuitR}. Все формулы семейства выводимы в IPL.
+
+\begin{listing}[!htb]
+\caption{Генерация семейства syj201 и запуск intuitR}
+\label{lst:syj201-gen-intuitr}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{text}
+stack exec syj201-gen -- 3 > benchmarks/syj201/formulas/syj201-n03.txt
+intuitR benchmarks/syj201/intuitr-formulas/syj201-n03.p
+\end{minted}
+\end{listing}
+
+На семействе \texttt{syj201} для $N = 1, \ldots, 10$ прототип успешно доказал
+все формулы. Время резко растёт с параметром $N$: от $17$~мс при $N = 1$ до
+примерно $977$~с ($\approx 16$~мин) при $N = 10$. Результаты приведены в
+таблице~\ref{tab:benchmark-syj201-family} и на рисунке~\ref{fig:benchmark-syj201-phases}.
+
+\begin{table}[!htb]
+\centering
+\caption{Время фаз разработанного доказателя на семействе syj201}
+\label{tab:benchmark-syj201-family}
+\small
+\begin{tabular}{|r|l|r|r|r|r|}
+\hline
+$N$ & Результат & Клауз., мс & Доказ., мс & Аннот., мс & Всего, мс \\
+\hline
+1 & valid & 0.274 & 16.293 & 0.086 & 16.653 \\
+2 & valid & 0.190 & 54.285 & 0.180 & 54.656 \\
+3 & valid & 0.390 & 184.823 & 1.150 & 186.362 \\
+4 & valid & 0.417 & 601.076 & 1.729 & 603.223 \\
+5 & valid & 0.789 & 1334.431 & 3.439 & 1338.659 \\
+6 & valid & 0.774 & 13106.809 & 5.797 & 13113.380 \\
+7 & valid & 1.152 & 19767.165 & 9.816 & 19778.133 \\
+8 & valid & 1.246 & 46416.473 & 15.934 & 46433.652 \\
+9 & valid & 2.189 & 179700.170 & 24.591 & 179726.950 \\
+10 & valid & 2.721 & 976877.759 & 30.535 & 976911.016 \\
+\hline
+\end{tabular}
+\end{table}
+
+Из таблицы~\ref{tab:benchmark-syj201-family} видно, что основной вклад даёт фаза
+доказательства: при $N = 10$ она составляет более $99{,}99\%$ полного времени.
+Клаузификация и аннотирование остаются малыми на всём диапазоне $N$, однако
+рост \texttt{proving\_ms} носит сверхлинейный характер. График времени фаз разработанного доказателя для syj201 представлен на рисунке~\ref{fig:benchmark-syj201-phases}: доминирует кривая доказательства, тогда как клаузификация и
+аннотирование остаются у нижней границы логарифмической шкалы.
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=\textwidth]{syj201-n1-10.png}
+\caption{Время фаз разработанного доказателя для syj201, $N = 1, \ldots, 10$}
+\label{fig:benchmark-syj201-phases}
+\end{figure}
+
+Как видно из рисунка~\ref{fig:benchmark-syj201-phases}, рост времени
+доказательства опережает остальные фазы уже при малых $N$. Дополнительно на
+каталоге \texttt{examples/formulas} (18 формул, включая
+\texttt{syj201.txt}) для выводимых формул среднее полное время составило
+$15{,}581$~мс, при этом основной вклад даёт фаза доказательства
+($15{,}251$~мс).
+
+На том же семействе \texttt{syj201} \texttt{intuitR} доказал все формулы для
+$N = 1, \ldots, 10$. Сводные данные приведены в
+таблице~\ref{tab:benchmark-intuitr-comparison} и на
+рисунке~\ref{fig:benchmark-syj201-comparison}.
+
+\begin{table}[!htb]
+\centering
+\caption{Сравнение разработанного доказателя и intuitR на syj201}
+\label{tab:benchmark-intuitr-comparison}
+\small
+\begin{tabular}{|r|l|r|l|r|r|}
+\hline
+$N$ & Прототип & Время, мс & intuitR & Клауз.+доказ., мс & Wall, мс \\
+\hline
+1 & valid & 16.653 & valid & 0.000 & 12.360 \\
+2 & valid & 54.656 & valid & 1.000 & 12.287 \\
+3 & valid & 186.362 & valid & 1.000 & 12.236 \\
+4 & valid & 603.223 & valid & 1.000 & 12.948 \\
+5 & valid & 1338.659 & valid & 2.000 & 12.784 \\
+6 & valid & 13113.380 & valid & 3.000 & 12.670 \\
+7 & valid & 19778.133 & valid & 5.000 & 12.122 \\
+8 & valid & 46433.652 & valid & 4.000 & 12.676 \\
+9 & valid & 179726.950 & valid & 8.000 & 22.046 \\
+10 & valid & 976911.016 & valid & 6.000 & 12.587 \\
+\hline
+\end{tabular}
+\end{table}
+
+В таблице~\ref{tab:benchmark-intuitr-comparison} столбец <<Клауз.+доказ.>>
+содержит сумму времени клаузификации и доказательства, которую \texttt{intuitR}
+печатает самостоятельно; столбец <<Wall>> --- полное wall-clock время запуска
+процесса. \texttt{intuitR} выводит время с точностью $0{,}001$~с, поэтому
+малые значения округляются до нуля. График сравнения полного времени прототипа и \texttt{intuitR} на syj201 представлен на рисунке~\ref{fig:benchmark-syj201-comparison}.
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=\textwidth]{syj201-comparison.png}
+\caption{Сравнение полного времени: прототип и intuitR на syj201}
+\label{fig:benchmark-syj201-comparison}
+\end{figure}
+
+По рисунку~\ref{fig:benchmark-syj201-comparison} при одинаковом исходе
+(формула доказуема для всех $N$) разрыв достигает нескольких порядков уже при
+малых $N$ и сохраняется на всём диапазоне.
+
+\subsection{Семейство syj207}
+
+Семейство \texttt{syj207} (ILTP, SYJ207; схема \texttt{psi.p}) дополняет
+эксперименты формулами, невыводимыми в IPL. Для параметра $N$ задаётся цикл
+из $m = 2N$ атомов $p_1, \ldots, p_m$ и отдельный атом $p_0$. Левая часть ---
+конъюнкция импликаций $(p_i \leftrightarrow p_{i+1}) \rightarrow c(N)$ по
+циклу, где $c(N) = p_1 \land \ldots \land p_m$. Заключение имеет вид
+$p_0 \lor c(N) \lor \lnot p_0$. Ожидается контрмодель. Генератор
+\texttt{syj207-gen} строит формулы в синтаксисе прототипа и в формате TPTP для
+\texttt{intuitR}.
+
+Измерения проводились для $N = 1, \ldots, 5$; для $N \geqslant 6$ время
+прототипа превышало лимит $600$~с на формулу, поэтому серия была остановлена.
+Прототип корректно находит контрмодели для всех пяти случаев
+(таблица~\ref{tab:benchmark-syj207-family}, рисунок~\ref{fig:benchmark-syj207-phases}).
+
+\begin{table}[!htb]
+\centering
+\caption{Время фаз разработанного доказателя на семействе syj207 ($N = 1, \ldots, 5$)}
+\label{tab:benchmark-syj207-family}
+\small
+\begin{tabular}{|r|l|r|r|r|r|}
+\hline
+$N$ & Результат & Клауз., мс & Доказ., мс & Всего, мс \\
+\hline
+1 & invalid & 1.232 & 36.711 & 37.943 \\
+2 & invalid & 2.024 & 68.896 & 70.920 \\
+3 & invalid & 3.293 & 338.073 & 341.367 \\
+4 & invalid & 5.238 & 132440.380 & 132445.618 \\
+5 & invalid & 7.008 & 8631.909 & 8638.917 \\
+\hline
+\end{tabular}
+\end{table}
+
+Время доказательства не монотонно растёт с $N$: пик при $N = 4$ составляет
+около $132$~с, тогда как при $N = 5$ --- $8{,}6$~с. График времени фаз прототипа для syj207 ($N = 1, \ldots, 5$) представлен на рисунке~\ref{fig:benchmark-syj207-phases}.
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=\textwidth]{syj207-n1-5.png}
+\caption{Время фаз прототипа для syj207, $N = 1, \ldots, 5$}
+\label{fig:benchmark-syj207-phases}
+\end{figure}
+
+Из рисунка~\ref{fig:benchmark-syj207-phases} видно резкое доминирование фазы
+доказательства при $N = 4$.
+
+Сравнение с \texttt{intuitR} для $N = 1, \ldots, 5$ приведено в
+таблице~\ref{tab:benchmark-syj207-intuitr} и на
+рисунке~\ref{fig:benchmark-syj207-comparison}. Оба инструмента согласны по
+исходу (\texttt{invalid}). \texttt{intuitR} укладывается в единицы---десятки
+миллисекунд по внутренним таймерам на всём диапазоне, тогда как прототип
+на $N = 4$ тратит более двух минут на поиск контрмодели.
+
+\begin{table}[!htb]
+\centering
+\caption{Сравнение разработанного доказателя и intuitR на syj207 ($N = 1, \ldots, 5$)}
+\label{tab:benchmark-syj207-intuitr}
+\small
+\begin{tabular}{|r|l|r|l|r|r|}
+\hline
+$N$ & Прототип & Время, мс & intuitR & Клауз.+доказ., мс & Wall, мс \\
+\hline
+1 & invalid & 37.943 & invalid & 0.000 & 15.124 \\
+2 & invalid & 70.920 & invalid & 1.000 & 15.345 \\
+3 & invalid & 341.367 & invalid & 2.000 & 14.953 \\
+4 & invalid & 132445.618 & invalid & 2.000 & 15.538 \\
+5 & invalid & 8638.917 & invalid & 5.000 & 25.558 \\
+\hline
+\end{tabular}
+\end{table}
+
+График сравнения полного времени прототипа и \texttt{intuitR} на syj207 представлен на рисунке~\ref{fig:benchmark-syj207-comparison}.
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=\textwidth]{syj207-comparison.png}
+\caption{Сравнение полного времени: прототип и intuitR на syj207}
+\label{fig:benchmark-syj207-comparison}
+\end{figure}
+
+На рисунке~\ref{fig:benchmark-syj207-comparison} разрыв в несколько порядков при $N = 4$ виден при совпадающем исходе \texttt{invalid}.
+
+\subsection{Семейство fresh-tail}
+
+Семейство \texttt{fresh-tail} проверяет поведение на валидных формулах с
+регулярно растущей структурой импликаций. Базой служит выводимая формула
+\texttt{syj201} при $N = 1$; поверх неё $n$ раз накладывается схема
+\[
+  \bigl(\,(\cdots) \Rightarrow p_n\bigr) \Rightarrow p_n,
+\]
+где каждый $p_n$ --- свежий атом, не встречающийся ранее (начиная с $d$).
+Генератор \texttt{fresh-tail-gen} строит формулы для произвольного числа
+хвостов во внутреннем синтаксисе прототипа.
+
+Измерения выполнены для $N = 1, \ldots, 100$ без таймаутов. Все сто формул
+доказаны успешно (таблица~\ref{tab:benchmark-fresh-tail-family},
+рисунок~\ref{fig:benchmark-fresh-tail-phases}). Полное время растёт от
+$70$~мс при $N = 1$ до $7{,}4$~с при $N = 70$ (максимум серии) и $4{,}9$~с
+при $N = 100$; рост не монотонен. Клаузификация и аннотирование остаются
+пренебрежимо малыми; основной вклад даёт фаза доказательства.
+
+\begin{table}[!htb]
+\centering
+\caption{Время фаз прототипа на семействе fresh-tail (выборочные значения $N$)}
+\label{tab:benchmark-fresh-tail-family}
+\small
+\begin{tabular}{|r|l|r|r|r|r|}
+\hline
+$N$ & Результат & Клауз., мс & Доказ., мс & Аннот., мс & Всего, мс \\
+\hline
+1 & valid & 1.244 & 68.710 & 0.236 & 70.191 \\
+10 & valid & 2.953 & 234.435 & 0.359 & 237.747 \\
+20 & valid & 2.693 & 397.140 & 0.358 & 400.191 \\
+30 & valid & 3.708 & 534.449 & 0.415 & 538.572 \\
+40 & valid & 4.695 & 878.023 & 0.448 & 883.166 \\
+50 & valid & 5.640 & 1427.600 & 0.493 & 1433.733 \\
+60 & valid & 7.764 & 3615.880 & 0.570 & 3624.214 \\
+70 & valid & 8.525 & 7416.072 & 0.704 & 7425.302 \\
+80 & valid & 11.394 & 3659.444 & 0.817 & 3671.656 \\
+90 & valid & 11.717 & 4929.499 & 0.821 & 4942.037 \\
+100 & valid & 15.130 & 4857.191 & 0.822 & 4873.143 \\
+\hline
+\end{tabular}
+\end{table}
+
+График времени фаз прототипа для fresh-tail ($N = 1, \ldots, 100$) представлен на рисунке~\ref{fig:benchmark-fresh-tail-phases}.
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=\textwidth]{fresh-tail-n1-100.png}
+\caption{Время фаз прототипа для fresh-tail, $N = 1, \ldots, 100$}
+\label{fig:benchmark-fresh-tail-phases}
+\end{figure}
+
+По рисунку~\ref{fig:benchmark-fresh-tail-phases} рост времени доказательства
+остаётся умеренным на протяжении всей серии; локальный максимум около
+$N = 70$ хорошо виден на графике.
+
+Сравнение с \texttt{intuitR} для семейства \texttt{fresh-tail} не проводилось:
+формулы генерируются только во внутреннем синтаксисе прототипа, без
+TPTP-представления, пригодного для \texttt{intuitR}. По времени прототипа
+(до $7{,}4$~с на $100$ вложенных хвостов) семейство демонстрирует умеренный
+рост по сравнению с \texttt{syj201} при сопоставимой глубине импликаций.
+
+\subsection{Общий анализ производительности}
+
+В качестве аналога использовался \texttt{intuitR} --- реализация процедуры
+\texttt{proveR} с перезапуском, описанная в конструкторской части. Оба
+инструмента решают одну и ту же задачу проверки выводимости на
+клаузифицированных r-секвенциях, однако прототип измеряет полный конвейер с
+построением дерева клаузификации, дерева доказательства в $C^{\rightarrow}$ и
+последующим аннотированием. По данным таблиц~\ref{tab:benchmark-syj201-family},
+\ref{tab:benchmark-intuitr-comparison} и~\ref{tab:benchmark-syj207-intuitr}, а
+также рисунков~\ref{fig:benchmark-syj201-comparison}
+и~\ref{fig:benchmark-syj207-comparison}, основной разрыв с \texttt{intuitR}
+формируется в фазе \texttt{proving\_ms}. Семейство \texttt{fresh-tail}
+(рисунок~\ref{fig:benchmark-fresh-tail-phases}) показывает, что при умеренном
+росте времени (до $7{,}4$~с) прототип справляется с глубокой вложенностью
+импликаций без участия \texttt{intuitR}. Ниже выделены ключевые факторы расхождения.
+
+\textbf{Асимптотика клаузификации.} Текущая процедура клаузификации на
+  семействе \texttt{syj201} порождает слишком большое число плоских и
+  импликационных клауз относительно параметра $N$. Это увеличивает размер
+  r-секвенции, число итераций CEGAR и SAT-запросов к Z3. Рост времени
+  доказательства от $17$~мс при $N = 1$ до $977$~с при $N = 10$ при почти
+  неизменных клаузификации и аннотировании указывает именно на
+  сверхлинейную <<комбинаторику>> после клаузификации, а не на постоянные
+  накладные расходы одного вызова решателя. Сокращение числа порождаемых клауз
+  --- направление, над которым следует работать в первую очередь.
+
+\textbf{Сохранение истории доказательства.} В отличие от \texttt{proveR}
+  с перезапуском, прототип накапливает дерево клаузификации и цепочку узлов
+  \texttt{CPL0}/\texttt{CPL1} в $C^{\rightarrow}$, а затем объединяет их для
+  аннотирования и визуализации. \texttt{intuitR} после добавления выученной
+  клаузы очищает множество интерпретаций $W$ и не хранит полную историю
+  промежуточных шагов. Сохранение истории необходимо для целей работы ---
+  извлечения $\lambda$-терма и построения DOT-графа --- но увеличивает объём
+  работы на каждой итерации CEGAR и объясняет часть отставания от эталона,
+  оптимизированного только под ответ <<доказуемо/нет>>.
+
+\textbf{Дополнительные инженерные факторы.} Классические подзапросы
+  выполняются через Haskell-обёртку Z3 с извлечением unsat core; wall-clock
+  \texttt{intuitR} ($\approx 12$~мс) включает старт процесса, а внутренние
+  таймеры округляются до $0{,}001$~с. Эти эффекты не снимают основного разрыва,
+  но могут вносить вклад при малых $N$.
+
+Таким образом, отставание прототипа от \texttt{intuitR} интерпретируется как
+сочетание плохой асимптотики клаузификации (проблема, требующая алгоритмической
+доработки) и необходимого для прототипа сохранения истории вывода (компромисс
+ради программного содержания и наглядности). Для количественной проверки
+потребовались бы счётчики числа клауз после клаузификации, длины выводов в
+$C^{\rightarrow}$ и числа вызовов \texttt{satProve} на каждом $N$.
+
+\anonsection{ЗАКЛЮЧЕНИЕ}
+
+В данной работе рассмотрена задача проверки выводимости формул
+интуиционистской пропозициональной логики и извлечения из найденных выводов
+программного содержания в виде $\lambda$-термов. Эта задача была рассмотрена с
+позиции изоморфизма Карри---Говарда, согласно которому доказательство формулы
+соответствует программе, а сама формула --- типу этой программы.
+
+В исследовательской части изложены теоретические основы: интуиционистская
+логика, BHK-интерпретация, семантика Крипке, натуральный вывод, секвенциальное
+исчисление LJ и типизированное $\lambda$-исчисление. Показано, каким образом
+логические связки конъюнкции, дизъюнкции, импликации и абсурда получают
+вычислительную интерпретацию через произведения, суммы, функции и пустой тип.
+
+В конструкторской части рассмотрены исчисления, применимые для автоматического
+поиска вывода: LJT Дайкхоффа, SAT-ориентированное исчисление $LJT_{SAT}$ и
+упрощённое исчисление $C^{\rightarrow}$ с процедурой перезапуска. Также
+описано, как клаузификация может быть представлена как последовательность
+допустимых правил секвенциального исчисления и как эти правила аннотируются
+$\lambda$-термами.
+
+В технологической части разработан и описан программный прототип на Haskell.
+Актуальная реализация вынесена в пространство имён \texttt{Refactoring} и
+разделена на модули формул, клауз, секвенций, доказателя, $\lambda$-исчисления
+и визуализации. Конвейер прототипа включает клаузификацию исходной формулы,
+поиск вывода в $C^{\rightarrow}$ с использованием Z3 как инкрементального
+SAT/SMT-оракула, построение LJT-поддеревьев для классических подзадач,
+аннотирование объединённого дерева $\lambda$-термами и вывод результата в
+формате Graphviz DOT. На примерах из каталога \texttt{examples/formulas}
+продемонстрированы выводимые формулы с редуцированными $\lambda$-термами и
+невыводимые формулы с конечными контрмоделями Крипке.
+
+В аналитической части измерено время ключевых фаз конвейера на семействах
+бенчмарков \texttt{syj201}, \texttt{syj207} и \texttt{fresh-tail}, а для
+\texttt{syj201} и \texttt{syj207} выполнено сравнение с аналогом
+\texttt{intuitR}. На выводимых формулах \texttt{syj201} время прототипа растёт
+от $17$~мс до $977$~с, тогда как \texttt{intuitR} остаётся в пределах единиц
+миллисекунд. На невыводимых \texttt{syj207} оба инструмента находят
+контрмодели, но прототип может тратить минуты там, где \texttt{intuitR}
+укладывается в миллисекунды. Семейство \texttt{fresh-tail} (100 валидных
+формул) подтверждает работоспособность на глубокой вложенности импликаций
+с полным временем до $7{,}4$~с. Основной вклад даёт фаза доказательства;
+среди причин разрыва с \texttt{intuitR} выделены асимптотика клаузификации
+и необходимое сохранение истории вывода для извлечения $\lambda$-терма и
+визуализации.
+
+Практическим результатом работы является прототип, который для валидных формул
+строит дерево доказательства и редуцированный $\lambda$-терм, а для невалидных
+формул строит конечную контрмодель Крипке. Тем самым реализация связывает
+теоретическую часть работы с наглядным инструментом для изучения соответствия
+между формулами, доказательствами и программами.
+
+\anonsection{СПИСОК ИСПОЛЬЗОВАННЫХ ИСТОЧНИКОВ}
+
+\printbibliography[heading=none]
+
+\anonappendix
+\label{app:ljt}
+
+\begin{listing}[!htb]
+\caption{Обратный поиск вывода в LJT}
+\label{alg:ljt-prove}
+\begin{algorithmic}[1]
+\Function{LJTProve}{$\Gamma, G$}
+  \If{$G$ --- атом и $G \in \Gamma$}
+    \Return \textbf{true}
+  \EndIf
+  \If{$\bot \in \Gamma$}
+    \Return \textbf{true}
+  \EndIf
+  \If{$\exists\, A \land B \in \Gamma$}
+    \State $\Gamma' \gets \Gamma \setminus \{A \land B\}$
+    \Return \Call{LJTProve}{$\Gamma' \cup \{A, B\},\; G$}
+  \EndIf
+  \If{$\exists\, A \lor B \in \Gamma$}
+    \State $\Gamma' \gets \Gamma \setminus \{A \lor B\}$
+    \Return \Call{LJTProve}{$\Gamma' \cup \{A\},\; G$}
+      $\land$ \Call{LJTProve}{$\Gamma' \cup \{B\},\; G$}
+  \EndIf
+  \If{$\exists\, p \to B \in \Gamma$, $p$ --- атом, $p \in \Gamma$}
+    \Return \Call{LJTProve}{$(\Gamma \setminus \{p \to B\}) \cup \{B\},\; G$}
+  \EndIf
+  \If{$\exists\, (A \land B) \to C \in \Gamma$}
+    \State $\Gamma' \gets \Gamma \setminus \{(A \land B) \to C\}$
+    \Return \Call{LJTProve}{$\Gamma' \cup \{A \to (B \to C)\},\; G$}
+  \EndIf
+  \If{$\exists\, (A \lor B) \to C \in \Gamma$}
+    \State $\Gamma' \gets \Gamma \setminus \{(A \lor B) \to C\}$
+    \Return \Call{LJTProve}{$\Gamma' \cup \{A \to C,\, B \to C\},\; G$}
+  \EndIf
+  \If{$G = A \to B$}
+    \Return \Call{LJTProve}{$\Gamma \cup \{A\},\; B$}
+  \EndIf
+  \If{$G = A \land B$}
+    \Return \Call{LJTProve}{$\Gamma, A$}
+      $\land$ \Call{LJTProve}{$\Gamma, B$}
+  \EndIf
+  \If{$G = A \lor B$}
+    \If{\Call{LJTProve}{$\Gamma, A$}}
+      \Return \textbf{true}
+    \EndIf
+    \If{\Call{LJTProve}{$\Gamma, B$}}
+      \Return \textbf{true}
+    \EndIf
+  \EndIf
+  \For{$(C_1 \to C_2) \to B \in \Gamma$}
+    \State $\Gamma' \gets \Gamma \setminus \{(C_1 \to C_2) \to B\}$
+    \If{\Call{LJTProve}{$\Gamma' \cup \{C_2 \to B\},\; C_1 \to C_2$}}
+      \Return \Call{LJTProve}{$\Gamma' \cup \{B\},\; G$}
+    \EndIf
+  \EndFor
+  \State \Return \textbf{false}
+\EndFunction
+\end{algorithmic}
+\end{listing}
+
+\anonappendix
+\label{app:ljt-example}
+
+Вывод формулы
+$((((a \land b) \rightarrow c) \rightarrow ((a \rightarrow c) \lor (b \rightarrow c)))
+\rightarrow c) \rightarrow c$
+в исчислении LJT.
+
+Для компактности обозначим
+$\alpha = (a \land b) \rightarrow c$ и
+$\beta = (a \rightarrow c) \lor (b \rightarrow c)$.
+Тогда доказываемая формула принимает вид
+$((\alpha \rightarrow \beta) \rightarrow c) \rightarrow c$.
+
+\begin{figure}[!htb]
+\begin{center}
+\begin{tabular}{|c|}\hline\\
+\scriptsize
+\def\extraVskip{3pt}
+\def\ScoreOverhang{1pt}
+%
+\AxiomC{}
+\RightLabel{\tiny$Ax$}
+\UnaryInfC{$x{:}(a{\to}c){\to}c,\; y{:}b{\to}c,\; z{:}a \vdash y : b{\to}c$}
+%
+\RightLabel{\tiny${\to}L_1$}
+\UnaryInfC{$x{:}(a{\to}c){\to}c,\; m{:}a{\to}(b{\to}c),\; z{:}a \vdash mz : b{\to}c$}
+%
+\AxiomC{}
+\RightLabel{\tiny$Ax$}
+\UnaryInfC{$x{:}(a{\to}c){\to}c,\; k{:}c,\; m{:}a{\to}(b{\to}c) \vdash k : c$}
+%
+\RightLabel{\tiny${\to}L_4$}
+\BinaryInfC{$x{:}(a{\to}c){\to}c,\; p{:}(b{\to}c){\to}c,\; m{:}a{\to}(b{\to}c),\; z{:}a \vdash p(mz) : c$}
+%
+\RightLabel{\tiny${\to}R$}
+\UnaryInfC{$x{:}(a{\to}c){\to}c,\; p{:}(b{\to}c){\to}c,\; m{:}a{\to}(b{\to}c) \vdash \lambda z.\,p(mz) : a{\to}c$}
+%
+\RightLabel{\tiny${\to}L_2$}
+\UnaryInfC{$x{:}(a{\to}c){\to}c,\; p{:}(b{\to}c){\to}c,\; q{:}\alpha \vdash \lambda z.\,p(\lambda w.\,q\langle z,w\rangle) : a{\to}c$}
+%
+\RightLabel{\tiny${\to}L_3$}
+\UnaryInfC{$s{:}\beta{\to}c,\; q{:}\alpha \vdash \lambda z.\,(\lambda u.\,s(Ru))(\lambda w.\,q\langle z,w\rangle) : a{\to}c$}
+%
+\RightLabel{\tiny${\lor}R_1$}
+\UnaryInfC{$s{:}\beta{\to}c,\; q{:}\alpha \vdash L(\lambda z.\,(\lambda u.\,s(Ru))(\lambda w.\,q\langle z,w\rangle)) : \beta$}
+%
+\RightLabel{\tiny${\to}R$}
+\UnaryInfC{$s{:}\beta{\to}c \vdash \lambda q.\,L(\lambda z.\,(\lambda u.\,s(Ru))(\lambda w.\,q\langle z,w\rangle)) : \alpha{\to}\beta$}
+%
+\AxiomC{}
+\RightLabel{\tiny$Ax$}
+\UnaryInfC{$k{:}c \vdash k : c$}
+%
+\RightLabel{\tiny${\to}L_4$}
+\BinaryInfC{$r{:}(\alpha{\to}\beta){\to}c \vdash r(\lambda q.\,L(\lambda z.\,(\lambda u.\,(\lambda t.\,r(Kt))(Ru))(\lambda w.\,q\langle z,w\rangle))) : c$}
+%
+\RightLabel{\tiny${\to}R$}
+\UnaryInfC{$\vdash \lambda r.\,r(\lambda q.\,L(\lambda z.\,(\lambda u.\,(\lambda t.\,r(Kt))(Ru))(\lambda w.\,q\langle z,w\rangle))) : ((\alpha{\to}\beta){\to}c) \rightarrow c$}
+\DisplayProof
+\\\\\hline
+\end{tabular}
+\end{center}
+\caption{Вывод сложной формулы}
+\end{figure}
+
+\anonappendix
+\label{app:ljtsat}
+
+Ниже приведены процедуры поиска вывода в исчислении $LJT_{SAT}$,
+основанные на работе Фиорентини, Горе и Грэма-Ленграна. Процедуры
+используют инкрементальный SAT-решатель $s$ с интерфейсом:
+\begin{itemize}
+\item $\mathrm{newSolver}()$ --- создать новый SAT-решатель;
+\item $\mathrm{addClause}(s, \varphi)$ --- добавить плоскую клаузу $\varphi$ в
+  решатель $s$;
+\item $\mathrm{satProve}(s, A, q)$ --- проверить, выполняется ли
+  $R(s), A \vdash_{\mathit{cpl}} q$, где $R(s)$ --- множество клауз в $s$, $A$
+  --- множество атомарных допущений. Возвращает $\mathrm{Yes}(A')$ с $A'
+  \subseteq A$ или $\mathrm{No}(M)$ с классической контрмоделью $M$.
+\end{itemize}
+
+\begin{listing}[!htb]
+\caption{Главная процедура $LJT_{SAT}$}
+\label{alg:ljtsat-main}
+\begin{algorithmic}[1]
+\Function{LJTSatMain}{$R_0, X_0, q_0$}
+  \State $s \gets \mathrm{newSolver}()$
+  \For{$\varphi \in R_0$}
+    \State $\mathrm{addClause}(s, \varphi)$
+  \EndFor
+  \For{$(a \to b) \to c \in X_0$}
+    \State $\mathrm{addClause}(s, b \to c)$
+  \EndFor
+  \State $\tau \gets \Call{LJTSat}{R_0, X_0, \varnothing, q_0}$
+  \If{$\tau = \mathrm{No}(K)$}
+    \State \Return $K$
+  \Else
+    \State \Return вывод в $LJT_{SAT}$
+  \EndIf
+\EndFunction
+\end{algorithmic}
+\end{listing}
+
+\begin{listing}[!htb]
+\caption{Рекурсивная процедура поиска вывода}
+\label{alg:ljtsat}
+\fbox{%
+\begin{minipage}{\dimexpr\linewidth-2\fboxsep-2\fboxrule}
+\begin{algorithmic}[1]
+\Function{LJTSat}{$R, X, A, q$}
+  \State $\tau_0 \gets \mathrm{satProve}(s, A, q)$
+  \If{$\tau_0 = \mathrm{Yes}(A')$}
+    \State \Return $\mathrm{Yes}(A')$
+  \EndIf
+  \State $M \gets$ контрмодель из $\tau_0$
+  \State $\Theta \gets \varnothing$
+  \For{$\iota = (a \to b) \to c \in X$
+      т.\,ч. $a \notin M$, $b \notin M$, $c \notin M$}
+    \State $X_\iota \gets X \setminus \{\iota\}$
+    \State $\tau_1 \gets \Call{LJTSat}{R \cup \{b \to c\},\;
+      X_\iota,\; M \cup \{a\},\; b}$
+    \If{$\tau_1 = \mathrm{No}(K_1)$}
+      \State $\Theta \gets \Theta \cup \{(\iota, K_1)\}$
+    \Else
+      \State $A_1 \gets$ множество атомов из $\tau_1$
+      \State $\tilde{\varphi} \gets
+        \bigwedge(A_1 \setminus \{a\}) \to c$
+      \State $\mathrm{addClause}(s, \tilde{\varphi})$
+      \State $\tau_2 \gets \Call{LJTSat}{R \cup \{\tilde{\varphi}\},\;
+        X,\; A,\; q}$
+      \If{$\tau_2 = \mathrm{No}(K_2)$}
+        \State \Return $\mathrm{No}(K_2)$
+      \Else
+        \State \Return $\tau_2$
+      \EndIf
+    \EndIf
+  \EndFor
+  \State \Return $\mathrm{No}(\mathrm{Mod}(r, \Theta, M))$
+\EndFunction
+\end{algorithmic}
+\end{minipage}%
+}
+\end{listing}
+
+Параметр $r$ (мир контрмодели) опущен для краткости; при построении контрмодели
+миры индексируются последовательностями импликационных клауз, образующими дерево
+вызовов.
+
+\anonappendix
+\label{app:prove}
+
+Ниже приведён основной листинг функции \texttt{prove}, которая связывает
+клаузификацию, запуск SAT-based алгоритма, расширение доказательства
+LJT-поддеревьями, аннотирование $\lambda$-термами, редукцию и вывод
+результата в формате DOT.
+
+\begin{listing}[!htb]
+\caption{Функция \texttt{prove}: общий конвейер доказательства}
+\label{lst:refactoring-prove-pipeline}
+\begin{minted}[frame=single,fontsize=\footnotesize,linenos,breaklines,xleftmargin=1.5em,breaksymbol=""]{haskell}
+prove :: Formula_ -> IO ()
+prove formula = do
+  let goalAtom = Variable "$"
+  let goal = Atom goalAtom
+  let sequent = Unclausified [] [] [Annotated () (implication formula goal)] (Annotated ((), ()) goalAtom)
+  let (clausified, st) = runState (clausify sequent) (ClausificationState 0)
+  fmtLn $ buildDotClausify 0 clausified
+
+  let (Intuit flats impls goal) = getSequent clausified
+  s@(Solver context solver _) <- newSolver
+
+  let universe = Set.toList $ Set.fromList $ annotated goal :
+        (atoms =<< (map (toFormula . annotated) flats ++ map (toFormula . annotated) impls))
+
+  universeAsts <- mapM (mkFreshAtom context) universe
+  let atomToAst = Map.fromList $ zip universe universeAsts
+
+  let s = Solver context solver [Annotated (atomToAst ! a) a | a <- universe]
+  let reannotatedFlats = Annotated () <$> reannotateFlat (atomToAst !) <$> annotated <$> flats
+  mapM_ (addClause s) (annotated <$> reannotatedFlats)
+
+  let reannotatedImpls = Annotated () <$> reannotateImpl (atomToAst !) <$> annotated <$> impls
+  let reannotatedGoal = reannotate (((), ) . (atomToAst !)) goal
+  let reannotatedIntuit = Intuit reannotatedFlats reannotatedImpls reannotatedGoal
+
+  result <- carrow reannotatedIntuit s
+  case result of
+    Left counterModel -> fmtLn $ counterModel |+ ""
+    Right proof -> do
+      let extended = extendProof (second (const ()) proof)
+      let concated = concatTrees clausified (second (const ()) extended)
+      let (annotatedProof, _) = runState (annotateClausification concated) (Environment 0 Map.empty)
+      let reducedAnnotatedProof = first Lambda.reduce annotatedProof
+      fmtLn $ "digraph {\n" <>
+        "  graph [rankdir=BT]\n" <>
+        "  node [shape=record;fontname=Arial]\n" <>
+        indentF 2 (buildDotClausify 0 reducedAnnotatedProof) <>
+        "}\n"
+
+  return ()
+\end{minted}
+\end{listing}
+
+Листинг~\ref{lst:refactoring-prove-pipeline} показывает, как функция
+\texttt{prove} последовательно строит все промежуточные представления, печатает
+промежуточное дерево клаузификации и в конце выводит DOT-граф доказательства или
+контрмодель.
+
+\anonappendix
+\label{app:prover}
+
+Ниже приведён псевдокод процедуры \texttt{proveR}, соответствующий схеме из
+работы Фиорентини~\cite{Fiorentini2021}. Процедура принимает r-секвенцию
+$R, X \Rightarrow g$ и возвращает один из двух результатов: \texttt{Valid}, если
+секвенция выводима, или \texttt{CountSat}, если построена контрмодель Крипке.
+
+\begin{listing}[!htb]
+\caption{Процедура \texttt{proveR} с перезапуском}
+\label{alg:prover}
+\begin{algorithmic}[1]
+\Function{proveR}{$R, X, g$}
+  \State $s \gets \mathrm{newSolver}(R)$
+  \Loop
+    \State $W \gets \varnothing$
+    \State $\tau \gets \mathrm{satProve}(s, \varnothing, g)$
+    \If{$\tau = \mathrm{Yes}(\varnothing)$}
+      \State \Return \texttt{Valid}
+    \EndIf
+    \State Пусть $\tau = \mathrm{No}(M)$
+    \Loop
+      \State $W \gets W \cup \{M\}$
+      \State Найти пару $\langle w, \lambda\rangle$ такую, что
+        $w \in W$, $\lambda \in X$ и $w \not\Vdash_W \lambda$
+      \If{такой пары нет}
+        \State \Return \texttt{CountSat}
+      \EndIf
+      \State Пусть $\lambda = (a \to b) \to c$
+      \State $\tau \gets \mathrm{satProve}(s, w \cup \{a\}, b)$
+      \If{$\tau = \mathrm{No}(M')$}
+        \State $M \gets M'$
+      \Else
+        \State Пусть $\tau = \mathrm{Yes}(A)$
+        \State $\varphi \gets \bigwedge(A \setminus \{a\}) \to c$
+        \State $\mathrm{addClause}(s, \varphi)$
+        \State \textbf{break}
+      \EndIf
+    \EndLoop
+  \EndLoop
+\EndFunction
+\end{algorithmic}
+\end{listing}
+
+Внешний цикл процедуры соответствует последовательному расширению множества
+плоских клауз $R(s)$ выученными клауза\-ми. Внутренний цикл строит множество
+интерпретаций $W$, которое при невозможности выбрать нарушенную импликационную
+клаузу становится контрмоделью. Если же такая клауза найдена и проверка
+$R(s), w, a \vdash_{\mathit{cpl}} b$ завершается успехом, процедура извлекает
+множество допущений $A$, строит выученную клаузу $\varphi$ и перезапускает
+главный цикл.
+
+\anonappendix
+\label{app:lk-lj-rules}
+
+Ниже приведены полные наборы правил классического исчисления LK и
+интуиционистского исчисления LJ в формулировке Генцена.
+
+\begin{figure}[!htb]
+\begin{tabular}{|c|}\hline
+\textbf{Аксиомы}
+\\\\
+\AxiomC{}
+\RightLabel{\scriptsize$Ax$}
+\UnaryInfC{$A \vdash A$}
+\DisplayProof\hskip 2em
+\AxiomC{}
+\RightLabel{\scriptsize$\bot L$}
+\UnaryInfC{$\Gamma, \bot \vdash \Delta$}
+\DisplayProof
+\\\\
+\textbf{Структурные правила}
+\\\\
+\AxiomC{$\Gamma \vdash \Delta$}
+\RightLabel{\scriptsize$LW$}
+\UnaryInfC{$\Gamma, A \vdash \Delta$}
+\DisplayProof\hskip 2em
+\AxiomC{$\Gamma \vdash \Delta$}
+\RightLabel{\scriptsize$RW$}
+\UnaryInfC{$\Gamma \vdash \Delta, A$}
+\DisplayProof
+\\\\
+\AxiomC{$\Gamma, A, A \vdash \Delta$}
+\RightLabel{\scriptsize$LC$}
+\UnaryInfC{$\Gamma, A \vdash \Delta$}
+\DisplayProof\hskip 2em
+\AxiomC{$\Gamma \vdash \Delta, A, A$}
+\RightLabel{\scriptsize$RC$}
+\UnaryInfC{$\Gamma \vdash \Delta, A$}
+\DisplayProof
+\\\\
+\AxiomC{$\Gamma, A, B, \Pi \vdash \Delta$}
+\RightLabel{\scriptsize$LX$}
+\UnaryInfC{$\Gamma, B, A, \Pi \vdash \Delta$}
+\DisplayProof\hskip 2em
+\AxiomC{$\Gamma \vdash \Delta, A, B, \Pi$}
+\RightLabel{\scriptsize$RX$}
+\UnaryInfC{$\Gamma \vdash \Delta, B, A, \Pi$}
+\DisplayProof
+\\\\
+\textbf{Логические правила}
+\\\\
+\AxiomC{$\Gamma \vdash A, \Phi$}
+\AxiomC{$\Pi, B \vdash \Psi$}
+\RightLabel{\scriptsize$\rightarrow L$}
+\BinaryInfC{$\Gamma, \Pi, A \rightarrow B \vdash \Phi, \Psi$}
+\DisplayProof\hskip 2em
+\AxiomC{$\Gamma, A \vdash B, \Delta$}
+\RightLabel{\scriptsize$\rightarrow R$}
+\UnaryInfC{$\Gamma \vdash A \rightarrow B, \Delta$}
+\DisplayProof
+\\\\
+\AxiomC{$\Gamma \vdash A, \Delta$}
+\AxiomC{$\Gamma \vdash B, \Delta$}
+\RightLabel{\scriptsize$\land R$}
+\BinaryInfC{$\Gamma \vdash A \land B, \Delta$}
+\DisplayProof
+\\\\
+\AxiomC{$\Gamma, A \vdash \Delta$}
+\RightLabel{\scriptsize$\land L_1$}
+\UnaryInfC{$\Gamma, A \land B \vdash \Delta$}
+\DisplayProof\hskip 2em
+\AxiomC{$\Gamma, B \vdash \Delta$}
+\RightLabel{\scriptsize$\land L_2$}
+\UnaryInfC{$\Gamma, A \land B \vdash \Delta$}
+\DisplayProof
+\\\\
+\AxiomC{$\Gamma, A \vdash \Delta$}
+\AxiomC{$\Gamma, B \vdash \Delta$}
+\RightLabel{\scriptsize$\lor L$}
+\BinaryInfC{$\Gamma, A \lor B \vdash \Delta$}
+\DisplayProof
+\\\\
+\AxiomC{$\Gamma \vdash A, \Delta$}
+\RightLabel{\scriptsize$\lor R_1$}
+\UnaryInfC{$\Gamma \vdash A \lor B, \Delta$}
+\DisplayProof\hskip 2em
+\AxiomC{$\Gamma \vdash B, \Delta$}
+\RightLabel{\scriptsize$\lor R_2$}
+\UnaryInfC{$\Gamma \vdash A \lor B, \Delta$}
+\DisplayProof
+\\\\
+\textbf{Правило сечения}
+\\\\
+\AxiomC{$\Gamma \vdash A, \Delta$}
+\AxiomC{$\Gamma, A \vdash \Sigma$}
+\RightLabel{\scriptsize$cut$}
+\BinaryInfC{$\Gamma \vdash \Delta, \Sigma$}
+\DisplayProof\\\\\hline
+\end{tabular}
+\caption{Правила классического секвенциального исчисления LK}
+\label{fig:lk-rules}
+\end{figure}
+
+\begin{figure}[!htb]
+\begin{tabular}{|c|}\hline
+\textbf{Аксиомы}
+\\\\
+\AxiomC{}
+\RightLabel{\scriptsize$Ax$}
+\UnaryInfC{$A \vdash A$}
+\DisplayProof\hskip 2em
+\AxiomC{}
+\RightLabel{\scriptsize$\bot L$}
+\UnaryInfC{$\Gamma, \bot \vdash \Delta$}
+\DisplayProof
+\\\\
+\textbf{Структурные правила}
+\\\\
+\AxiomC{$\Gamma \vdash \Delta$}
+\RightLabel{\scriptsize$LW$}
+\UnaryInfC{$\Gamma, A \vdash \Delta$}
+\DisplayProof\hskip 2em
+\AxiomC{$\Gamma, A, A \vdash \Delta$}
+\RightLabel{\scriptsize$LC$}
+\UnaryInfC{$\Gamma, A \vdash \Delta$}
+\DisplayProof\hskip 2em
+\AxiomC{$\Gamma, A, B, \Gamma' \vdash \Delta$}
+\RightLabel{\scriptsize$LX$}
+\UnaryInfC{$\Gamma, B, A, \Gamma' \vdash \Delta$}
+\DisplayProof
+\\\\
+\textbf{Логические правила}
+\\\\
+\AxiomC{$\Gamma \vdash A$}
+\AxiomC{$\Gamma, B \vdash \Delta$}
+\RightLabel{\scriptsize$\rightarrow L$}
+\BinaryInfC{$\Gamma, A \rightarrow B \vdash \Delta$}
+\DisplayProof\hskip 2em
+\AxiomC{$\Gamma, A \vdash B$}
+\RightLabel{\scriptsize$\rightarrow R$}
+\UnaryInfC{$\Gamma \vdash A \rightarrow B$}
+\DisplayProof
+\\\\
+\AxiomC{$\Gamma \vdash A$}
+\AxiomC{$\Gamma \vdash B$}
+\RightLabel{\scriptsize$\land R$}
+\BinaryInfC{$\Gamma \vdash A \land B$}
+\DisplayProof
+\\\\
+\AxiomC{$\Gamma, A \vdash \Delta$}
+\RightLabel{\scriptsize$\land L_1$}
+\UnaryInfC{$\Gamma, A \land B \vdash \Delta$}
+\DisplayProof\hskip 2em
+\AxiomC{$\Gamma, B \vdash \Delta$}
+\RightLabel{\scriptsize$\land L_2$}
+\UnaryInfC{$\Gamma, A \land B \vdash \Delta$}
+\DisplayProof
+\\\\
+\AxiomC{$\Gamma, A \vdash \Delta$}
+\AxiomC{$\Gamma, B \vdash \Delta$}
+\RightLabel{\scriptsize$\lor L$}
+\BinaryInfC{$\Gamma, A \lor B \vdash \Delta$}
+\DisplayProof
+\\\\
+\AxiomC{$\Gamma \vdash A$}
+\RightLabel{\scriptsize$\lor R_1$}
+\UnaryInfC{$\Gamma \vdash A \lor B$}
+\DisplayProof\hskip 2em
+\AxiomC{$\Gamma \vdash B$}
+\RightLabel{\scriptsize$\lor R_2$}
+\UnaryInfC{$\Gamma \vdash A \lor B$}
+\DisplayProof
+\\\\
+\textbf{Правило сечения}
+\\\\
+\AxiomC{$\Gamma \vdash A$}
+\AxiomC{$\Gamma, A \vdash \Delta$}
+\RightLabel{\scriptsize$cut$}
+\BinaryInfC{$\Gamma \vdash \Delta$}
+\DisplayProof\\\\\hline
+\end{tabular}
+\caption{Правила интуиционистского секвенциального исчисления LJ}
+\label{fig:lj-rules}
+\end{figure}
+
+\anonappendix
+\label{app:hilbert-axioms}
+
+Правило modus ponens гильбертовой системы представлено на рисунке~\ref{fig:hilbert-mp-app}.
+
+\begin{figure}[!htb]
+\centering
+\AxiomC{$A$}
+\AxiomC{$A \rightarrow B$}
+\BinaryInfC{$B$}
+\DisplayProof
+\caption{Правило modus ponens}
+\label{fig:hilbert-mp-app}
+\end{figure}
+
+Схемы аксиом (A1)---(A9) гильбертовой системы:
+
+\begin{itemize}[leftmargin=0pt, label={}, itemindent=0pt, listparindent=0pt, nosep]
+\item \text{(A1)} $A \rightarrow (B \rightarrow A)$
+\item \text{(A2)} $(A \rightarrow (B \rightarrow C)) \rightarrow ((A \rightarrow B) \rightarrow (A \rightarrow C))$
+\item \text{(A3)} $A \land B \rightarrow A$
+\item \text{(A4)} $A \land B \rightarrow B$
+\item \text{(A5)} $A \rightarrow (B \rightarrow A \land B)$
+\item \text{(A6)} $A \rightarrow A \lor B$
+\item \text{(A7)} $B \rightarrow A \lor B$
+\item \text{(A8)} $(A \rightarrow C) \rightarrow ((B \rightarrow C) \rightarrow (A \lor B \rightarrow C))$
+\item \text{(A9)} $\bot \rightarrow A$
+\end{itemize}
+
+\end{document}
