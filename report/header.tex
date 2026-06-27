@@ -3,7 +3,7 @@
 \usepackage{float}
 \usepackage{xcolor}
 \usepackage{extsizes}
-\usepackage{subfig}
+\usepackage{subcaption}
 \usepackage[export]{adjustbox}
 \usepackage{tocvsec2} % возможность менять учитываемую глубину разделов в оглавлении
 \usepackage[subfigure]{tocloft}
@@ -394,13 +394,13 @@
 \makeatother
 \newcommand{\anonsection}[1]{\cleardoublepage
 \phantomsection
-\addcontentsline{toc}{section}{\protect\numberline{}#1}
+\addcontentsline{toc}{anonsection}{#1}
 \section*{#1}\vspace*{2.5ex} % По госту положены 3 пустые строки после заголовка ненумеруемого раздела
 }
 \newcommand{\anonappendix}{\cleardoublepage
 \refstepcounter{cyrapx}%
 \phantomsection
-\addcontentsline{toc}{section}{\protect\numberline{}ПРИЛОЖЕНИЕ \thecyrapx}
+\addcontentsline{toc}{anonsection}{ПРИЛОЖЕНИЕ \thecyrapx}
 \section*{ПРИЛОЖЕНИЕ \thecyrapx}\vspace*{2.5ex}
 }
 \newcommand{\sectionbreak}{\clearpage}
@@ -413,6 +413,24 @@
 \setlength{\cftsecindent}{0pt}% Убираем отступы в содержании для \section
 \setlength{\cftsubsecindent}{0pt}% Убираем отступы в содержании для \subsection
 \setlength{\cftsubsubsecindent}{0pt}% Убираем отступы в содержании для \subsubsection
+\setlength{\cftsecnumwidth}{2.5em}% Ширина поля номера раздела в оглавлении
+
+% Ненумеруемые разделы (anonsection) — без поля номера, текст с левого поля
+\makeatletter
+\newcommand*{\l@anonsection}[2]{%
+  \ifnum \c@tocdepth >\z@
+    \addpenalty\@secpenalty
+    \addvspace{\cftbeforesecskip}
+    {\leftskip \cftsecindent\relax
+     \rightskip \@tocrmarg
+     \parfillskip -\rightskip
+     \parindent \cftsecindent\relax\@afterindenttrue
+     \interlinepenalty\@M
+     \leavevmode
+     {\cftsecfont #1}\nobreak
+     \cftsecfillnum{#2}}%
+  \fi}
+\makeatother
 
 \usepackage{caption} 
 %\captionsetup[table]{justification=raggedleft} 
