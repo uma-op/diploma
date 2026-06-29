@@ -3,7 +3,7 @@
 \usepackage{float}
 \usepackage{xcolor}
 \usepackage{extsizes}
-\usepackage{subfig}
+\usepackage{subcaption}
 \usepackage[export]{adjustbox}
 \usepackage{tocvsec2} % возможность менять учитываемую глубину разделов в оглавлении
 \usepackage[subfigure]{tocloft}
@@ -97,7 +97,7 @@
 %%% Подписи %%%
 \usepackage{caption}                                % Для управления подписями (рисунков и таблиц) % Может управлять номерами рисунков и таблиц с caption %Иногда может управлять заголовками в списках рисунков и таблиц
 %% Использование:
-%\begin{table}[h!]\ContinuedFloat - чтобы не переключать счетчик
+%\begin{table}[h!]\ContinuedFloat --- чтобы не переключать счетчик
 %\captionsetup{labelformat=continued}% должен стоять до самого caption
 %\caption{}
 % либо ручками \caption*{Продолжение таблицы~\ref{...}.} :)
@@ -385,11 +385,23 @@
 \makeatletter
 \def\p@subsection{}
 \def\p@subsubsection{\thesection\,\thesubsection\,}
+\newcounter{cyrapx}
+\renewcommand{\thecyrapx}{%
+  \ifcase\value{cyrapx}\or
+  А\or Б\or В\or Г\or Д\or Е\or Ж\or З\or И\or К\or
+  \else\arabic{cyrapx}\fi
+}
 \makeatother
 \newcommand{\anonsection}[1]{\cleardoublepage
 \phantomsection
-\addcontentsline{toc}{section}{\protect\numberline{}#1}
+\addcontentsline{toc}{anonsection}{#1}
 \section*{#1}\vspace*{2.5ex} % По госту положены 3 пустые строки после заголовка ненумеруемого раздела
+}
+\newcommand{\anonappendix}{\cleardoublepage
+\refstepcounter{cyrapx}%
+\phantomsection
+\addcontentsline{toc}{anonsection}{ПРИЛОЖЕНИЕ \thecyrapx}
+\section*{ПРИЛОЖЕНИЕ \thecyrapx}\vspace*{2.5ex}
 }
 \newcommand{\sectionbreak}{\clearpage}
 \renewcommand{\sectionfont}{\normalsize} % Сбиваем стиль оглавления в стандартный
@@ -401,6 +413,24 @@
 \setlength{\cftsecindent}{0pt}% Убираем отступы в содержании для \section
 \setlength{\cftsubsecindent}{0pt}% Убираем отступы в содержании для \subsection
 \setlength{\cftsubsubsecindent}{0pt}% Убираем отступы в содержании для \subsubsection
+\setlength{\cftsecnumwidth}{2.5em}% Ширина поля номера раздела в оглавлении
+
+% Ненумеруемые разделы (anonsection) — без поля номера, текст с левого поля
+\makeatletter
+\newcommand*{\l@anonsection}[2]{%
+  \ifnum \c@tocdepth >\z@
+    \addpenalty\@secpenalty
+    \addvspace{\cftbeforesecskip}
+    {\leftskip \cftsecindent\relax
+     \rightskip \@tocrmarg
+     \parfillskip -\rightskip
+     \parindent \cftsecindent\relax\@afterindenttrue
+     \interlinepenalty\@M
+     \leavevmode
+     {\cftsecfont #1}\nobreak
+     \cftsecfillnum{#2}}%
+  \fi}
+\makeatother
 
 \usepackage{caption} 
 %\captionsetup[table]{justification=raggedleft} 
@@ -410,6 +440,10 @@
 \usepackage{mathtools}  % \abs, \norm
     \DeclarePairedDelimiter\abs{\lvert}{\rvert} % операция модуля
     \DeclarePairedDelimiter\norm{\lVert}{\rVert} % операция нормы
+\NewDocumentCommand{\caseof}{m m m o}{%
+  \mathrm{case}\,#1\,\mathrm{of}\,#2\,\mathrm{or}\,#3%
+  \IfValueT{#4}{:#4}%
+}
 \DeclareTextCommandDefault{\textvisiblespace}{%
   \mbox{\kern.06em\vrule \@height.3ex}%
   \vbox{\hrule \@width.3em}%

@@ -1,0 +1,11 @@
+name,result,clausification_ms,proving_ms,annotation_ms,total_ms
+fresh-tail-n01.txt,valid,1.572,102.166,0.328,104.067
+fresh-tail-n02.txt,valid,1.246,69.615,0.292,71.154
+fresh-tail-n03.txt,valid,1.595,120.272,0.273,122.141
+fresh-tail-n04.txt,valid,1.326,90.854,0.253,92.433
+fresh-tail-n05.txt,valid,1.638,114.847,0.280,116.766
+fresh-tail-n06.txt,valid,1.313,131.123,0.243,132.680
+fresh-tail-n07.txt,valid,1.948,150.566,0.271,152.786
+fresh-tail-n08.txt,valid,1.644,145.506,0.278,147.429
+fresh-tail-n09.txt,valid,1.712,171.318,0.341,173.371
+fresh-tail-n10.txt,valid,2.281,181.947,0.277,184.506

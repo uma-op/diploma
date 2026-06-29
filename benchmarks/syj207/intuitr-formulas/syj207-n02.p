@@ -1,0 +1,17 @@
+% Generated from psi.p schema for syj207 benchmarking
+% N = 2, m = 4
+
+fof(axiom1,axiom,(
+( ( p1 <=> p2)  => ( p1 & ( p2 & ( p3 & ( p4 ) ) ) ) ) )).
+fof(axiom2,axiom,(
+( ( p2 <=> p3)  => ( p1 & ( p2 & ( p3 & ( p4 ) ) ) ) ) )).
+fof(axiom3,axiom,(
+( ( p3 <=> p4)  => ( p1 & ( p2 & ( p3 & ( p4 ) ) ) ) ) )).
+fof(axiom4,axiom,(
+( ( p4 <=> p1)  => ( p1 & ( p2 & ( p3 & ( p4 ) ) ) ) ) )).
+
+fof(con,conjecture,(
+( p0 | ( p1 & ( p2 & ( p3 & ( p4 ) ) ) ) | ~(p0 ) )
+)).
+
+

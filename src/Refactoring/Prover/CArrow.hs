@@ -14,6 +14,7 @@ import Refactoring.Prover.CounterModel
 import Refactoring.Prover.Solver
 import Refactoring.Sequent.Annotated
 import Refactoring.Clause.Flat
+import Refactoring.Lambda.Lambda
 
 import Z3.Base
 import Fmt
@@ -22,34 +23,34 @@ data CArrowRule_ a c =
   CPL0 (Intuit_ a c) (Classic_ a c) |
   CPL1 (Intuit_ a c) (Classic_ a c) (CArrowRule_ a c) (Flat_ c) (Impl_ c) |
 
-  ExCPL0 (Intuit_ a c) (LJTRule_ a c) |
-  ExCPL1 (Intuit_ a c) (LJTRule_ a c) (CArrowRule_ a c) (Flat_ c) (Impl_ c)
+  ExCPL0 (Intuit_ a c) (LJTRule_ a c) [Substitution_] |
+  ExCPL1 (Intuit_ a c) (LJTRule_ a c) (CArrowRule_ a c) (Flat_ c) (Impl_ c) [Substitution_]
 
 rootCArrow :: CArrowRule_ a c -> Intuit_ a c
 rootCArrow (CPL0 iseq _) = iseq
 rootCArrow (CPL1 iseq _ _ _ _) = iseq
-rootCArrow (ExCPL0 iseq _) = iseq
-rootCArrow (ExCPL1 iseq _ _ _ _) = iseq
+rootCArrow (ExCPL0 iseq _ _) = iseq
+rootCArrow (ExCPL1 iseq _ _ _ _ _) = iseq
 
 instance Functor (CArrowRule_ a) where
   fmap f (CPL0 iseq cseq) = CPL0 (second f iseq) (second f cseq)
   fmap f (CPL1 iseq cseq r newFlat learnedImpl) = CPL1 (second f iseq) (second f cseq) (fmap f r) (f <$> newFlat) (f <$> learnedImpl)
-  fmap f (ExCPL0 iseq r) = ExCPL0 (second f iseq) (second f r)
-  fmap f (ExCPL1 iseq ljtRule rule newFlat learnedImpl) = ExCPL1 (second f iseq) (second f ljtRule) (second f rule) (f <$> newFlat) (f <$> learnedImpl)
+  fmap f (ExCPL0 iseq r subs) = ExCPL0 (second f iseq) (second f r) subs
+  fmap f (ExCPL1 iseq ljtRule rule newFlat learnedImpl subs) = ExCPL1 (second f iseq) (second f ljtRule) (second f rule) (f <$> newFlat) (f <$> learnedImpl) subs
 
 instance Bifunctor CArrowRule_ where
   first f (CPL0 iseq cseq) = CPL0 (first f iseq) (first f cseq)
   first f (CPL1 iseq cseq r newFlat learnedImpl) = CPL1 (first f iseq) (first f cseq) (first f r) newFlat learnedImpl
-  first f (ExCPL0 iseq ljtRule) = ExCPL0 (first f iseq) (first f ljtRule)
-  first f (ExCPL1 iseq ljtRule rule newFlat learnedImpl) = ExCPL1 (first f iseq) (first f ljtRule) (first f rule) newFlat learnedImpl
+  first f (ExCPL0 iseq ljtRule subs) = ExCPL0 (first f iseq) (first f ljtRule) subs
+  first f (ExCPL1 iseq ljtRule rule newFlat learnedImpl subs) = ExCPL1 (first f iseq) (first f ljtRule) (first f rule) newFlat learnedImpl subs
 
   second = fmap
 
 instance (BuildableAnnotation a, BuildableAnnotation c) => Buildable (CArrowRule_ a c) where
   build (CPL0 iseq cseq) = "Intuit[" +| iseq |+ "] Classic[" +| cseq |+ "]"
   build (CPL1 iseq cseq rule _ _) = "Intuit[" +| iseq |+ "] Classic[" +| cseq |+ "]\n" +| rule |+ ""
-  build (ExCPL0 iseq ljtRule) = undefined
-  build (ExCPL1 iseq ljtRule rule _ _) = undefined
+  build (ExCPL0 iseq ljtRule _) = undefined
+  build (ExCPL1 iseq ljtRule rule _ _ _) = undefined
 
 carrow :: Intuit_ () AST -> Solver_ -> IO (Either (CounterModel_ AST) (CArrowRule_ () AST))
 carrow iseq@(Intuit flats impls goal) solver = do
@@ -57,14 +58,25 @@ carrow iseq@(Intuit flats impls goal) solver = do
   case result of
     Yes _ -> return $ Right $ CPL0 iseq (Classic flats [] goal)
     No model -> do
-      result <- innerLoop iseq (newCounterModel model) solver
+      let modelAtoms = annotated <$> model
+      result <-
+        innerLoop
+          iseq
+          (newCounterModel model
+            [i | i@(Impl a b c) <- (annotated <$> impls),
+              not $ (annotated a) `elem` modelAtoms,
+              not $ (annotated b) `elem` modelAtoms,
+              not $ (annotated c) `elem` modelAtoms
+            ]
+          )
+          solver
       case result of 
         Left counterModel -> return $ Left counterModel
         Right (assumptions, learnedClause) -> do
           let (Impl a b c) = learnedClause
-          let classicSequent = Classic flats (addAnnotation () <$> a : assumptions) (addAnnotation () b)
+          let classicSequent = Classic flats (addAnnotation () <$> assumptions) (addAnnotation () b)
           let newClause = Flat (List.delete a assumptions) [c]
-          addClause solver newClause
+          solver <- addClause solver newClause
 
           let intuitSequent = Intuit (Annotated () newClause : flats) impls goal
           result <- carrow intuitSequent solver
@@ -79,16 +91,26 @@ innerLoop ::
   Solver_ ->
   IO (Either (CounterModel_ AST) ([Annotated_ AST Atom_], Impl_ AST))
 innerLoop iseq@(Intuit flats impls goal) counterModel solver = do
-  let selectedWorld = asum [do sw <- selectWorld counterModel i; return (i, sw) | (Annotated () i) <- impls] 
+  let selectedWorld = selectWorld counterModel
   case selectedWorld of 
-    Just (learned@(Impl a b c), (World worldId as)) -> do
+    Just (learned@(Impl a b c), (World worldId as worldImpls)) -> do
       result <- satProve solver (Set.toList $ Set.insert a as) (addAnnotation () b)
       case result of
         Yes core -> return $ Right (core, learned)
-        No model -> innerLoop iseq (addWorld counterModel worldId model) solver
+        No model ->
+          innerLoop
+            iseq
+            (addWorld counterModel worldId model
+              [i | i@(Impl a b c) <- worldImpls,
+               not $ annotated a `elem` (annotated <$> model),
+               not $ annotated b `elem` (annotated <$> model),
+               not $ annotated c `elem` (annotated <$> model)
+              ]
+            )
+            solver
     Nothing -> return $ Left counterModel
 
 extendProof :: CArrowRule_ () () -> CArrowRule_ () ()
-extendProof (CPL0 iseq cseq) = ExCPL0 iseq (ljt cseq)
-extendProof (CPL1 iseq cseq rule newFlat learnedImpl) = ExCPL1 iseq (ljt cseq) (extendProof rule) newFlat learnedImpl
+extendProof (CPL0 iseq cseq) = ExCPL0 iseq (ljt cseq) []
+extendProof (CPL1 iseq cseq rule newFlat learnedImpl) = ExCPL1 iseq (ljt cseq) (extendProof rule) newFlat learnedImpl []
 extendProof _ = undefined

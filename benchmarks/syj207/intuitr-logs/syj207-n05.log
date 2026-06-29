@@ -1,0 +1,234 @@
+IMPLS: True IMPLD: True V: p1
+IMPLS: True IMPLD: True V: p2
+IMPLS: True IMPLD: False V: (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & p10)))))))))
+IMPLS: True IMPLD: False V: p1
+IMPLS: True IMPLD: False V: (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & p10))))))))
+IMPLS: True IMPLD: False V: p2
+IMPLS: True IMPLD: False V: (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & p10)))))))
+IMPLS: True IMPLD: False V: p3
+IMPLS: True IMPLD: False V: (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & p10))))))
+IMPLS: True IMPLD: False V: p4
+IMPLS: True IMPLD: False V: (p5 & (p6 & (p7 & (p8 & (p9 & p10)))))
+IMPLS: True IMPLD: False V: p5
+IMPLS: True IMPLD: False V: (p6 & (p7 & (p8 & (p9 & p10))))
+IMPLS: True IMPLD: False V: p6
+IMPLS: True IMPLD: False V: (p7 & (p8 & (p9 & p10)))
+IMPLS: True IMPLD: False V: p7
+IMPLS: True IMPLD: False V: (p8 & (p9 & p10))
+IMPLS: True IMPLD: False V: p8
+IMPLS: True IMPLD: False V: (p9 & p10)
+IMPLS: True IMPLD: False V: p9
+IMPLS: True IMPLD: False V: p10
+IMPLS: True IMPLD: True V: p2
+IMPLS: True IMPLD: True V: p3
+IMPLS: True IMPLD: False V: (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & p10)))))))))
+IMPLS: True IMPLD: False V: p1
+IMPLS: True IMPLD: False V: (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & p10))))))))
+IMPLS: True IMPLD: False V: p2
+IMPLS: True IMPLD: False V: (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & p10)))))))
+IMPLS: True IMPLD: False V: p3
+IMPLS: True IMPLD: False V: (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & p10))))))
+IMPLS: True IMPLD: False V: p4
+IMPLS: True IMPLD: False V: (p5 & (p6 & (p7 & (p8 & (p9 & p10)))))
+IMPLS: True IMPLD: False V: p5
+IMPLS: True IMPLD: False V: (p6 & (p7 & (p8 & (p9 & p10))))
+IMPLS: True IMPLD: False V: p6
+IMPLS: True IMPLD: False V: (p7 & (p8 & (p9 & p10)))
+IMPLS: True IMPLD: False V: p7
+IMPLS: True IMPLD: False V: (p8 & (p9 & p10))
+IMPLS: True IMPLD: False V: p8
+IMPLS: True IMPLD: False V: (p9 & p10)
+IMPLS: True IMPLD: False V: p9
+IMPLS: True IMPLD: False V: p10
+IMPLS: True IMPLD: True V: p3
+IMPLS: True IMPLD: True V: p4
+IMPLS: True IMPLD: False V: (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & p10)))))))))
+IMPLS: True IMPLD: False V: p1
+IMPLS: True IMPLD: False V: (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & p10))))))))
+IMPLS: True IMPLD: False V: p2
+IMPLS: True IMPLD: False V: (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & p10)))))))
+IMPLS: True IMPLD: False V: p3
+IMPLS: True IMPLD: False V: (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & p10))))))
+IMPLS: True IMPLD: False V: p4
+IMPLS: True IMPLD: False V: (p5 & (p6 & (p7 & (p8 & (p9 & p10)))))
+IMPLS: True IMPLD: False V: p5
+IMPLS: True IMPLD: False V: (p6 & (p7 & (p8 & (p9 & p10))))
+IMPLS: True IMPLD: False V: p6
+IMPLS: True IMPLD: False V: (p7 & (p8 & (p9 & p10)))
+IMPLS: True IMPLD: False V: p7
+IMPLS: True IMPLD: False V: (p8 & (p9 & p10))
+IMPLS: True IMPLD: False V: p8
+IMPLS: True IMPLD: False V: (p9 & p10)
+IMPLS: True IMPLD: False V: p9
+IMPLS: True IMPLD: False V: p10
+IMPLS: True IMPLD: True V: p4
+IMPLS: True IMPLD: True V: p5
+IMPLS: True IMPLD: False V: (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & p10)))))))))
+IMPLS: True IMPLD: False V: p1
+IMPLS: True IMPLD: False V: (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & p10))))))))
+IMPLS: True IMPLD: False V: p2
+IMPLS: True IMPLD: False V: (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & p10)))))))
+IMPLS: True IMPLD: False V: p3
+IMPLS: True IMPLD: False V: (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & p10))))))
+IMPLS: True IMPLD: False V: p4
+IMPLS: True IMPLD: False V: (p5 & (p6 & (p7 & (p8 & (p9 & p10)))))
+IMPLS: True IMPLD: False V: p5
+IMPLS: True IMPLD: False V: (p6 & (p7 & (p8 & (p9 & p10))))
+IMPLS: True IMPLD: False V: p6
+IMPLS: True IMPLD: False V: (p7 & (p8 & (p9 & p10)))
+IMPLS: True IMPLD: False V: p7
+IMPLS: True IMPLD: False V: (p8 & (p9 & p10))
+IMPLS: True IMPLD: False V: p8
+IMPLS: True IMPLD: False V: (p9 & p10)
+IMPLS: True IMPLD: False V: p9
+IMPLS: True IMPLD: False V: p10
+IMPLS: True IMPLD: True V: p5
+IMPLS: True IMPLD: True V: p6
+IMPLS: True IMPLD: False V: (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & p10)))))))))
+IMPLS: True IMPLD: False V: p1
+IMPLS: True IMPLD: False V: (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & p10))))))))
+IMPLS: True IMPLD: False V: p2
+IMPLS: True IMPLD: False V: (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & p10)))))))
+IMPLS: True IMPLD: False V: p3
+IMPLS: True IMPLD: False V: (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & p10))))))
+IMPLS: True IMPLD: False V: p4
+IMPLS: True IMPLD: False V: (p5 & (p6 & (p7 & (p8 & (p9 & p10)))))
+IMPLS: True IMPLD: False V: p5
+IMPLS: True IMPLD: False V: (p6 & (p7 & (p8 & (p9 & p10))))
+IMPLS: True IMPLD: False V: p6
+IMPLS: True IMPLD: False V: (p7 & (p8 & (p9 & p10)))
+IMPLS: True IMPLD: False V: p7
+IMPLS: True IMPLD: False V: (p8 & (p9 & p10))
+IMPLS: True IMPLD: False V: p8
+IMPLS: True IMPLD: False V: (p9 & p10)
+IMPLS: True IMPLD: False V: p9
+IMPLS: True IMPLD: False V: p10
+IMPLS: True IMPLD: True V: p6
+IMPLS: True IMPLD: True V: p7
+IMPLS: True IMPLD: False V: (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & p10)))))))))
+IMPLS: True IMPLD: False V: p1
+IMPLS: True IMPLD: False V: (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & p10))))))))
+IMPLS: True IMPLD: False V: p2
+IMPLS: True IMPLD: False V: (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & p10)))))))
+IMPLS: True IMPLD: False V: p3
+IMPLS: True IMPLD: False V: (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & p10))))))
+IMPLS: True IMPLD: False V: p4
+IMPLS: True IMPLD: False V: (p5 & (p6 & (p7 & (p8 & (p9 & p10)))))
+IMPLS: True IMPLD: False V: p5
+IMPLS: True IMPLD: False V: (p6 & (p7 & (p8 & (p9 & p10))))
+IMPLS: True IMPLD: False V: p6
+IMPLS: True IMPLD: False V: (p7 & (p8 & (p9 & p10)))
+IMPLS: True IMPLD: False V: p7
+IMPLS: True IMPLD: False V: (p8 & (p9 & p10))
+IMPLS: True IMPLD: False V: p8
+IMPLS: True IMPLD: False V: (p9 & p10)
+IMPLS: True IMPLD: False V: p9
+IMPLS: True IMPLD: False V: p10
+IMPLS: True IMPLD: True V: p7
+IMPLS: True IMPLD: True V: p8
+IMPLS: True IMPLD: False V: (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & p10)))))))))
+IMPLS: True IMPLD: False V: p1
+IMPLS: True IMPLD: False V: (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & p10))))))))
+IMPLS: True IMPLD: False V: p2
+IMPLS: True IMPLD: False V: (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & p10)))))))
+IMPLS: True IMPLD: False V: p3
+IMPLS: True IMPLD: False V: (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & p10))))))
+IMPLS: True IMPLD: False V: p4
+IMPLS: True IMPLD: False V: (p5 & (p6 & (p7 & (p8 & (p9 & p10)))))
+IMPLS: True IMPLD: False V: p5
+IMPLS: True IMPLD: False V: (p6 & (p7 & (p8 & (p9 & p10))))
+IMPLS: True IMPLD: False V: p6
+IMPLS: True IMPLD: False V: (p7 & (p8 & (p9 & p10)))
+IMPLS: True IMPLD: False V: p7
+IMPLS: True IMPLD: False V: (p8 & (p9 & p10))
+IMPLS: True IMPLD: False V: p8
+IMPLS: True IMPLD: False V: (p9 & p10)
+IMPLS: True IMPLD: False V: p9
+IMPLS: True IMPLD: False V: p10
+IMPLS: True IMPLD: True V: p8
+IMPLS: True IMPLD: True V: p9
+IMPLS: True IMPLD: False V: (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & p10)))))))))
+IMPLS: True IMPLD: False V: p1
+IMPLS: True IMPLD: False V: (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & p10))))))))
+IMPLS: True IMPLD: False V: p2
+IMPLS: True IMPLD: False V: (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & p10)))))))
+IMPLS: True IMPLD: False V: p3
+IMPLS: True IMPLD: False V: (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & p10))))))
+IMPLS: True IMPLD: False V: p4
+IMPLS: True IMPLD: False V: (p5 & (p6 & (p7 & (p8 & (p9 & p10)))))
+IMPLS: True IMPLD: False V: p5
+IMPLS: True IMPLD: False V: (p6 & (p7 & (p8 & (p9 & p10))))
+IMPLS: True IMPLD: False V: p6
+IMPLS: True IMPLD: False V: (p7 & (p8 & (p9 & p10)))
+IMPLS: True IMPLD: False V: p7
+IMPLS: True IMPLD: False V: (p8 & (p9 & p10))
+IMPLS: True IMPLD: False V: p8
+IMPLS: True IMPLD: False V: (p9 & p10)
+IMPLS: True IMPLD: False V: p9
+IMPLS: True IMPLD: False V: p10
+IMPLS: True IMPLD: True V: p9
+IMPLS: True IMPLD: True V: p10
+IMPLS: True IMPLD: False V: (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & p10)))))))))
+IMPLS: True IMPLD: False V: p1
+IMPLS: True IMPLD: False V: (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & p10))))))))
+IMPLS: True IMPLD: False V: p2
+IMPLS: True IMPLD: False V: (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & p10)))))))
+IMPLS: True IMPLD: False V: p3
+IMPLS: True IMPLD: False V: (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & p10))))))
+IMPLS: True IMPLD: False V: p4
+IMPLS: True IMPLD: False V: (p5 & (p6 & (p7 & (p8 & (p9 & p10)))))
+IMPLS: True IMPLD: False V: p5
+IMPLS: True IMPLD: False V: (p6 & (p7 & (p8 & (p9 & p10))))
+IMPLS: True IMPLD: False V: p6
+IMPLS: True IMPLD: False V: (p7 & (p8 & (p9 & p10)))
+IMPLS: True IMPLD: False V: p7
+IMPLS: True IMPLD: False V: (p8 & (p9 & p10))
+IMPLS: True IMPLD: False V: p8
+IMPLS: True IMPLD: False V: (p9 & p10)
+IMPLS: True IMPLD: False V: p9
+IMPLS: True IMPLD: False V: p10
+IMPLS: True IMPLD: True V: p10
+IMPLS: True IMPLD: True V: p1
+IMPLS: True IMPLD: False V: (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & p10)))))))))
+IMPLS: True IMPLD: False V: p1
+IMPLS: True IMPLD: False V: (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & p10))))))))
+IMPLS: True IMPLD: False V: p2
+IMPLS: True IMPLD: False V: (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & p10)))))))
+IMPLS: True IMPLD: False V: p3
+IMPLS: True IMPLD: False V: (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & p10))))))
+IMPLS: True IMPLD: False V: p4
+IMPLS: True IMPLD: False V: (p5 & (p6 & (p7 & (p8 & (p9 & p10)))))
+IMPLS: True IMPLD: False V: p5
+IMPLS: True IMPLD: False V: (p6 & (p7 & (p8 & (p9 & p10))))
+IMPLS: True IMPLD: False V: p6
+IMPLS: True IMPLD: False V: (p7 & (p8 & (p9 & p10)))
+IMPLS: True IMPLD: False V: p7
+IMPLS: True IMPLD: False V: (p8 & (p9 & p10))
+IMPLS: True IMPLD: False V: p8
+IMPLS: True IMPLD: False V: (p9 & p10)
+IMPLS: True IMPLD: False V: p9
+IMPLS: True IMPLD: False V: p10
+IMPLS: False IMPLD: True V: p1
+IMPLS: False IMPLD: True V: p2
+IMPLS: False IMPLD: True V: p3
+IMPLS: False IMPLD: True V: p4
+IMPLS: False IMPLD: True V: p5
+IMPLS: False IMPLD: True V: p6
+IMPLS: False IMPLD: True V: p7
+IMPLS: False IMPLD: True V: p8
+IMPLS: False IMPLD: True V: p9
+IMPLS: False IMPLD: True V: p10
+IMPLS: True IMPLD: False V: $goal
+IMPLS: True IMPLD: False V: p0
+IMPLS: False IMPLD: True V: $false
+IMPLS: True IMPLD: False V: $goal
++++ Reading file '"/home/uma-op/dev/bmstu/diploma/benchmarks/syj207/intuitr-formulas/syj207-n05.p"'...
++++ Clausification...
+[((p1 <=> p2) => (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & p10)))))))))),((p2 <=> p3) => (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & p10)))))))))),((p3 <=> p4) => (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & p10)))))))))),((p4 <=> p5) => (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & p10)))))))))),((p5 <=> p6) => (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & p10)))))))))),((p6 <=> p7) => (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & p10)))))))))),((p7 <=> p8) => (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & p10)))))))))),((p8 <=> p9) => (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & p10)))))))))),((p9 <=> p10) => (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & p10)))))))))),((p10 <=> p1) => (p1 & (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & p10)))))))))),((p0 | ((p1 & (p2 & (p3 & (p4 & (p5 & (p6 & (p7 & (p8 & (p9 & p10))))))))) | (p0 => $false))) => $goal)]
+([["$p1","$p2"] =>  ["$p0"],["$p3"] =>  ["p9"],["$p3"] =>  ["p10"],["$p4"] =>  ["p8"],["$p4"] =>  ["$p3"],["$p5"] =>  ["p7"],["$p5"] =>  ["$p4"],["$p6"] =>  ["p6"],["$p6"] =>  ["$p5"],["$p7"] =>  ["p5"],["$p7"] =>  ["$p6"],["$p8"] =>  ["p4"],["$p8"] =>  ["$p7"],["$p9"] =>  ["p3"],["$p9"] =>  ["$p8"],["$p10"] =>  ["p2"],["$p10"] =>  ["$p9"],["$p11"] =>  ["p1"],["$p11"] =>  ["$p10"],["$p0"] =>  ["$p11"],["$p13","$p14"] =>  ["$p12"],["$p12"] =>  ["$p11"],["$p16","$p17"] =>  ["$p15"],["$p15"] =>  ["$p11"],["$p19","$p20"] =>  ["$p18"],["$p18"] =>  ["$p11"],["$p22","$p23"] =>  ["$p21"],["$p21"] =>  ["$p11"],["$p25","$p26"] =>  ["$p24"],["$p24"] =>  ["$p11"],["$p28","$p29"] =>  ["$p27"],["$p27"] =>  ["$p11"],["$p31","$p32"] =>  ["$p30"],["$p30"] =>  ["$p11"],["$p34","$p35"] =>  ["$p33"],["$p33"] =>  ["$p11"],["$p37","$p38"] =>  ["$p36"],["$p36"] =>  ["$p11"],["p0"] =>  ["$goal"],["p1","p2","p3","p4","p5","p6","p7","p8","p9","p10"] =>  ["$goal"]],[(("p1") -> ("p2")) -> ("$p1"),(("p2") -> ("p1")) -> ("$p2"),(("p2") -> ("p3")) -> ("$p13"),(("p3") -> ("p2")) -> ("$p14"),(("p3") -> ("p4")) -> ("$p16"),(("p4") -> ("p3")) -> ("$p17"),(("p4") -> ("p5")) -> ("$p19"),(("p5") -> ("p4")) -> ("$p20"),(("p5") -> ("p6")) -> ("$p22"),(("p6") -> ("p5")) -> ("$p23"),(("p6") -> ("p7")) -> ("$p25"),(("p7") -> ("p6")) -> ("$p26"),(("p7") -> ("p8")) -> ("$p28"),(("p8") -> ("p7")) -> ("$p29"),(("p8") -> ("p9")) -> ("$p31"),(("p9") -> ("p8")) -> ("$p32"),(("p9") -> ("p10")) -> ("$p34"),(("p10") -> ("p9")) -> ("$p35"),(("p10") -> ("p1")) -> ("$p37"),(("p1") -> ("p10")) -> ("$p38"),(("p0") -> ("$false")) -> ("$goal")],"$goal")
++++ Created 60 flat clauses and 21 implication clauses
++++ Proving (intuitR, CADE 2021)
++++ RESULT: CounterSatisfiable (intuitionistically)
+============================
+Clausification time: 0.004 sec
+Prover time: 0.001 sec

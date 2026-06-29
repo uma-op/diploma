@@ -1,0 +1,26 @@
+IMPLS: True IMPLD: True V: p1
+IMPLS: True IMPLD: True V: p2
+IMPLS: True IMPLD: False V: (p1 & p2)
+IMPLS: True IMPLD: False V: p1
+IMPLS: True IMPLD: False V: p2
+IMPLS: True IMPLD: True V: p2
+IMPLS: True IMPLD: True V: p1
+IMPLS: True IMPLD: False V: (p1 & p2)
+IMPLS: True IMPLD: False V: p1
+IMPLS: True IMPLD: False V: p2
+IMPLS: False IMPLD: True V: p1
+IMPLS: False IMPLD: True V: p2
+IMPLS: True IMPLD: False V: $goal
+IMPLS: True IMPLD: False V: p0
+IMPLS: False IMPLD: True V: $false
+IMPLS: True IMPLD: False V: $goal
++++ Reading file '"/home/uma-op/dev/bmstu/diploma/benchmarks/syj207/intuitr-formulas/syj207-n01.p"'...
++++ Clausification...
+[((p1 <=> p2) => (p1 & p2)),((p2 <=> p1) => (p1 & p2)),((p0 | ((p1 & p2) | (p0 => $false))) => $goal)]
+([["$p1","$p2"] =>  ["$p0"],["$p3"] =>  ["p1"],["$p3"] =>  ["p2"],["$p0"] =>  ["$p3"],["$p0"] =>  ["$p3"],["p0"] =>  ["$goal"],["p1","p2"] =>  ["$goal"]],[(("p1") -> ("p2")) -> ("$p1"),(("p2") -> ("p1")) -> ("$p2"),(("p0") -> ("$false")) -> ("$goal")],"$goal")
++++ Created 9 flat clauses and 3 implication clauses
++++ Proving (intuitR, CADE 2021)
++++ RESULT: CounterSatisfiable (intuitionistically)
+============================
+Clausification time: 0.000 sec
+Prover time: 0.000 sec

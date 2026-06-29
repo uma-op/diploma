@@ -1,0 +1,6 @@
+name,result,clausification_ms,proving_ms,annotation_ms,total_ms
+syj207-n01.txt,invalid,1.232,36.711,0.000,37.943
+syj207-n02.txt,invalid,2.024,68.896,0.000,70.920
+syj207-n03.txt,invalid,3.293,338.073,0.000,341.367
+syj207-n04.txt,invalid,5.238,132440.380,0.000,132445.618
+syj207-n05.txt,invalid,7.008,8631.909,0.000,8638.917

@@ -4,37 +4,38 @@ import qualified Data.List as List
 import qualified Data.Maybe as Maybe
 import qualified Data.Map as Map
 import Data.Map ((!))
+import Data.Set (Set)
+import qualified Data.Set as Set
 
 import Refactoring.Clause.Flat
 import Refactoring.Formula.Atom
 
 import qualified Z3.Base as Z3
 import Refactoring.Sequent.Annotated
-import Fmt
 
 data Solver_ =
   Solver
     Z3.Context
     Z3.Solver
-    [Annotated_ Z3.AST Atom_]
+    (Set (Annotated_ Z3.AST Atom_))
 
 newSolver :: IO Solver_
 newSolver = do
   config <- Z3.mkConfig
-  Z3.setParamValue config "proof" "true"
-
   context <- Z3.mkContext config
   solver <- Z3.mkSolver context
 
-  return $ Solver context solver []
+  return $ Solver context solver Set.empty
 
-addClause :: Solver_ -> Flat_ Z3.AST -> IO ()
+addClause :: Solver_ -> Flat_ Z3.AST -> IO Solver_
 addClause (Solver context solver universe) (Flat cs ds) = do
   csAST <- Z3.mkAnd context $ annotation <$> cs
   dsAST <- Z3.mkOr context $ annotation <$> ds
   clauseAST <- Z3.mkImplies context csAST dsAST
 
   Z3.solverAssertCnstr context solver clauseAST
+  return $ Solver context solver $ foldr Set.insert universe (cs ++ ds)
+  
 
 data SatProveResult_ = Yes [Annotated_ Z3.AST Atom_] | No [Annotated_ Z3.AST Atom_]
 
@@ -49,7 +50,8 @@ satProve (Solver context solver universe) assumptions goal = do
       return $ Yes [astMap ! ast | ast <- core]
     Z3.Sat -> do
       model <- Z3.solverGetModel context solver
-      universeValues <- Maybe.catMaybes <$> mapM (Z3.evalBool context model) (map annotation universe)
-      return $ No [ast | (ast, val) <- zip universe universeValues, val]
+      universeValues <- Maybe.catMaybes <$> mapM (Z3.evalBool context model) (map annotation $ Set.toList universe)
+      let ans = No [ast | (ast, val) <- zip (Set.toList universe) universeValues, val]  
+      return $ ans
 
     Z3.Undef -> undefined

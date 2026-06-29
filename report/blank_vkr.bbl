@@ -1,0 +1,355 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.3 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{none/global//global/global/global}
+    \entry{Brouwer1975}{book}{}{}
+      \name{author}{1}{}{%
+        {{hash=57f81583abec4fc009ba9c59b5fbdddd}{%
+           family={Brouwer},
+           familyi={B\bibinitperiod},
+           given={Luitzen\bibnamedelimb Egbertus\bibnamedelima Jan},
+           giveni={L\bibinitperiod\bibinitdelim E\bibinitperiod\bibinitdelim J\bibinitperiod}}}%
+      }
+      \list{language}{1}{%
+        {english}%
+      }
+      \list{publisher}{1}{%
+        {North-Holland}%
+      }
+      \strng{namehash}{57f81583abec4fc009ba9c59b5fbdddd}
+      \strng{fullhash}{57f81583abec4fc009ba9c59b5fbdddd}
+      \strng{fullhashraw}{57f81583abec4fc009ba9c59b5fbdddd}
+      \strng{bibnamehash}{57f81583abec4fc009ba9c59b5fbdddd}
+      \strng{authorbibnamehash}{57f81583abec4fc009ba9c59b5fbdddd}
+      \strng{authornamehash}{57f81583abec4fc009ba9c59b5fbdddd}
+      \strng{authorfullhash}{57f81583abec4fc009ba9c59b5fbdddd}
+      \strng{authorfullhashraw}{57f81583abec4fc009ba9c59b5fbdddd}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Collected Works. Volume 1: Philosophy and Foundations of Mathematics}
+      \field{year}{1975}
+    \endentry
+    \entry{Heyting1956}{book}{}{}
+      \name{author}{1}{}{%
+        {{hash=11d7fe9f4ce47110b35880ba74bbd6ce}{%
+           family={Heyting},
+           familyi={H\bibinitperiod},
+           given={Arend},
+           giveni={A\bibinitperiod}}}%
+      }
+      \list{language}{1}{%
+        {english}%
+      }
+      \list{publisher}{1}{%
+        {North-Holland}%
+      }
+      \strng{namehash}{11d7fe9f4ce47110b35880ba74bbd6ce}
+      \strng{fullhash}{11d7fe9f4ce47110b35880ba74bbd6ce}
+      \strng{fullhashraw}{11d7fe9f4ce47110b35880ba74bbd6ce}
+      \strng{bibnamehash}{11d7fe9f4ce47110b35880ba74bbd6ce}
+      \strng{authorbibnamehash}{11d7fe9f4ce47110b35880ba74bbd6ce}
+      \strng{authornamehash}{11d7fe9f4ce47110b35880ba74bbd6ce}
+      \strng{authorfullhash}{11d7fe9f4ce47110b35880ba74bbd6ce}
+      \strng{authorfullhashraw}{11d7fe9f4ce47110b35880ba74bbd6ce}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Intuitionism: An Introduction}
+      \field{year}{1956}
+    \endentry
+    \entry{Kripke1965}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=a3de81ce95d09b9915d1be05f9970108}{%
+           family={Kripke},
+           familyi={K\bibinitperiod},
+           given={Saul\bibnamedelima A.},
+           giveni={S\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
+      }
+      \list{language}{1}{%
+        {english}%
+      }
+      \strng{namehash}{a3de81ce95d09b9915d1be05f9970108}
+      \strng{fullhash}{a3de81ce95d09b9915d1be05f9970108}
+      \strng{fullhashraw}{a3de81ce95d09b9915d1be05f9970108}
+      \strng{bibnamehash}{a3de81ce95d09b9915d1be05f9970108}
+      \strng{authorbibnamehash}{a3de81ce95d09b9915d1be05f9970108}
+      \strng{authornamehash}{a3de81ce95d09b9915d1be05f9970108}
+      \strng{authorfullhash}{a3de81ce95d09b9915d1be05f9970108}
+      \strng{authorfullhashraw}{a3de81ce95d09b9915d1be05f9970108}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{internalsortvolume}{40}
+      \field{journaltitle}{Studies in Logic and the Foundations of Mathematics}
+      \field{title}{Semantical Analysis of Intuitionistic Logic I}
+      \field{year}{1965}
+      \field{pages}{92\bibrangedash 130}
+      \range{pages}{39}
+      \field{volume}{40}
+      \range{volume}{1}
+    \endentry
+    \entry{Gentzen1935}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=2e5b9df4ca83f294927feb14983d943d}{%
+           family={Gentzen},
+           familyi={G\bibinitperiod},
+           given={Gerhard},
+           giveni={G\bibinitperiod}}}%
+      }
+      \list{language}{1}{%
+        {german}%
+      }
+      \strng{namehash}{2e5b9df4ca83f294927feb14983d943d}
+      \strng{fullhash}{2e5b9df4ca83f294927feb14983d943d}
+      \strng{fullhashraw}{2e5b9df4ca83f294927feb14983d943d}
+      \strng{bibnamehash}{2e5b9df4ca83f294927feb14983d943d}
+      \strng{authorbibnamehash}{2e5b9df4ca83f294927feb14983d943d}
+      \strng{authornamehash}{2e5b9df4ca83f294927feb14983d943d}
+      \strng{authorfullhash}{2e5b9df4ca83f294927feb14983d943d}
+      \strng{authorfullhashraw}{2e5b9df4ca83f294927feb14983d943d}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{internalsortvolume}{39}
+      \field{journaltitle}{Mathematische Zeitschrift}
+      \field{title}{Untersuchungen über das logische Schlie{ß}en}
+      \field{year}{1935}
+      \field{pages}{176\bibrangedash 210\bibrangessep 405\bibrangedash 431}
+      \range{pages}{62}
+      \field{volume}{39}
+      \range{volume}{1}
+    \endentry
+    \entry{ClaessenRosen2015}{inproceedings}{}{}
+      \name{author}{2}{}{%
+        {{hash=b5810f3c048af7890859f522af846370}{%
+           family={Claessen},
+           familyi={C\bibinitperiod},
+           given={Koen},
+           giveni={K\bibinitperiod}}}%
+        {{hash=5e39b08b5af84100e62e45345533e5f3}{%
+           family={Rosén},
+           familyi={R\bibinitperiod},
+           given={Dan},
+           giveni={D\bibinitperiod}}}%
+      }
+      \list{language}{1}{%
+        {english}%
+      }
+      \list{publisher}{1}{%
+        {Springer}%
+      }
+      \strng{namehash}{94c33956d2285c5ed5032f047148778e}
+      \strng{fullhash}{94c33956d2285c5ed5032f047148778e}
+      \strng{fullhashraw}{94c33956d2285c5ed5032f047148778e}
+      \strng{bibnamehash}{94c33956d2285c5ed5032f047148778e}
+      \strng{authorbibnamehash}{94c33956d2285c5ed5032f047148778e}
+      \strng{authornamehash}{94c33956d2285c5ed5032f047148778e}
+      \strng{authorfullhash}{94c33956d2285c5ed5032f047148778e}
+      \strng{authorfullhashraw}{94c33956d2285c5ed5032f047148778e}
+      \field{sortinit}{7}
+      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Logic for Programming, Artificial Intelligence, and Reasoning (LPAR)}
+      \field{internalsortvolume}{9450}
+      \field{series}{Lecture Notes in Computer Science}
+      \field{title}{{SAT} modulo Intuitionistic Implications}
+      \field{year}{2015}
+      \field{pages}{622\bibrangedash 637}
+      \range{pages}{16}
+      \field{volume}{9450}
+      \range{volume}{1}
+    \endentry
+    \entry{FiorentiniGoreGL2019}{inproceedings}{}{}
+      \name{author}{3}{}{%
+        {{hash=8e17bc020aeb92e126dfbe75d1dc71e8}{%
+           family={Fiorentini},
+           familyi={F\bibinitperiod},
+           given={Camillo},
+           giveni={C\bibinitperiod}}}%
+        {{hash=8c4ba0a2bbed11bccf9d81ded27b3f1f}{%
+           family={Goré},
+           familyi={G\bibinitperiod},
+           given={Rajeev},
+           giveni={R\bibinitperiod}}}%
+        {{hash=33685c4700b5004d176548e3ae78159f}{%
+           family={Graham-Lengrand},
+           familyi={G\bibinithyphendelim L\bibinitperiod},
+           given={Stéphane},
+           giveni={S\bibinitperiod}}}%
+      }
+      \list{language}{1}{%
+        {english}%
+      }
+      \list{publisher}{1}{%
+        {Springer}%
+      }
+      \strng{namehash}{48bb4f26e5ee8d6ce4279cd5a98c285a}
+      \strng{fullhash}{48bb4f26e5ee8d6ce4279cd5a98c285a}
+      \strng{fullhashraw}{48bb4f26e5ee8d6ce4279cd5a98c285a}
+      \strng{bibnamehash}{48bb4f26e5ee8d6ce4279cd5a98c285a}
+      \strng{authorbibnamehash}{48bb4f26e5ee8d6ce4279cd5a98c285a}
+      \strng{authornamehash}{48bb4f26e5ee8d6ce4279cd5a98c285a}
+      \strng{authorfullhash}{48bb4f26e5ee8d6ce4279cd5a98c285a}
+      \strng{authorfullhashraw}{48bb4f26e5ee8d6ce4279cd5a98c285a}
+      \field{sortinit}{8}
+      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Automated Reasoning with Analytic Tableaux and Related Methods (TABLEAUX)}
+      \field{internalsortvolume}{11714}
+      \field{series}{Lecture Notes in Computer Science}
+      \field{title}{A proof-theoretic perspective on {SMT}-solving for intuitionistic propositional logic}
+      \field{year}{2019}
+      \field{pages}{111\bibrangedash 129}
+      \range{pages}{19}
+      \field{volume}{11714}
+      \range{volume}{1}
+    \endentry
+    \entry{Dyckhoff1992}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=0a35066b65062308c6bf6cd5598067eb}{%
+           family={Dyckhoff},
+           familyi={D\bibinitperiod},
+           given={Roy},
+           giveni={R\bibinitperiod}}}%
+      }
+      \list{language}{1}{%
+        {english}%
+      }
+      \strng{namehash}{0a35066b65062308c6bf6cd5598067eb}
+      \strng{fullhash}{0a35066b65062308c6bf6cd5598067eb}
+      \strng{fullhashraw}{0a35066b65062308c6bf6cd5598067eb}
+      \strng{bibnamehash}{0a35066b65062308c6bf6cd5598067eb}
+      \strng{authorbibnamehash}{0a35066b65062308c6bf6cd5598067eb}
+      \strng{authornamehash}{0a35066b65062308c6bf6cd5598067eb}
+      \strng{authorfullhash}{0a35066b65062308c6bf6cd5598067eb}
+      \strng{authorfullhashraw}{0a35066b65062308c6bf6cd5598067eb}
+      \field{sortinit}{9}
+      \field{sortinithash}{0a5ebc79d83c96b6579069544c73c7d4}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{internalsortvolume}{57}
+      \field{journaltitle}{Journal of Symbolic Logic}
+      \field{title}{Contraction-free sequent calculi for intuitionistic logic}
+      \field{year}{1992}
+      \field{number}{3}
+      \range{number}{1}
+      \field{pages}{795\bibrangedash 807}
+      \range{pages}{13}
+      \field{volume}{57}
+      \range{volume}{1}
+    \endentry
+    \entry{Clarke2000CEGAR}{inproceedings}{useauthor=false}{}
+      \name{author}{5}{}{%
+        {{hash=1822cd554880ea55fd66357a96bca03e}{%
+           family={Clarke},
+           familyi={C\bibinitperiod},
+           given={Edmund\bibnamedelima M.},
+           giveni={E\bibinitperiod\bibinitdelim M\bibinitperiod}}}%
+        {{hash=a6f254abb80deae659306d0e4b489566}{%
+           family={Grumberg},
+           familyi={G\bibinitperiod},
+           given={Orna},
+           giveni={O\bibinitperiod}}}%
+        {{hash=940ca4c2de6bee5757bbfe47cbff31bb}{%
+           family={Jha},
+           familyi={J\bibinitperiod},
+           given={Somesh},
+           giveni={S\bibinitperiod}}}%
+        {{hash=573e6a16cf4f14b3afed98b3444e7da1}{%
+           family={Lu},
+           familyi={L\bibinitperiod},
+           given={Yuan},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=5ac94523768e8fc4adb7a926b36d83e0}{%
+           family={Veith},
+           familyi={V\bibinitperiod},
+           given={Helmut},
+           giveni={H\bibinitperiod}}}%
+      }
+      \list{language}{1}{%
+        {english}%
+      }
+      \list{publisher}{1}{%
+        {Springer}%
+      }
+      \strng{authorbibnamehash}{2eed5a22a1fbe3a605ce6dc9254e65de}
+      \strng{authornamehash}{2eed5a22a1fbe3a605ce6dc9254e65de}
+      \strng{authorfullhash}{9e62dcdf2728bcb175957a140f86ad85}
+      \strng{authorfullhashraw}{9e62dcdf2728bcb175957a140f86ad85}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Computer Aided Verification (CAV)}
+      \field{internalsortvolume}{1855}
+      \field{series}{Lecture Notes in Computer Science}
+      \field{title}{Counterexample-Guided Abstraction Refinement}
+      \field{year}{2000}
+      \field{pages}{154\bibrangedash 169}
+      \range{pages}{16}
+      \field{volume}{1855}
+      \range{volume}{1}
+    \endentry
+    \entry{Fiorentini2021}{inproceedings}{}{}
+      \name{author}{1}{}{%
+        {{hash=8e17bc020aeb92e126dfbe75d1dc71e8}{%
+           family={Fiorentini},
+           familyi={F\bibinitperiod},
+           given={Camillo},
+           giveni={C\bibinitperiod}}}%
+      }
+      \list{language}{1}{%
+        {english}%
+      }
+      \list{publisher}{1}{%
+        {Springer}%
+      }
+      \strng{namehash}{8e17bc020aeb92e126dfbe75d1dc71e8}
+      \strng{fullhash}{8e17bc020aeb92e126dfbe75d1dc71e8}
+      \strng{fullhashraw}{8e17bc020aeb92e126dfbe75d1dc71e8}
+      \strng{bibnamehash}{8e17bc020aeb92e126dfbe75d1dc71e8}
+      \strng{authorbibnamehash}{8e17bc020aeb92e126dfbe75d1dc71e8}
+      \strng{authornamehash}{8e17bc020aeb92e126dfbe75d1dc71e8}
+      \strng{authorfullhash}{8e17bc020aeb92e126dfbe75d1dc71e8}
+      \strng{authorfullhashraw}{8e17bc020aeb92e126dfbe75d1dc71e8}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Automated Deduction (CADE)}
+      \field{internalsortvolume}{12699}
+      \field{series}{Lecture Notes in Computer Science}
+      \field{title}{Efficient {SAT}-based Proof Search in Intuitionistic Propositional Logic}
+      \field{year}{2021}
+      \field{pages}{217\bibrangedash 233}
+      \range{pages}{17}
+      \field{volume}{12699}
+      \range{volume}{1}
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+

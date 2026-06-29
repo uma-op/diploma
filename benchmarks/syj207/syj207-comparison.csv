@@ -1,0 +1,6 @@
+n,our_result,our_total_ms,our_proving_ms,intuitr_result,intuitr_clausification_ms,intuitr_proving_ms,intuitr_reported_total_ms,intuitr_wall_ms
+1,invalid,37.943,36.711,invalid,0.000,0.000,0.000,15.124
+2,invalid,70.920,68.896,invalid,1.000,0.000,1.000,15.345
+3,invalid,341.367,338.073,invalid,2.000,0.000,2.000,14.953
+4,invalid,132445.618,132440.380,invalid,1.000,1.000,2.000,15.538
+5,invalid,8638.917,8631.909,invalid,4.000,1.000,5.000,25.558
