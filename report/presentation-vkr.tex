@@ -1,0 +1,445 @@
+\documentclass{beamer}
+
+\usepackage[T1,T2A]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english,russian]{babel}
+\usepackage{tempora}
+
+\usepackage[auto]{contour}
+\usepackage{amsmath}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{ragged2e}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{bussproofs}
+\usetikzlibrary{shapes.geometric, arrows, positioning, arrows.meta, calc,fit,backgrounds}
+
+\definecolor{iu9dept}{RGB}{40,40,60}
+\definecolor{iu9shade}{RGB}{245,245,255}
+
+\newcommand{\iutitle}[1]{\contour[10]{iu9shade}{\textcolor{iu9dept}{#1}}}
+\newcommand{\iutitleupd}[1]{\contour[10]{iu9shade!90!gray}{\textcolor{iu9dept}{#1}}}
+
+\newcommand{\sqlkw}[1]{\texttt{#1}}
+\newcommand{\SELECT}{\sqlkw{SELECT}}
+\newcommand{\FROM}{\sqlkw{FROM}}
+\newcommand{\WHERE}{\sqlkw{WHERE}}
+\newcommand{\JOIN}{\sqlkw{JOIN}}
+\newcommand{\GROUPBY}{\sqlkw{GROUP BY}}
+\newcommand{\ORDERBY}{\sqlkw{ORDER BY}}
+\newcommand{\Sort}{\sqlkw{Sort}}
+\newcommand{\HashJoin}{\sqlkw{HashJoin}}
+\newcommand{\MergeJoin}{\sqlkw{MergeJoin}}
+\newcommand{\NestedLoopJoin}{\sqlkw{NestedLoopJoin}}
+\newcommand{\SeqScan}{\sqlkw{SeqScan}}
+\newcommand{\IndexScan}{\sqlkw{IndexScan}}
+\newcommand{\Sel}[2]{\sigma_{#1}(#2)}
+\newcommand{\Projection}[2]{\pi_{#1}(#2)}
+\newcommand{\Agg}[3]{\gamma_{#1;\,#2}(#3)}
+\newcommand{\InnerJoin}[3]{#1 \bowtie_{#2} #3}
+\newcommand{\CProd}[2]{#1 \times #2}
+
+\lstdefinestyle{sqlstyle}{
+  basicstyle=\ttfamily\footnotesize,
+  columns=fullflexible,
+  breaklines=true,
+  keepspaces=true,
+  showstringspaces=false
+}
+\lstset{style=sqlstyle}
+
+\usetheme{IU9light}
+
+\title[Верификация населенности полиморфных функциональных типов]{Верификация населенности \\ полиморфных \\ функциональных типов}
+\date[30.06.2026]{30.06.2026}
+\author[Банников А.С.]{Банников А.С.}
+\supervisor{Руководитель: Непейвода А.Н.}
+\institute{\contourlength{0.05em}\iutitle{МГТУ им. Н.Э. Баумана}\\\vspace*{-2ex}\\ \iutitle{Кафедра <<Теоретическая информатика}\\
+\iutitleupd{\qquad\qquad\qquad\qquad и компьютерные технологии>>}}
+
+\setbeamertemplate{blocks}[rounded][shadow=true]
+
+\begin{document}
+
+\begin{frame}[plain]
+\titlepage
+\end{frame}
+
+\begin{frame}{Введение и актуальность}
+\begin{block}{Изоморфизм Карри-Говарда}
+Изоморфизм сопоставляющий выводимые формулы интуиционистской пропозициональной логики (IPL) с термами лямбда исчисления.
+\end{block}
+
+\begin{itemize}
+  \item Развитие и актуальность методов формальной верификации
+  \item Высокий уровень абстрации: математическая логика, теория типов $\lambda$-исчисление
+  \item Визуализация процессов доказательства и аннотирования упрощает понимание
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Цель и задачи}
+\begin{block}{Цель}
+Спроектировать и реализовать программный прототип визуализатора аннотированных
+доказательств для интуиционистской пропозициональной логики.
+\end{block}
+
+\begin{itemize}
+  \item Изучить методы построения автоматических доказателей формул в IPL.
+  \item Изучить принципы аннотирования деревьев вывода лямбда термами
+  \item Спроектировать архитектуру визуализатора доказательств.
+  \item Реализовать спроектированную архитектуру
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Изоморфизм Карри-Говарда}
+
+Изоморфизм Карри-Говарда устанавливает соответствие между логикой и программированием
+
+\begin{align*}
+  I = \lambda x.x &: A \rightarrow A \\
+  K = \lambda xy.x &: A \rightarrow (B \rightarrow A) \\
+  \lambda x.x(\lambda y.y) &: ((A \rightarrow A) \rightarrow B) \rightarrow B
+\end{align*}
+\end{frame}
+
+\begin{frame}{Архитектура приложения}
+\centering
+\resizebox{0.6\textheight}{!}{%
+\begin{tikzpicture}[
+  inner sep=2mm,
+  io/.style = { trapezium, trapezium left angle=70,
+                 trapezium right angle=110,
+                 minimum width=1cm, minimum height=0.3cm,
+                 text centered, draw=black, fill=blue!30},
+  process/.style={rectangle, text centered, draw=black, fill=orange!30},
+  decision/.style={diamond, aspect=3, text centered, draw=black, fill=green!30},
+  arrow/.style={thick,->,>=stealth}
+]
+  \node (formula) [io] at (0, 4.5) {formula};
+  \node (parse_clausify) [process] at (0, 3.4) {parse + clausify};
+  \node (carrow) [decision] at (0, 2) {carrow};
+  \node (valid_proof) [process] at (-2, 1) {valid Proof};
+  \node (invalid_k) [process] at (2, 1) {invalid K};
+  \node (annotating) [process] at (-2, -0.4) {annotating};
+  \node (formatting) [process] at (0, -1.7) {formatting};
+  \node (dot) [io] at (0, -3) {DOT};
+  \draw [arrow] (formula) -- (parse_clausify);
+  \draw [arrow] (parse_clausify) -- (carrow);
+  \draw [arrow] (carrow) -- (valid_proof);
+  \draw [arrow] (carrow) -- (invalid_k);
+  \draw [arrow] (valid_proof) -- (annotating);
+  \draw [arrow] (annotating) -- (formatting);
+  \draw [arrow] (invalid_k) -- (formatting);
+  \draw [arrow] (formatting) -- (dot);
+
+\end{tikzpicture}
+}
+\end{frame}
+
+\begin{frame}{Предобработка}
+\begin{columns}
+  \begin{column}{0.4\textwidth}
+    \centering
+    \begin{tikzpicture}[
+      inner sep=2mm,
+      io/.style = { trapezium, trapezium left angle=70,
+                     trapezium right angle=110,
+                     minimum width=1cm, minimum height=0.3cm,
+                     text centered, draw=black, fill=blue!30},
+      process/.style={rectangle, text centered, draw=black, fill=orange!30},
+      decision/.style={diamond, aspect=3, text centered, draw=black, fill=green!30},
+      arrow/.style={thick,->,>=stealth}
+    ]
+    
+      \node[io] (formula) at (0, 5) {formula};
+      \node[process] (parse) at (0, 3) {F := parse formula};
+      \node[process] (clausify) at (0, 1) {\{R, X, g\} := clausify F};
+      \node[io] (sequent) at (0, -1) {\{R, X, g\}};
+    
+      \draw[arrow] (formula) -- (parse);
+      \draw[arrow] (parse) -- (clausify);
+      \draw[arrow] (clausify) -- (sequent);
+    
+    \end{tikzpicture}
+  \end{column}
+
+  \begin{column}{0.6\textwidth}
+    \scriptsize
+
+    Эквивалентность доказуемости:
+    \begin{align*}
+      \vdash_{ipl} A \quad &\Leftrightarrow \quad \vdash_{ipl} (A \rightarrow q) \rightarrow q
+    \end{align*}
+    
+    Эквивалентность формул:
+    \begin{align*}
+      A &\leftrightarrow (A \rightarrow q) \rightarrow q
+    \end{align*}
+    
+    Эквивалентность доказуемости $\not\Rightarrow$ эквивалентность формул
+
+    \begin{block}{Виды клоз}
+      \[
+        R = \{ \bigwedge A_1 \rightarrow \bigvee A_2 \} \qquad
+        X = \{ (a \rightarrow b) \rightarrow c \}
+      \]
+
+      Где $A_1, A_2, \{a, b, c\}$ --- множества атомов. Причем $A_1$ может быть пустым,
+      тогда клоза будет иметь вид: $\bigvee A_2$
+    \end{block}
+
+  \end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{CEGAR}
+  \begin{block}{Counter Example Guided Abstraction Refinement}
+    Уточнение абстрации на основе контр-примера
+  \end{block}
+\end{frame}
+
+\begin{frame}{Доказательство}
+\centering
+\resizebox{0.9\textwidth}{!}{%
+\begin{tikzpicture}[
+  inner sep=2mm,
+  io/.style = { trapezium, trapezium left angle=70,
+                 trapezium right angle=110,
+                 minimum width=1cm, minimum height=0.3cm,
+                 text centered, draw=black, fill=blue!30},
+  process/.style={rectangle, text centered, draw=black, fill=orange!30},
+  decision/.style={diamond, aspect=3, text centered, draw=black, fill=green!30},
+  arrow/.style={thick,->,>=stealth}
+]
+  \node[io] (sequent) at (0, 7) {\{R, X, g\}};
+  \node[process] (solver) at (0, 5.7) {s := newSolver};
+  \node[process] (init_solver) at (0, 4.4) {s := addClause s R};
+  \node[process] (reset) at (0, 3) {K := \{\}};
+  \node[decision] (cpl0) at (0, 1) {satProve s \{\} g};
+  \node[process] (add_world) at (0, -1) {K := addWorld K M};
+  \node[decision] (select) at (0, -3) {selectWorld K};
+  \node[decision] (cpl1) at (-7, -1) {satProve s $(w \cup \{a\})$ b};
+  \node[process] (create_clause) at (-7, 1) {$\psi$ := $\bigwedge (A \setminus \{a\}) \rightarrow c$};
+  \node[process] (add_clause) at (-7, 3) {s := addClause s $\psi$};
+  \node[io] (valid) at (5, 1) {valid Proof};
+  \node[io] (invalid) at (5, -3) {invalid K};
+
+  \draw[arrow] (sequent) -- (solver);
+  \draw[arrow] (solver) -- (init_solver);
+  \draw[arrow] (init_solver) -- (reset);
+  \draw[arrow] (reset) -- (cpl0);
+  \draw[arrow] (cpl0) -- (valid) node[midway, above] {unsat \{\}};
+  \draw[arrow] (cpl0) -- (add_world) node[midway, right] {sat M};
+  \draw[arrow] (add_world) -- (select);
+  \draw[arrow] (select) -- (invalid) node[midway, above] {Nothing};
+  \draw[arrow] (select) -- (cpl1) node[midway, below left] {Just (w, $(a \rightarrow b) \rightarrow c$)};
+  \draw[arrow] (cpl1) -- (create_clause) node[midway, right] {unsat A};
+  \draw[arrow] (create_clause) -- (add_clause);
+  \draw[arrow] (cpl1) -- (add_world) node[midway, above] {sat M};
+  \draw[arrow] (add_clause) -- (reset);
+
+\end{tikzpicture}
+}
+\end{frame}
+
+
+\begin{frame}{Постобработка}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \centering
+      \resizebox{0.6\textheight}{!}{
+      \begin{tikzpicture}[
+        inner sep=4mm,
+        io/.style = { trapezium, trapezium left angle=70,
+                       trapezium right angle=110,
+                       minimum width=1cm, minimum height=0.3cm,
+                       text centered, draw=black, fill=blue!30},
+        process/.style={rectangle, text centered, draw=black, fill=orange!30},
+        decision/.style={diamond, aspect=3, text centered, draw=black, fill=green!30},
+        arrow/.style={thick,->,>=stealth}
+      ]
+      
+        \node[io] (proof) at (-4, 5) {valid Proof};
+        \node[process] (extend) at (-4, 3) {extend Proof};
+        \node[process] (annotate) at (-4, 1) {annotate Proof};
+        \node[process] (reduce) at (-4, -1) {reduce Proof};
+        \node[io] (countermodel) at (4, 5) {invalid K};
+        \node[process] (format) at (0, -3) {format};
+        \node[io] (dot) at (0, -5) {DOT};
+      
+        \draw[arrow] (proof) -- (extend);
+        \draw[arrow] (extend) -- (annotate);
+        \draw[arrow] (annotate) -- (reduce);
+        \draw[arrow] (reduce) -- (format);
+        \draw[arrow] (countermodel) -- (format);
+        \draw[arrow] (format) -- (dot);
+      \end{tikzpicture}}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+        CPL0 доказывается при помощи Z3, но Z3 не выдает секвенциального вывода
+
+        \tiny
+        \begin{prooftree}
+          \AxiomC{}
+          \UnaryInfC{$R,\; A,\; g \vdash g$}
+        \end{prooftree}
+
+        \tiny
+        \begin{prooftree}
+          \AxiomC{$R,\; A,\; d_1 \vdash g$}
+          \AxiomC{$\ldots$}
+          \AxiomC{$R,\; A,\; d_m \vdash g$}
+          \TrinaryInfC{$R,\; \top \rightarrow d_1 \lor \ldots \lor d_m,\; A  \vdash g$}
+        \end{prooftree}
+
+        \tiny
+        \begin{prooftree}
+          \AxiomC{$R,\; C \rightarrow D,\; A,\; a_i \vdash g$}
+          \UnaryInfC{$R,\; (a_i \land C) \rightarrow D,\; A,\; a_i \vdash g$}
+        \end{prooftree}
+
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Супертермы}
+  \scriptsize
+  \begin{align*}
+    \langle T_1, \ldots, T_n \rangle & = \lambda p. p T_1 \ldots T_n \\
+    Proj(n, i, p) & = p \lambda x_1 \ldots x_n . x_i\\
+    Insert(n, i, p, e) & = \langle \mathrm{Proj}(n, 1, p),\mathrm{Proj}(n, 2, p),\ldots \underbrace{e}_{i\text{-я позиция}}\ldots,\mathrm{Proj}(n, n, p) \rangle \\
+    Sum(n, i, e) &= \lambda c_1 \ldots c_n . c_i e \\
+    Case(e, [c_1]b_1, \ldots, [c_n]b_n) &= e(\lambda c_1.b_1)\ldots(\lambda c_n.b_n) \\
+    K(e) &= \lambda x.e
+  \end{align*}
+
+\end{frame}
+
+\begin{frame}{Аннотирование}
+  \centering
+  \scriptsize
+  \begin{tabular}{c}
+      \AxiomC{$R \vdash_{\mathit{cpl}} \tilde{g} : g$}
+      \RightLabel{\scriptsize$cpl_0$}
+      \UnaryInfC{$R, X \vdash \tilde{g} : g$}
+      \DisplayProof
+
+      \\\\
+
+      \AxiomC{$R, \tilde{a} : a, \tilde{a_1} : a_1, \ldots, \tilde{a_n} : a_n \vdash_{\mathit{cpl}} \tilde{b} : b$}
+      \AxiomC{$R,\, f : (a_1 \wedge \ldots \wedge a_n) \rightarrow c ,\, X \vdash \tilde{g} : g$}
+      \RightLabel{\scriptsize$cpl_1$}
+      \BinaryInfC{$R,\, h : (a \rightarrow b) \rightarrow c,\, X \vdash \tilde{g}[f := \lambda x.h(qx)] : g$}
+      \DisplayProof
+
+      \\\\
+
+      Где $q = \lambda p. (\lambda \tilde{a_1} \ldots \tilde {a_n}. \lambda \tilde a. \tilde{b}) Proj(n, 1, p) \ldots Proj(n, n, p)$
+
+      \\\\
+
+      \AxiomC{}
+      \RightLabel{\scriptsize$Ax$}
+      \UnaryInfC{$R,\; A,\; t : g \vdash t : g$}
+      \DisplayProof
+ 
+      \\\\
+
+      \AxiomC{$R,\; A,\; d_1 \vdash \tilde{g_1} : g$}
+      \AxiomC{$\ldots$}
+      \AxiomC{$R,\; A,\; d_m \vdash \tilde{g_m} : g$}
+      \RightLabel{\scriptsize$Sd$}
+      \TrinaryInfC{$R,\; A,\; f : \top \rightarrow d_1 \lor \ldots \lor d_m \vdash \tilde{g} : g$}
+      \DisplayProof
+
+      \\\\
+
+      \AxiomC{$R,\; h : (a_1 \wedge \ldots \wedge a_{i-1} \wedge a_{i+1} \wedge \ldots a_n ) \rightarrow D,\; A,\; x : a_i \vdash t : g$}
+      \RightLabel{\scriptsize$Rc$}
+      \UnaryInfC{$R,\; f : (a_1 \wedge \ldots \wedge a_n ) \rightarrow D,\; A,\; x : a_i \vdash t[h := \lambda p. f\,Insert(n-1, i, p, x)] : g$}
+      \DisplayProof
+      \\\\
+
+  \end{tabular}
+  
+
+\end{frame}
+
+\begin{frame}{Контрмодель}
+  Контрмодель для $(p \rightarrow q) \vee (q \rightarrow p)$
+
+  \begin{tikzpicture}[
+    world/.style={circle, draw, minimum size=8mm, inner sep=0pt},
+    arrow/.style={thick,->,>=stealth}
+  ]
+    \node[world] (w0) at (0,0)     {$w_0$};
+    \node[world] (w1) at (-1.5,1.5) {$w_1$};
+    \node[world] (w2) at (1.5,1.5)  {$w_2$};
+    \draw[arrow] (w0) -- (w1);
+    \draw[arrow] (w0) -- (w2);
+
+    \node[left=4mm]  at (w1.west) {$V(w_1) = \{p\}$};
+    \node[right=4mm] at (w2.east) {$V(w_2) = \{q\}$};
+    \node[below=2mm] at (w0.south) {$V(w_0) = \varnothing$};
+  \end{tikzpicture}%
+\end{frame}
+
+\begin{frame}{Примеры генерируемых контрмоделей}
+  
+\end{frame}
+
+\begin{frame}{Анализ производительности}
+\begin{block}{intuitR}
+  В первую очередь intuitR - доказатель, который только говорит что формула валидна, либо приводит контрмодель.
+\end{block}
+
+\begin{itemize}
+  \item SYJ201. $p_1, \ldots, p_m$ - атомы, $c(N) = p_1 \land \ldots \land p_m$
+                $\bigwedge_{i=1}^{m} ((p_i \leftrightarrow p_{i+1}) \rightarrow c(N)) \rightarrow c(N)$
+  \item SYJ207. $\bigwedge_{i=1}^{m} ((p_i \leftrightarrow p_{i+1}) \rightarrow c(N)) \rightarrow (p_0 \vee \neg p_0 \vee c(N))$
+  \item fresh-tail. $(\ldots((A \rightarrow p_1) \rightarrow p_1) \ldots \rightarrow p_m) \rightarrow p_m$
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Бенчмарк на fresh-tail}
+\includegraphics[width=\textwidth]{fresh-tail-n1-100.png}
+\end{frame}
+
+\begin{frame}{Сравнение с intuitR на SYJ201}
+\begin{columns}
+  \begin{column}{0.5\textwidth}
+    \includegraphics[width=\textwidth]{syj201-n1-10.png}
+  \end{column}
+
+  \begin{column}{0.5\textwidth}
+    \includegraphics[width=\textwidth]{syj201-comparison.png}
+  \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Сравнение с intuitR на SYJ207}
+\begin{columns}
+  \begin{column}{0.5\textwidth}
+    \includegraphics[width=\textwidth]{syj207-n1-5.png}
+  \end{column}
+
+  \begin{column}{0.5\textwidth}
+    \includegraphics[width=\textwidth]{syj207-comparison.png}
+  \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Расхождения в производительности}
+  \begin{itemize}
+    \item Неоптимальная клозификация.
+    \item Построение дерева вывода
+  \end{itemize}
+\end{frame}
+
+
+\end{document}
+

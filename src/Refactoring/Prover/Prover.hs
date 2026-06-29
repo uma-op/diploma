@@ -81,9 +81,9 @@ prove formula = do
       let extended = extendProof nonAnnotatedProof
       let concated = concatTrees clausified (second (const ()) extended)
       let (annotatedProof, env) = runState (annotateClausification concated) (Lambda.Environment 0 Map.empty)
-      let term (Unclausified _ _ _ (Annotated (t, ()) _)) = t 
-      let reduced = reduce $ term (rootClausification annotatedProof)
-      let (extendedTerm, _) = runState (Lambda.extendLambda reduced) env
+      -- let term (Unclausified _ _ _ (Annotated (t, ()) _)) = t 
+      -- let reduced = reduce $ term (rootClausification annotatedProof)
+      -- let (extendedTerm, _) = runState (Lambda.extendLambda reduced) env
       -- fmtLn $ extendedTerm |+ ""
       -- fmtLn $ reduced |+ ""
       --   "digraph {\n" <>
@@ -97,7 +97,7 @@ prove formula = do
         "digraph {\n" <>
         "  graph [rankdir=BT]\n" <>
         "  node [shape=record;fontname=Arial]\n" <>
-        indentF 2 (buildDotCArrow 0 nonAnnotatedProof) <>
+        indentF 2 (buildDotClausify 0 reducedAnnotatedProof) <>
         "}\n"
 
   return ()
