@@ -1,0 +1,19 @@
+\frametitle{Пример найденного расхождения}
+\begin{lstlisting}
+SELECT markets.id AS c2619
+FROM markets CROSS JOIN users CROSS JOIN books
+WHERE markets.region != 'AMERICA';
+\end{lstlisting}
+
+\begin{columns}[T,onlytextwidth]
+\begin{column}{0.49\textwidth}
+\centering
+
+\scriptsize План Microsoft SQL Server
+\end{column}
+\begin{column}{0.49\textwidth}
+\centering
+
+\scriptsize План модельной СУБД
+\end{column}
+\end{columns}

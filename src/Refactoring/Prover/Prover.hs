@@ -28,6 +28,7 @@ import Fmt
 import Refactoring.Sequent.Classic (Classic_(Classic))
 import Refactoring.Lambda.Lambda (reduce)
 import Control.Monad (foldM)
+import Refactoring.Utils.Formatting (joinByComma)
 
 getSequent :: ClausificationRuleII -> Intuit_ () ()
 getSequent (AsImpl _ rule _ _ _) = getSequent rule
@@ -47,12 +48,13 @@ prove formula = do
   let goal = Atom goalAtom
   let sequent = Unclausified [] [] [Annotated () (implication formula goal)] (Annotated ((), ()) goalAtom)
   let (clausified, (ClausificationState _ c1 c2)) = runState (clausify sequent) (ClausificationState 0 Map.empty Map.empty)
-  print c1
-  print c2
 
   let (Intuit flats impls goal) = getSequent clausified
   putStrLn $ "Flats created: " ++ (show $ length flats)
   putStrLn $ "Impls created: " ++ (show $ length impls)
+
+  fmtLn $ "R " <> joinByComma flats
+  fmtLn $ "X " <> joinByComma impls
 
   s@(Solver context solver _) <- newSolver
 
@@ -81,9 +83,9 @@ prove formula = do
       let extended = extendProof nonAnnotatedProof
       let concated = concatTrees clausified (second (const ()) extended)
       let (annotatedProof, env) = runState (annotateClausification concated) (Lambda.Environment 0 Map.empty)
-      let term (Unclausified _ _ _ (Annotated (t, ()) _)) = t 
-      let reduced = reduce $ term (rootClausification annotatedProof)
-      let (extendedTerm, _) = runState (Lambda.extendLambda reduced) env
+      -- let term (Unclausified _ _ _ (Annotated (t, ()) _)) = t 
+      -- let reduced = reduce $ term (rootClausification annotatedProof)
+      -- let (extendedTerm, _) = runState (Lambda.extendLambda reduced) env
       -- fmtLn $ extendedTerm |+ ""
       -- fmtLn $ reduced |+ ""
       --   "digraph {\n" <>
@@ -97,7 +99,7 @@ prove formula = do
         "digraph {\n" <>
         "  graph [rankdir=BT]\n" <>
         "  node [shape=record;fontname=Arial]\n" <>
-        indentF 2 (buildDotCArrow 0 nonAnnotatedProof) <>
+        indentF 2 (buildDotClausify 0 reducedAnnotatedProof) <>
         "}\n"
 
   return ()
