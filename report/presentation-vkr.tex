@@ -98,11 +98,32 @@
 
 Изоморфизм Карри-Говарда устанавливает соответствие между логикой и программированием
 
+\begin{center}
+\begin{tabular}{c}
+
+\AxiomC{$\Gamma \vdash M : A \rightarrow B$}
+\AxiomC{$\Gamma \vdash N : A$}
+\RightLabel{\scriptsize$\rightarrow E$}
+\BinaryInfC{$\Gamma \vdash M\,N : B$}
+\DisplayProof
+
+\\\\
+
+\AxiomC{$\Gamma,\, x : A \vdash M : B$}
+\RightLabel{\scriptsize$\rightarrow I$}
+\UnaryInfC{$\Gamma \vdash \lambda x.\, M : A \rightarrow B$}
+\DisplayProof
+  
+\end{tabular}
+\end{center}
+
 \begin{align*}
   I = \lambda x.x &: A \rightarrow A \\
   K = \lambda xy.x &: A \rightarrow (B \rightarrow A) \\
   \lambda x.x(\lambda y.y) &: ((A \rightarrow A) \rightarrow B) \rightarrow B
 \end{align*}
+
+
 \end{frame}
 
 \begin{frame}{Архитектура приложения}
@@ -195,13 +216,38 @@
 \end{columns}
 \end{frame}
 
+\begin{frame}{Контрмодель}
+  Контрмодель для $(p \rightarrow q) \vee (q \rightarrow p)$
+
+  \begin{tikzpicture}[
+    world/.style={circle, draw, minimum size=8mm, inner sep=0pt},
+    arrow/.style={thick,->,>=stealth}
+  ]
+    \node[world] (w0) at (0,0)     {$w_0$};
+    \node[world] (w1) at (-1.5,1.5) {$w_1$};
+    \node[world] (w2) at (1.5,1.5)  {$w_2$};
+    \draw[arrow] (w0) -- (w1);
+    \draw[arrow] (w0) -- (w2);
+
+    \node[left=4mm]  at (w1.west) {$V(w_1) = \{p\}$};
+    \node[right=4mm] at (w2.east) {$V(w_2) = \{q\}$};
+    \node[below=2mm] at (w0.south) {$V(w_0) = \varnothing$};
+  \end{tikzpicture}%
+\end{frame}
+
 \begin{frame}{CEGAR}
   \begin{block}{Counter Example Guided Abstraction Refinement}
     Уточнение абстрации на основе контр-примера
   \end{block}
+
+  \begin{itemize}
+    \item Впервые был предложен Кларком и соавторами
+    \item Хорошо подходит для проверки интуиционистских формул
+    \item Используется в intuitR
+  \end{itemize}
 \end{frame}
 
-\begin{frame}{Доказательство}
+\begin{frame}{CEGAR-цикл доказательства}
 \centering
 \resizebox{0.9\textwidth}{!}{%
 \begin{tikzpicture}[
@@ -368,27 +414,28 @@
 
 \end{frame}
 
-\begin{frame}{Контрмодель}
-  Контрмодель для $(p \rightarrow q) \vee (q \rightarrow p)$
 
-  \begin{tikzpicture}[
-    world/.style={circle, draw, minimum size=8mm, inner sep=0pt},
-    arrow/.style={thick,->,>=stealth}
-  ]
-    \node[world] (w0) at (0,0)     {$w_0$};
-    \node[world] (w1) at (-1.5,1.5) {$w_1$};
-    \node[world] (w2) at (1.5,1.5)  {$w_2$};
-    \draw[arrow] (w0) -- (w1);
-    \draw[arrow] (w0) -- (w2);
+\begin{frame}{Результаты работы}
+\begin{columns}
+  \begin{column}{0.35\textheight}
+    \includegraphics[width=\textwidth]{identity.png}
+  \end{column}
+  \begin{column}{0.4\textwidth}
+    \tiny
+    \includegraphics[scale=0.05]{peirce.png}
 
-    \node[left=4mm]  at (w1.west) {$V(w_1) = \{p\}$};
-    \node[right=4mm] at (w2.east) {$V(w_2) = \{q\}$};
-    \node[below=2mm] at (w0.south) {$V(w_0) = \varnothing$};
-  \end{tikzpicture}%
-\end{frame}
+    Контрпример для $((A \rightarrow B) \rightarrow A) \rightarrow A$
 
-\begin{frame}{Примеры генерируемых контрмоделей}
-  
+    \vspace{-3ex}
+    \begin{align*}
+      R = \{ & A \rightarrow \$ , \\
+             & B \rightarrow v1, \\
+             & v0 \wedge v1 \rightarrow A \} \\
+      X = \{ & (A \rightarrow B) \rightarrow v1, \\
+             & (v0 \rightarrow A) \rightarrow \$ \}
+    \end{align*}
+  \end{column}
+\end{columns}
 \end{frame}
 
 \begin{frame}{Анализ производительности}
@@ -397,9 +444,9 @@
 \end{block}
 
 \begin{itemize}
-  \item SYJ201. $p_1, \ldots, p_m$ - атомы, $c(N) = p_1 \land \ldots \land p_m$
-                $\bigwedge_{i=1}^{m} ((p_i \leftrightarrow p_{i+1}) \rightarrow c(N)) \rightarrow c(N)$
-  \item SYJ207. $\bigwedge_{i=1}^{m} ((p_i \leftrightarrow p_{i+1}) \rightarrow c(N)) \rightarrow (p_0 \vee \neg p_0 \vee c(N))$
+  \item SYJ201. $p_1, \ldots, p_m$ - атомы, $\gamma = p_1 \land \ldots \land p_m$
+                $\bigwedge_{i=1}^{m} ((p_i \leftrightarrow p_{i+1}) \rightarrow \gamma) \rightarrow \gamma$
+  \item SYJ207. $\bigwedge_{i=1}^{m} ((p_i \leftrightarrow p_{i+1}) \rightarrow \gamma) \rightarrow (p_0 \vee \neg p_0 \vee \gamma)$
   \item fresh-tail. $(\ldots((A \rightarrow p_1) \rightarrow p_1) \ldots \rightarrow p_m) \rightarrow p_m$
 \end{itemize}
 
@@ -409,37 +456,38 @@
 \includegraphics[width=\textwidth]{fresh-tail-n1-100.png}
 \end{frame}
 
-\begin{frame}{Сравнение с intuitR на SYJ201}
+\begin{frame}{Бенчмарк на SYJ201 и SYJ207}
 \begin{columns}
   \begin{column}{0.5\textwidth}
     \includegraphics[width=\textwidth]{syj201-n1-10.png}
   \end{column}
-
-  \begin{column}{0.5\textwidth}
-    \includegraphics[width=\textwidth]{syj201-comparison.png}
-  \end{column}
-  \end{columns}
-\end{frame}
-
-\begin{frame}{Сравнение с intuitR на SYJ207}
-\begin{columns}
   \begin{column}{0.5\textwidth}
     \includegraphics[width=\textwidth]{syj207-n1-5.png}
   \end{column}
+\end{columns}
+\end{frame}
 
+\begin{frame}{Сравнение с intuitR на SYJ201 и SYJ207}
+\begin{columns}
+  \begin{column}{0.5\textwidth}
+    \includegraphics[width=\textwidth]{syj201-comparison.png}
+  \end{column}
   \begin{column}{0.5\textwidth}
     \includegraphics[width=\textwidth]{syj207-comparison.png}
   \end{column}
-  \end{columns}
+\end{columns}
+\vfill
+Плохая асимптотика - следствие неоптимального разбиения на клозы
 \end{frame}
 
-\begin{frame}{Расхождения в производительности}
+\begin{frame}{Выводы}
+  Основная цель, построение визуализатора, выполнена. В дальнейшем можно выполнить следующие доработки
   \begin{itemize}
-    \item Неоптимальная клозификация.
-    \item Построение дерева вывода
+    \item Оптимизировать алгоритм клозификации
+    \item Оптимизировать визуализацию - для больших примеров картинка становится нечитаемой
+    \item Расширить визуализатор на логики более высокого порядка
   \end{itemize}
 \end{frame}
-
 
 \end{document}
 

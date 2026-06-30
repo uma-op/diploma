@@ -28,6 +28,7 @@ import Fmt
 import Refactoring.Sequent.Classic (Classic_(Classic))
 import Refactoring.Lambda.Lambda (reduce)
 import Control.Monad (foldM)
+import Refactoring.Utils.Formatting (joinByComma)
 
 getSequent :: ClausificationRuleII -> Intuit_ () ()
 getSequent (AsImpl _ rule _ _ _) = getSequent rule
@@ -47,12 +48,13 @@ prove formula = do
   let goal = Atom goalAtom
   let sequent = Unclausified [] [] [Annotated () (implication formula goal)] (Annotated ((), ()) goalAtom)
   let (clausified, (ClausificationState _ c1 c2)) = runState (clausify sequent) (ClausificationState 0 Map.empty Map.empty)
-  print c1
-  print c2
 
   let (Intuit flats impls goal) = getSequent clausified
   putStrLn $ "Flats created: " ++ (show $ length flats)
   putStrLn $ "Impls created: " ++ (show $ length impls)
+
+  fmtLn $ "R " <> joinByComma flats
+  fmtLn $ "X " <> joinByComma impls
 
   s@(Solver context solver _) <- newSolver
 
